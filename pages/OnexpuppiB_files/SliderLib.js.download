@@ -1,0 +1,175 @@
+// Javascript code for RJM's slider
+
+function aslider(x, y, w, h, isactive, ctx)
+// defines a horizontal/vertical slider block, based at x,y, w and h are width/height
+{
+this.x = x + w / 2;		// position within slider half way
+this.y = y + h / 2;
+this.xoff = 0;
+this.yoff = 0;
+this.active = isactive;	// is it being used
+this.ishoriz = w > h;	// horizontal slider if wider than taller
+this.xbase = x;			// define limits of slider
+this.ybase = y;
+this.xend = x + w;
+this.yend = y + h;
+this.blob = (this.ishoriz) ? h : w;		// size of blob is narrower of width and height
+this.ctx = ctx;			// context into which draw
+this.minval = 0;		// defines range of variable 
+this.maxval = 1;
+this.whichbase = 1;		// allows linear slides, but allo base 2 or 10 for sliders range 10^min .. 10^max
+
+this.setOffset=setOffset;	// define functions
+this.drawOutline=drawOutline;
+this.draw=draw;						
+this.drawat = drawat;
+this.redraw = redraw;
+this.sliderMouseDown = sliderMouseDown;
+this.sliderMouseMove = sliderMouseMove;
+this.sliderMouseUp = sliderMouseUp;
+this.getSliderPos = getSliderPos;
+this.putSliderPos = putSliderPos;
+this.setSliderScale= setSliderScale;
+this.labelSliderScale=labelSliderScale;
+this.checkActive=checkActive;	// to report if slider active
+this.drawOutline("blue");			// draw slider in blue
+this.draw ("black");				// and blob in black
+
+function checkActive() {			// report if slider is active
+   return this.active;
+}
+function setSliderScale(minval, maxval) {	// define scales between which slider operates
+  this.labelSliderScale(canvasback);			// remove label of scale
+  this.minval = minval;						// set new scale
+  this.maxval = maxval;
+  this.labelSliderScale("black");			// and label slider with new scale
+}
+function labelSliderScale(col) {
+var minstr, maxstr;
+
+if (this.whichbase > 1) {
+   minstr = Math.pow(this.whichbase, this.minval).toFixed(1);		// get strings defining min/max values
+   maxstr = Math.pow(this.whichbase, this.maxval).toFixed(1);
+}
+else {
+   minstr = this.minval.toFixed(1);		// get strings defining min/max values
+   maxstr = this.maxval.toFixed(1);
+}   
+var bs = this.blob;							// defines size of blob
+
+   this.ctx.fillStyle = col;				// set colour
+
+    if (this.ishoriz) {						// label left and right of slider
+	 this.ctx.textBaseline="middle";
+	 this.ctx.textAlign="right"; 
+	 this.ctx.fillText(minstr, this.xbase-bs, this.ybase);
+	 this.ctx.textAlign="left"; 
+     this.ctx.fillText(maxstr, this.xend+bs, this.ybase);
+   }	 
+   else {									// label above and below slider
+	 this.ctx.textAlign="center"; 
+	 this.ctx.textBaseline="bottom";
+     this.ctx.fillText(minstr, this.xbase, this.ybase-bs);
+	 this.ctx.textBaseline="top";
+     this.ctx.fillText(maxstr, this.xbase, this.yend+bs);
+   }
+}
+function getSliderPos () {						// calculate value of slider
+var ans = 0;
+if ( this.ishoriz ) {							// get x valie and scale it
+   ans = (this.x - this.xbase) / (this.xend - this.xbase);
+}
+else {											// get y value and scale it
+   ans = (this.y - this.ybase) / (this.yend - this.ybase);
+}
+return ans * (this.maxval - this.minval) + this.minval;
+}
+function putSliderPos (pos) {						// move slider to defined position
+pos = (pos - this.minval) / (this.maxval - this.minval);	// unscale value
+if ( pos >= 0 && pos <= 1 ) {								// check if in range
+    this.draw("white");
+	if ( this.ishoriz ) {
+		this.x = this.xbase + pos * (this.xend - this.xbase); 	// set x position
+	}
+	else {
+		this.y = this.ybase + pos * (this.yend - this.ybase); 	// set y position
+	}
+	this.draw("black");
+}
+}
+function setOffset(x, y) 
+{
+   this.xoff = x-this.x;
+   this.yoff = y-this.y;
+}
+function drawOutline (col)
+{
+var bs = 1 + this.blob;
+    bs2 = bs / 2;
+	this.ctx.fillStyle="rgb(192, 192, 192)";
+	this.ctx.fillRect(this.xbase-bs2, this.ybase-bs2, this.xend-this.xbase + bs, this.yend-this.ybase + bs)
+	this.ctx.beginPath();
+    this.ctx.strokeStyle = col;
+	this.ctx.rect(this.xbase-bs2, this.ybase-bs2, this.xend-this.xbase + bs, this.yend-this.ybase + bs);
+	this.ctx.lineWidth=2;
+	this.ctx.stroke();
+}
+function redraw(ocol, col, lcol) {
+	this.drawOutline(ocol);
+	this.draw(col);
+	this.labelSliderScale(lcol);
+}
+function draw (col) {
+var bs = this.blob;
+   if (col == "white") {
+      col = "rgb(192, 192, 192)";
+   }
+   else { 
+      bs = bs - 1;
+   }
+var bs2 = bs/2;
+	this.ctx.fillStyle = col;
+	this.ctx.strokeStyle = col;
+	this.ctx.fillRect(this.x-bs2, this.y-bs2, bs, bs);
+}
+function drawat (x, y, col) {
+    if ( this.ishoriz ) {
+	   if ( x >= this.xbase && x <= this.xend ) {
+	      this.x = x;
+	   } 	  
+	}
+	else {
+	   if ( y >= this.ybase && y <= this.yend ) {
+	      this.y = y;
+	   } 	  
+	}   
+	this.draw(col);
+}	
+function sliderMouseDown(x,y)
+{
+	var dx = Math.abs(x-this.x);
+	var dy = Math.abs(y-this.y);
+	   if ( dx<10 && dy<10 )  {
+          this.active = true;
+		  this.draw("white");
+		  this.drawat(x, y, "red");
+	   }	  
+}
+function sliderMouseMove(x,y)
+{
+	   if ( this.active )  {
+		  this.draw("white");
+		  this.drawat(x, y, "red");
+	   }	  
+}
+function sliderMouseUp(x,y)
+{
+	   if ( this.active ) {
+		  this.draw("white");
+		  this.drawat(x, y, "black");
+		  this.active = false;
+	   }	  
+}
+
+}
+
