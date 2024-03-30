@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- 
+    - primary meta tag
+  -->
+  <title>MathExplained - Computing with Math, Engaged</title>
+  <meta name="title" content="MathExplained - Computing with Math, Engaged" />
+  <meta name="description"
+    content="Discover the synergy between mathematics and computing with our interactive platform." />
+
+  <!-- 
+    - favicon
+  -->
+  <link rel="shortcut icon" href="./assets/images/favicon.png" type="image/svg+xml" />
+
+  <!-- 
+    - custom css link
+  -->
+  <link rel="stylesheet" href="./assets/css/style.css" />
+
+  <!-- 
+    - google font link
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600;700;800&family=Poppins:wght@400;500&display=swap"
+    rel="stylesheet" />
+
+  <!-- 
+    - preload images
+  -->
+  <link rel="preload" as="image" href="./assets/images/hero-bg.svg" />
+  <link rel="preload" as="image" href="./assets/images/hero-banner-1.jpg" />
+  <link rel="preload" as="image" href="./assets/images/hero-banner-2.jpg" />
+  <link rel="preload" as="image" href="./assets/images/hero-shape-1.svg" />
+  <link rel="preload" as="image" href="./assets/images/hero-shape-2.png" />
+</head>
+
+<body id="top">
+  <!-- 
+    - #HEADER
+  -->
+
+  <header class="header" data-header>
+    <div class="container">
+      <a href="./index.html" class="logo">
+        <img src="./assets/images/logoBlack.png" width="260" alt="MathExplained logo" />
+      </a>
+
+      <nav class="navbar" data-navbar>
+        <div class="wrapper">
+          <a href="./index.html" class="logo">
+            <img src="./assets/images/logoBlack.png" width="162" height="50" alt="MathExplained logo" />
+          </a>
+
+          <button class="nav-close-btn" aria-label="close menu" data-nav-toggler>
+            <ion-icon name="close-outline" aria-hidden="true"></ion-icon>
+          </button>
+        </div>
+
+        <ul class="navbar-list">
+          <li class="navbar-item">
+            <a href="./index.html" class="navbar-link" data-nav-link>Home</a>
+          </li>
+
+          <li class="navbar-item">
+            <a href="./blog.html" class="navbar-link" data-nav-link>Blog</a>
+          </li>
+
+          <li class="navbar-item">
+            <a href="./index.html#about" class="navbar-link" data-nav-link>About</a>
+          </li>
+
+          <li class="navbar-item">
+            <a href="./index.html#footer" class="navbar-link" data-nav-link>Contact</a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <a href="./blog.html" class="btn has-before">
+          <span class="span">Go to Blog</span>
+
+          <ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon>
+        </a>
+
+        <button class="header-action-btn" aria-label="open menu" data-nav-toggler>
+          <ion-icon name="menu-outline" aria-hidden="true"></ion-icon>
+        </button>
+      </div>
+
+      <div class="overlay" data-nav-toggler data-overlay></div>
+    </div>
+  </header>
+
+  <main>
+    <article>
+
+      <section class="section category" aria-label="category">
+        <div class="container">
+          <p class="section-subtitle">MathExplained - Blog</p>
+
+          <h2 class="h2 section-title">
+            Mathematics for Computing
+          </h2>
+
+          <p class="section-text">
+            Mathematics for Computing" refers to the branch of mathematics that is directly applicable to computer
+            science and computational problems. It encompasses various mathematical concepts and techniques that are
+            fundamental to understanding and solving problems in computer science, software engineering, and related
+            fields. Some key areas of mathematics for computing include:
+          </p>
+
+          <section class="section course" id="courses" aria-label="course">
+            <div class="container" style="margin-top: -120px;">
+              <div class="container">
+                <ul class="grid-list">
+                  <li>
+                    <div class="stats-card" style="--color: 170, 75%, 41%">
+                      <h3 class="card-title">1. Discrete Mathematics</h3>
+
+                      <p class="card-text">
+                        This includes topics such as set theory, logic, graph theory, combinatorics, and discrete
+                        probability. Discrete mathematics forms the foundation for many aspects of computer science,
+                        including algorithms, data structures, and cryptography.
+                      </p>
+                    </div>
+                  </li>
+
+                  <li>
+                    <div class="stats-card" style="--color: 351, 83%, 61%">
+                      <h3 class="card-title">2. Linear Algebra</h3>
+
+                      <p class="card-text">
+                        Linear algebra is crucial for various computational tasks, including matrix operations, solving
+                        systems of linear equations, and understanding algorithms related to machine learning, computer
+                        graphics, and data analysis.
+                      </p>
+                    </div>
+                  </li>
+
+                  <li>
+                    <div class="stats-card" style="--color: 260, 100%, 67%">
+                      <h3 class="card-title">3. Calculus</h3>
+
+                      <p class="card-text">
+                        Calculus plays a significant role in areas such as optimization, numerical analysis, and
+                        algorithms for solving differential equations. Understanding calculus is essential for
+                        developing and analyzing algorithms in various computational fields.
+                      </p>
+                    </div>
+                  </li>
+                </ul>
+                </br>
+              </div>
+              <ul class="grid-list">
+                <li>
+                  <div class="stats-card" style="--color: 260, 100%, 67%">
+                    <h3 class="card-title">4. Probability and Statistics</h3>
+
+                    <p class="card-text">
+                      Probability theory is essential for modeling uncertainty and randomness in computational
+                      problems, such as in machine learning algorithms, cryptography, and simulations. Statistics is
+                      crucial for analyzing data, making inferences, and drawing conclusions from computational
+                      experiments.
+                    </p>
+                  </div>
+                </li>
+                <li>
+                  <div class="stats-card" style="--color: 170, 75%, 41%">
+                    <h3 class="card-title">5. Numerical Methods</h3>
+
+                    <p class="card-text">
+                      Numerical methods involve techniques for approximating solutions to mathematical problems using
+                      computational methods. This includes numerical integration, solving differential equations, root
+                      finding, and optimization algorithms.
+                    </p>
+                  </div>
+                </li>
+
+                <li>
+                  <div class="stats-card" style="--color: 351, 83%, 61%">
+                    <h3 class="card-title">6. Boolean Algebra and Logic</h3>
+
+                    <p class="card-text">
+                      Boolean algebra is fundamental to understanding digital logic circuits, which form the basis of
+                      computer hardware. It is also essential in designing algorithms, writing efficient code, and
+                      reasoning about program correctness.
+                    </p>
+                  </div>
+                </li>
+
+
+              </ul>
+              </br>
+              <ul class="grid-list">
+                <li>
+                  <div class="stats-card" style="--color: 351, 83%, 61%">
+                    <h3 class="card-title">7. Algorithm Analysis and Complexity Theory</h3>
+
+                    <p class="card-text">
+                      Understanding the mathematical analysis of algorithms involves analyzing their time and space
+                      complexity, as well as studying their efficiency and scalability. Complexity theory deals with
+                      classifying problems based on their computational difficulty and understanding the limits of
+                      efficient computation.
+                    </p>
+                  </div>
+                </li>
+                <li>
+                  <div class="stats-card" style="--color: 260, 100%, 67%">
+                    <h3 class="card-title">8. Graph Theory</h3>
+
+                    <p class="card-text">
+                      Graph theory is crucial for modeling relationships and networks in computer science applications,
+                      such as social networks, transportation networks, and data structures like trees and graphs.
+                    </p>
+                  </div>
+                </li>
+                <li>
+                  <div class="stats-card" style="--color: 170, 75%, 41%">
+                    <h3 class="card-title">9. Number Theory</h3>
+
+                    <p class="card-text">
+                      Number theory has applications in cryptography, particularly in designing secure cryptographic
+                      algorithms and protocols.
+                    </p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <p class="section-text">
+              </br>
+              These are just some of the key areas of mathematics that are essential for computing. Proficiency in these
+              mathematical concepts enables computer scientists and software engineers to develop efficient algorithms,
+              analyze computational problems, and design robust and scalable software systems.
+            </p>
+        </div>
+      </section>
+      </div>
+      </section>
+
+      <section class="section about" id="about" aria-label="about" style="margin-top: -200px;">
+        <div class="container">
+          <figure class="about-banner">
+            <div class="img-holder" style="--width: 520; --height: 370">
+              <img src="./assets/images/banner01.png" width="520" height="370" loading="lazy" alt="about banner"
+                class="img-cover" />
+            </div>
+            <img src="./assets/images/about-shape-3.png" width="722" height="528" loading="lazy" alt=""
+              class="shape about-shape-3" />
+          </figure>
+
+          <div class="about-content">
+            <p class="section-subtitle">MathExplained</p>
+
+            <h2 class="h2 section-title">
+              Are you ready with<span class="span">MathExplained </span>
+            </h2>
+
+            <p class="section-text">
+              Are you ready to delve into the fascinating world of mathematics and its applications in computer science?
+              MathExplained.com is here to guide you through the fundamentals of discrete mathematics, linear algebra,
+              calculus, probability and statistics, numerical methods, boolean algebra and logic, algorithm analysis and
+              complexity theory, as well as graph theory, all with clear explanations and illustrative examples.
+            </p>
+
+            <img src="./assets/images/about-shape-4.svg" width="100" height="100" loading="lazy" alt=""
+              class="shape about-shape-4" />
+          </div>
+        </div>
+      </section>
+
+      <!-- 
+        - #COURSE
+      -->
+
+      <section class="section course" id="courses" aria-label="course" style="margin-top: -100px;">
+        <div class="container">
+          <p class="section-subtitle">MathExplained</p>
+
+          <h2 class="h2 section-title">
+            Discrete Mathematics</h2>
+
+          <p class="section-text">
+            Discrete mathematics lays the groundwork for understanding the fundamental concepts in computer science.
+            Let's explore the key topics in discrete mathematics that are essential for computing.
+          </p>
+
+          <ul class="about-list">
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Sets:</b> Sets are collections of distinct objects. For example, the set of all
+                prime
+                numbers less than 10 can be denoted as {2, 3, 5, 7}.</span>
+            </li>
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Logic:</b> Logic deals with the principles of reasoning. Boolean logic, based on
+                true/false values, is essential for programming and circuit design.</span>
+            </li>
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Functions:</b> Functions map inputs to outputs. In computer science, functions are
+                integral to algorithms and data structures.</span>
+            </li>
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Relations:</b> Relations describe the connections between elements in sets. Binary
+                relations, such as "less than" or "equal to," are commonly used in programming.</span>
+            </li>
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Graphs:</b> Graphs consist of nodes and edges, representing relationships between
+                objects. They are used to model networks, social connections, and data structures.</span>
+            </li>
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Combinatorics:</b> Combinatorics deals with counting and arranging objects. It is
+                crucial
+                for analyzing algorithms and designing efficient data structures.</span>
+            </li>
+
+          </ul>
+          <br>
+          <p class="section-text">Explore each topic with real-world examples and interactive exercises to solidify your
+            understanding.</p>
+
+        </div>
+      </section>
+
+      <section class="section course" id="courses" aria-label="course" style="margin-top: -180px;">
+        <div class="container">
+          <p class="section-subtitle">MathExplained</p>
+
+          <h2 class="h2 section-title">
+            Linear Algebra</h2>
+
+          <p class="section-text">
+            Linear algebra provides the mathematical framework for solving problems involving vectors, matrices, and
+            linear transformations. Let's cover the basics.
+          </p>
+
+          <ul class="about-list">
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Vectors: </b> Vectors represent quantities with both magnitude and direction. They
+                are used in computer graphics, physics simulations, and machine learning.</span>
+            </li>
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Matrices:</b> Matrices are rectangular arrays of numbers. They are essential for
+                representing transformations, solving systems of equations, and encoding data.</span>
+            </li>
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Linear Transformations:</b> Linear transformations map vectors to other vectors
+                while preserving certain properties such as linearity and scaling.</span>
+            </li>
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Eigenvalues and Eigenvectors:</b> Eigenvalues and eigenvectors are important
+                concepts in linear algebra, with applications in data analysis, image processing, and
+                cryptography.</span>
+            </li>
+          </ul>
+          <br>
+          <p class="section-text">Mastering linear algebra opens doors to a wide range of applications in computer
+            graphics, machine learning, and cryptography.</p>
+
+        </div>
+      </section>
+
+      <section class="section course" id="courses" aria-label="course" style="margin-top: -180px;">
+        <div class="container">
+          <p class="section-subtitle">MathExplained</p>
+
+          <h2 class="h2 section-title">
+            Calculus</h2>
+
+          <p class="section-text">
+            Calculus is the mathematical study of change and motion. Here's what you'll learn.
+          </p>
+
+          <ul class="about-list">
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Differential Calculus:</b> Differential calculus focuses on rates of change and
+                slopes of curves. It is used in optimization, physics simulations, and machine learning
+                algorithms.</span>
+            </li>
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Integral Calculus:</b> Integral calculus deals with accumulation and area under
+                curves. It plays a crucial role in numerical analysis, physics modeling, and signal processing.</span>
+            </li>
+          </ul>
+          <br>
+          <p class="section-text">Discover how calculus powers algorithms for optimization, numerical analysis, and
+            differential equations solving.</p>
+
+        </div>
+      </section>
+
+      <section class="section course" id="courses" aria-label="course" style="margin-top: -180px;">
+        <div class="container">
+          <p class="section-subtitle">MathExplained</p>
+
+          <h2 class="h2 section-title">
+            Probability and Statistics</h2>
+
+          <p class="section-text">
+            Probability and statistics enable us to make sense of uncertainty and variability in data. Here's what
+            you'll explore.
+          </p>
+
+          <ul class="about-list">
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Probability Theory:</b> Probability theory quantifies uncertainty and randomness. It
+                is essential for designing algorithms, analyzing data, and making predictions.</span>
+            </li>
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Statistical Distributions:</b> Statistical distributions describe the likelihood of
+                different outcomes in a dataset. They are used in hypothesis testing, regression analysis, and machine
+                learning.</span>
+            </li>
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Hypothesis Testing:</b> Hypothesis testing allows us to make inferences about
+                population parameters based on sample data. It is crucial for experimental design and statistical
+                analysis.</span>
+            </li>
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Regression Analysis:</b> Regression analysis explores the relationship between
+                variables in a dataset. It is used for prediction, modeling, and understanding correlations.</span>
+            </li>
+          </ul>
+          <br>
+          <p class="section-text">Regression analysis explores the relationship between variables in a dataset. It is
+            used for prediction, modeling, and understanding correlations.</p>
+
+        </div>
+      </section>
+
+      <section class="section course" id="courses" aria-label="course" style="margin-top: -180px;">
+        <div class="container">
+          <p class="section-subtitle">MathExplained</p>
+
+          <h2 class="h2 section-title">
+            Numerical Methods</h2>
+
+          <p class="section-text">
+            Numerical methods provide computational techniques for solving mathematical problems. Here's what you'll
+            discover.
+          </p>
+
+          <ul class="about-list">
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Numerical Integration:</b> Numerical integration approximates the integral of a
+                function. It is used in physics simulations, financial modeling, and engineering calculations.</span>
+            </li>
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Root Finding:</b> Root finding algorithms locate the roots of equations. They are
+                essential for solving nonlinear equations and optimization problems.</span>
+            </li>
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Optimization Algorithms:</b> Optimization algorithms find the maximum or minimum of
+                a function. They are used in machine learning, engineering design, and operations research.</span>
+            </li>
+          </ul>
+          <br>
+          <p class="section-text">Learn how numerical methods bridge the gap between mathematical theory and
+            computational practice.</p>
+
+        </div>
+      </section>
+
+      <section class="section course" id="courses" aria-label="course" style="margin-top: -180px;">
+        <div class="container">
+          <p class="section-subtitle">MathExplained</p>
+
+          <h2 class="h2 section-title">
+            Boolean Algebra and Logic</h2>
+
+          <p class="section-text">
+            Boolean algebra and logic form the foundation of digital circuits and computer programming. Here's what
+            you'll explore.
+          </p>
+
+          <ul class="about-list">
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Boolean Algebra:</b> Boolean algebra deals with true/false values and logical
+                operations such as AND, OR, and NOT. It is fundamental for designing digital circuits and programming
+                logic.</span>
+            </li>
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Logic Gates:</b> Logic gates are the building blocks of digital circuits. They
+                perform Boolean operations on input signals to produce output signals.</span>
+            </li>
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Truth Tables:</b> Truth tables provide a systematic way to represent the behavior of
+                logic gates and Boolean expressions.</span>
+            </li>
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Boolean Expressions:</b> Boolean expressions combine variables and logical operators
+                to represent complex conditions and decision-making processes.</span>
+            </li>
+          </ul>
+          <br>
+          <p class="section-text">Discover how Boolean algebra and logic drive innovations in digital electronics and
+            algorithm design.</p>
+
+        </div>
+      </section>
+
+      <section class="section course" id="courses" aria-label="course" style="margin-top: -180px;">
+        <div class="container">
+          <p class="section-subtitle">MathExplained</p>
+
+          <h2 class="h2 section-title">
+            Algorithm Analysis and Complexity Theory</h2>
+
+          <p class="section-text">
+            Algorithm analysis and complexity theory help us understand the efficiency and scalability of algorithms.
+            Here's what you'll learn.
+          </p>
+
+          <ul class="about-list">
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Time and Space Complexity:</b> Time complexity measures the computational time
+                required by an algorithm, while space complexity measures the memory space required. They are crucial
+                for evaluating algorithm performance.</span>
+            </li>
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Big-O Notation:</b> Big-O notation provides a standardized way to express the upper
+                bound of algorithmic complexity. It simplifies the comparison of different algorithms and their
+                scalability.</span>
+            </li>
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Complexity Classes:</b> Complexity classes classify problems based on their
+                computational difficulty. They help us understand the inherent limits of efficient computation.</span>
+            </li>
+          </ul>
+          <br>
+          <p class="section-text">Gain insights into algorithm efficiency and scalability with rigorous analysis and
+            practical examples.</p>
+
+        </div>
+      </section>
+
+      <section class="section course" id="courses" aria-label="course" style="margin-top: -180px;">
+        <div class="container">
+          <p class="section-subtitle">MathExplained</p>
+
+          <h2 class="h2 section-title">
+            Graph Theory</h2>
+
+          <p class="section-text">
+            Graph theory studies the properties and applications of graphs, which represent relationships between
+            objects. Here's what you'll discover.
+          </p>
+
+          <ul class="about-list">
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Graphs:</b> Graphs consist of nodes (vertices) and edges (links). They are used to
+                model networks, relationships, and data structures.</span>
+            </li>
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Trees:</b> Trees are a special type of graph with no cycles. They are used in
+                hierarchical data structures, search algorithms, and computer networking.</span>
+            </li>
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Paths and Cycles:</b> Paths and cycles describe sequences of edges in a graph. They
+                are essential for traversal algorithms, routing protocols, and cycle detection.</span>
+            </li>
+
+            <li class="about-item">
+              <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
+
+              <span class="span"><b>Applications:</b> Graph theory has applications in network analysis, social
+                networks, recommendation systems, and computer algorithms.</span>
+            </li>
+          </ul>
+          <br>
+          <p class="section-text">Explore the rich landscape of graph theory and its diverse applications in computer
+            science.</p>
+
+        </div>
+      </section>
+
+
+
+
+    </article>
+  </main>
+
+  <!-- 
+    - #FOOTER
+  -->
+
+  <footer id="footer" class="footer" style="background-image: url('./assets/images/footer-bg.png')">
+    <div class="footer-top section">
+      <div class="container grid-list">
+        <div class="footer-brand">
+          <a href="./index.html" class="logo">
+            <img src="./assets/images/logoWhite.png" width="260" alt="MathExplained" />
+          </a>
+
+          <p class="footer-brand-text">
+            Discover the synergy between mathematics and computing with our interactive platform.
+          </p>
+
+          <div class="wrapper">
+            <span class="span">Email:</span>
+
+            <a href="mailto:info@MathExplained.com" class="footer-link">info@mathexplained.com</a>
+          </div>
+        </div>
+
+        <div class="footer-list">
+         
+        </div>
+
+        <div class="footer-list">
+         
+        </div>
+
+        <div class="footer-list">
+          <p class="footer-list-title">Contacts</p>
+
+          <p class="footer-list-text">
+            Enter your email address to register to our newsletter
+            subscription
+          </p>
+
+          <form action="" class="newsletter-form">
+            <input type="email" name="email_address" placeholder="Your email" required class="input-field" />
+
+            <button type="submit" class="btn has-before">
+              <span class="span">Subscribe</span>
+
+              <ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon>
+            </button>
+          </form>
+
+          <ul class="social-list">
+            <li>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-facebook"></ion-icon>
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-linkedin"></ion-icon>
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-instagram"></ion-icon>
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-twitter"></ion-icon>
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-youtube"></ion-icon>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container">
+        <p class="copyright">
+          Copyright 2024 All Rights Reserved by
+          <a href="#" class="copyright-link">MathExplained</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 
+    - #BACK TO TOP
+  -->
+
+  <a href="#top" class="back-top-btn" aria-label="back top top" data-back-top-btn>
+    <ion-icon name="chevron-up" aria-hidden="true"></ion-icon>
+  </a>
+
+  <!-- 
+    - custom js link
+  -->
+  <script src="./assets/js/script.js" defer></script>
+
+  <!-- 
+    - ionicon link
+  -->
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+
+</html>

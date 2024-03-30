@@ -1,714 +1,596 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- 
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- 
     - primary meta tag
   -->
-    <title>ComputeMath Hub - Computing with Math, Engaged</title>
-    <meta
-      name="title"
-      content="ComputeMath Hub - Computing with Math, Engaged"
-    />
-    <meta
-      name="description"
-      content="Discover the synergy between mathematics and computing with our interactive platform."
-    />
+  <title>MathExplained - Computing with Math, Engaged</title>
+  <meta name="title" content="MathExplained - Computing with Math, Engaged" />
+  <meta name="description"
+    content="Discover the synergy between mathematics and computing with our interactive platform." />
 
-    <!-- 
+  <!-- 
     - favicon
   -->
-    <link
-      rel="shortcut icon"
-      href="./assets/images/favicon.png"
-      type="image/svg+xml"
-    />
+  <link rel="shortcut icon" href="./assets/images/favicon.png" type="image/svg+xml" />
 
-    <!-- 
+  <!-- 
     - custom css link
   -->
-    <link rel="stylesheet" href="./assets/css/style.css" />
+  <link rel="stylesheet" href="./assets/css/style.css" />
 
-    <!-- 
+  <!-- 
     - google font link
   -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600;700;800&family=Poppins:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600;700;800&family=Poppins:wght@400;500&display=swap"
+    rel="stylesheet" />
 
-    <!-- 
+  <!-- 
     - preload images
   -->
-    <link rel="preload" as="image" href="./assets/images/hero-bg.svg" />
-    <link rel="preload" as="image" href="./assets/images/hero-banner-1.jpg" />
-    <link rel="preload" as="image" href="./assets/images/hero-banner-2.jpg" />
-    <link rel="preload" as="image" href="./assets/images/hero-shape-1.svg" />
-    <link rel="preload" as="image" href="./assets/images/hero-shape-2.png" />
-  </head>
+  <link rel="preload" as="image" href="./assets/images/hero-bg.svg" />
+  <link rel="preload" as="image" href="./assets/images/hero-banner-1.jpg" />
+  <link rel="preload" as="image" href="./assets/images/hero-banner-2.jpg" />
+  <link rel="preload" as="image" href="./assets/images/hero-shape-1.svg" />
+  <link rel="preload" as="image" href="./assets/images/hero-shape-2.png" />
+</head>
 
-  <body id="top">
-    <!-- 
+<body id="top">
+  <!-- 
     - #HEADER
   -->
 
-    <header class="header" data-header>
-      <div class="container">
-        <a href="#" class="logo">
-          <img
-            src="./assets/images/logo.png"
-            width="260"
-            alt="ComputeMath Hub logo"
-          />
-        </a>
+  <header class="header" data-header>
+    <div class="container">
+      <a href="./index.html" class="logo">
+        <img src="./assets/images/logoBlack.png" width="260" alt="MathExplained logo" />
+      </a>
 
-        <nav class="navbar" data-navbar>
-          <div class="wrapper">
-            <a href="#" class="logo">
-              <img
-                src="./assets/images/logo.svg"
-                width="162"
-                height="50"
-                alt="ComputeMath Hub logo"
-              />
-            </a>
-
-            <button
-              class="nav-close-btn"
-              aria-label="close menu"
-              data-nav-toggler
-            >
-              <ion-icon name="close-outline" aria-hidden="true"></ion-icon>
-            </button>
-          </div>
-
-          <ul class="navbar-list">
-            <li class="navbar-item">
-              <a href="#home" class="navbar-link" data-nav-link>Home</a>
-            </li>
-
-            <li class="navbar-item">
-              <a href="#about" class="navbar-link" data-nav-link>About</a>
-            </li>
-
-            <li class="navbar-item">
-              <a href="#blog" class="navbar-link" data-nav-link>Blog</a>
-            </li>
-
-            <li class="navbar-item">
-              <a href="#footer" class="navbar-link" data-nav-link>Contact</a>
-            </li>
-          </ul>
-        </nav>
-
-        <div class="header-actions">
-          <a href="#" class="btn has-before">
-            <span class="span">Go to Blog</span>
-
-            <ion-icon
-              name="arrow-forward-outline"
-              aria-hidden="true"
-            ></ion-icon>
+      <nav class="navbar" data-navbar>
+        <div class="wrapper">
+          <a href="./index.html" class="logo">
+            <img src="./assets/images/logoBlack.png" width="162" height="50" alt="MathExplained logo" />
           </a>
 
-          <button
-            class="header-action-btn"
-            aria-label="open menu"
-            data-nav-toggler
-          >
-            <ion-icon name="menu-outline" aria-hidden="true"></ion-icon>
+          <button class="nav-close-btn" aria-label="close menu" data-nav-toggler>
+            <ion-icon name="close-outline" aria-hidden="true"></ion-icon>
           </button>
         </div>
 
-        <div class="overlay" data-nav-toggler data-overlay></div>
-      </div>
-    </header>
+        <ul class="navbar-list">
+          <li class="navbar-item">
+            <a href="./index.html" class="navbar-link" data-nav-link>Home</a>
+          </li>
 
-    <main>
-      <article>
-        <!-- 
+          <li class="navbar-item">
+            <a href="./blog.html" class="navbar-link" data-nav-link>Blog</a>
+          </li>
+
+          <li class="navbar-item">
+            <a href="#about" class="navbar-link" data-nav-link>About</a>
+          </li>
+
+          <li class="navbar-item">
+            <a href="#footer" class="navbar-link" data-nav-link>Contact</a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <a href="./blog.html" class="btn has-before">
+          <span class="span">Go to Blog</span>
+
+          <ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon>
+        </a>
+
+        <button class="header-action-btn" aria-label="open menu" data-nav-toggler>
+          <ion-icon name="menu-outline" aria-hidden="true"></ion-icon>
+        </button>
+      </div>
+
+      <div class="overlay" data-nav-toggler data-overlay></div>
+    </div>
+  </header>
+
+  <main>
+    <article>
+      <!-- 
         - #HERO
       -->
 
-        <section
-          class="section hero has-bg-image"
-          id="home"
-          aria-label="home"
-          style="background-image: url('./assets/images/hero-bg.svg')"
-        >
-          <div class="container">
-            <div class="hero-content">
-              <h1 class="h1 section-title">
-                Empower Your <span class="span">Math</span> Skills, Elevate Your
-                Code Craft
-              </h1>
+      <section class="section hero has-bg-image" id="home" aria-label="home"
+        style="background-image: url('./assets/images/hero-bg.svg')">
+        <div class="container">
+          <div class="hero-content">
+            <h1 class="h1 section-title">
+              Empower Your <span class="span">Math</span> Skills, Elevate Your
+              Code Craft
+            </h1>
 
-              <p class="hero-text">
-                Welcome to ComputeMath Hub: Where Math and Code Collide. Dive
-                into interactive lessons, explore hands-on activities, and
-                master math for computing with confidence.
-              </p>
+            <p class="hero-text">
+              Welcome to MathExplained. Where Math and Code Collide. Dive
+              into interactive lessons, explore hands-on activities, and
+              master math for computing with confidence.
+            </p>
 
-              <a href="#" class="btn has-before">
-                <span class="span">Go to Blog</span>
+            <a href="./blog.html" class="btn has-before">
+              <span class="span">Go to Blog</span>
 
-                <ion-icon
-                  name="arrow-forward-outline"
-                  aria-hidden="true"
-                ></ion-icon>
-              </a>
+              <ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon>
+            </a>
+          </div>
+
+          <figure class="hero-banner">
+            <div class="img-holder one" style="--width: 270; --height: 300">
+              <img src="./assets/images/hero-banner-1.png" width="270" height="300" alt="hero banner"
+                class="img-cover" />
             </div>
 
-            <figure class="hero-banner">
-              <div class="img-holder one" style="--width: 270; --height: 300">
-                <img
-                  src="./assets/images/hero-banner-1.png"
-                  width="270"
-                  height="300"
-                  alt="hero banner"
-                  class="img-cover"
-                />
-              </div>
+            <div class="img-holder two" style="--width: 240; --height: 370">
+              <img src="./assets/images/hero-banner-2.png" width="240" height="370" alt="hero banner"
+                class="img-cover" />
+            </div>
 
-              <div class="img-holder two" style="--width: 240; --height: 370">
-                <img
-                  src="./assets/images/hero-banner-2.png"
-                  width="240"
-                  height="370"
-                  alt="hero banner"
-                  class="img-cover"
-                />
-              </div>
 
-            
 
-              <img
-                src="./assets/images/hero-shape-2.png"
-                width="622"
-                height="551"
-                alt=""
-                class="shape hero-shape-2"
-              />
-            </figure>
-          </div>
-        </section>
+            <img src="./assets/images/hero-shape-2.png" width="622" height="551" alt="" class="shape hero-shape-2" />
+          </figure>
+        </div>
+      </section>
 
-        <!-- 
+      <!-- 
         - #CATEGORY
       -->
 
-        <section class="section category" aria-label="category">
-          <div class="container">
-            <p class="section-subtitle">Key Topics</p>
+      <section class="section category" aria-label="category">
+        <div class="container">
+          <p class="section-subtitle">Key Topics</p>
+
+          <h2 class="h2 section-title">
+            MathExplained covers a wide range of mathematical topics
+            relevant to computer science
+          </h2>
+
+          <p class="section-text">
+            MathExplained is your gateway to a diverse array of mathematical
+            topics vital for computer science.
+          </p>
+
+          <ul class="grid-list">
+            <li>
+              <div class="category-card" style="--color: 170, 75%, 41%">
+                <div class="card-icon">
+                  <img src="./assets/images/category-1.svg" width="40" height="40" loading="lazy"
+                    alt="Discrete Mathematics" class="img" />
+                </div>
+
+                <h3 class="h3">
+                  <a href="#" class="card-title">Discrete Mathematics</a>
+                </h3>
+
+                <p class="card-text">
+                  Explore the building blocks of computer science, including
+                  sets, logic, functions, relations, graphs, and
+                  combinatorics.
+                </p>
+              </div>
+            </li>
+
+            <li>
+              <div class="category-card" style="--color: 351, 83%, 61%">
+                <div class="card-icon">
+                  <img src="./assets/images/category-2.svg" width="40" height="40" loading="lazy" alt="Linear Algebra"
+                    class="img" />
+                </div>
+
+                <h3 class="h3">
+                  <a href="#" class="card-title">Linear Algebra</a>
+                </h3>
+
+                <p class="card-text">
+                  Master the basics of vectors, matrices, linear
+                  transformations, eigenvalues, and eigenvectors, essential
+                  for applications in computer graphics, machine learning, and
+                  cryptography.
+                </p>
+              </div>
+            </li>
+
+            <li>
+              <div class="category-card" style="--color: 229, 75%, 58%">
+                <div class="card-icon">
+                  <img src="./assets/images/category-3.svg" width="40" height="40" loading="lazy" alt="Calculus"
+                    class="img" />
+                </div>
+
+                <h3 class="h3">
+                  <a href="#" class="card-title">Calculus</a>
+                </h3>
+
+                <p class="card-text">
+                  Dive into the principles of differential and integral
+                  calculus, used in optimization, numerical analysis, and
+                  algorithms for solving differential equations.
+                </p>
+              </div>
+            </li>
+
+            <li>
+              <div class="category-card" style="--color: 42, 94%, 55%">
+                <div class="card-icon">
+                  <img src="./assets/images/category-4.svg" width="40" height="40" loading="lazy"
+                    alt="Probability and Statistics" class="img" />
+                </div>
+
+                <h3 class="h3">
+                  <a href="#" class="card-title">Probability and Statistics</a>
+                </h3>
+
+                <p class="card-text">
+                  Understand the fundamentals of probability theory,
+                  statistical distributions, hypothesis testing, and
+                  regression analysis, crucial for data analysis, machine
+                  learning, and experimental design.
+                </p>
+              </div>
+            </li>
+
+            <li>
+              <div class="category-card" style="--color: 42, 94%, 55%">
+                <div class="card-icon">
+                  <img src="./assets/images/category-4.svg" width="40" height="40" loading="lazy"
+                    alt="Numerical Methods" class="img" />
+                </div>
+
+                <h3 class="h3">
+                  <a href="#" class="card-title">Numerical Methods</a>
+                </h3>
+
+                <p class="card-text">
+                  Learn techniques for approximating solutions to mathematical
+                  problems using computational methods, such as numerical
+                  integration, root finding, and optimization algorithms.
+                </p>
+              </div>
+            </li>
+
+            <li>
+              <div class="category-card" style="--color: 229, 75%, 58%">
+                <div class="card-icon">
+                  <img src="./assets/images/category-3.svg" width="40" height="40" loading="lazy"
+                    alt="Boolean Algebra and Logic" class="img" />
+                </div>
+
+                <h3 class="h3">
+                  <a href="#" class="card-title">Boolean Algebra and Logic</a>
+                </h3>
+
+                <p class="card-text">
+                  Explore the principles of Boolean algebra, logic gates,
+                  truth tables, and Boolean expressions, fundamental for
+                  digital logic design and algorithm analysis.
+                </p>
+              </div>
+            </li>
+
+            <li>
+              <div class="category-card" style="--color: 351, 83%, 61%">
+                <div class="card-icon">
+                  <img src="./assets/images/category-2.svg" width="40" height="40" loading="lazy"
+                    alt="Algorithm Analysis and Complexity Theory" class="img" />
+                </div>
+
+                <h3 class="h3">
+                  <a href="#" class="card-title">Algorithm Analysis and Complexity Theory</a>
+                </h3>
+
+                <p class="card-text">
+                  Gain insights into the analysis of algorithms, including
+                  time and space complexity, big-O notation, and complexity
+                  classes, essential for understanding algorithm efficiency
+                  and scalability.
+                </p>
+              </div>
+            </li>
+            <li>
+              <div class="category-card" style="--color: 170, 75%, 41%">
+                <div class="card-icon">
+                  <img src="./assets/images/category-1.svg" width="40" height="40" loading="lazy" alt="Graph Theory"
+                    class="img" />
+                </div>
+
+                <h3 class="h3">
+                  <a href="#" class="card-title">Graph Theory</a>
+                </h3>
+
+                <p class="card-text">
+                  Discover the concepts of graphs, trees, paths, and cycles,
+                  with applications in network analysis, data structures, and
+                  algorithm design.
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section about" id="about" aria-label="about">
+        <div class="container">
+          <figure class="about-banner">
+            <div class="img-holder" style="--width: 520; --height: 370">
+              <img src="./assets/images/about-banner.png" width="520" height="370" loading="lazy" alt="about banner"
+                class="img-cover" />
+            </div>
+            <img src="./assets/images/about-shape-3.png" width="722" height="528" loading="lazy" alt=""
+              class="shape about-shape-3" />
+          </figure>
+
+          <div class="about-content">
+            <p class="section-subtitle">About Us</p>
 
             <h2 class="h2 section-title">
-              ComputeMath Hub covers a wide range of mathematical topics
-              relevant to computer science
+              About <span class="span">MathExplained</span>
             </h2>
 
             <p class="section-text">
-              ComputeMath Hub is your gateway to a diverse array of mathematical
-              topics vital for computer science.
+              At MathExplained, we're passionate about bridging the gap
+              between mathematics and computing. Our mission is to empower
+              learners with the essential mathematical knowledge needed to
+              excel in the world of computer science and computational
+              problem-solving. Whether you're a beginner taking your first
+              steps into the realm of coding or an experienced professional
+              looking to deepen your understanding of mathematical concepts,
+              MathExplained is here to guide you on your learning journey.
             </p>
 
+            <img src="./assets/images/about-shape-4.svg" width="100" height="100" loading="lazy" alt=""
+              class="shape about-shape-4" />
+          </div>
+        </div>
+      </section>
+
+      <section class="section course" id="courses" aria-label="course" style="margin-top: -100px;">
+        <div class="container">
+          <p class="section-subtitle">Features</p>
+
+          <h2 class="h2 section-title">
+            Features of MathExplained</h2>
+
+          <div class="container">
             <ul class="grid-list">
               <li>
-                <div class="category-card" style="--color: 170, 75%, 41%">
-                  <div class="card-icon">
-                    <img
-                      src="./assets/images/category-1.svg"
-                      width="40"
-                      height="40"
-                      loading="lazy"
-                      alt="Discrete Mathematics"
-                      class="img"
-                    />
-                  </div>
-
-                  <h3 class="h3">
-                    <a href="#" class="card-title">Discrete Mathematics</a>
-                  </h3>
+                <div class="stats-card" style="--color: 170, 75%, 41%">
+                  <h3 class="card-title">Interactive Learning Experience</h3>
 
                   <p class="card-text">
-                    Explore the building blocks of computer science, including
-                    sets, logic, functions, relations, graphs, and
-                    combinatorics.
+                    Engage dynamically with mathematical concepts through our
+                    interactive platform. Explore visually-rich lessons and
+                    simulations that facilitate deeper comprehension. Our
+                    user-friendly interface ensures an intuitive and enjoyable
+                    learning journey.
                   </p>
                 </div>
               </li>
 
               <li>
-                <div class="category-card" style="--color: 351, 83%, 61%">
-                  <div class="card-icon">
-                    <img
-                      src="./assets/images/category-2.svg"
-                      width="40"
-                      height="40"
-                      loading="lazy"
-                      alt="Linear Algebra"
-                      class="img"
-                    />
-                  </div>
-
-                  <h3 class="h3">
-                    <a href="#" class="card-title">Linear Algebra</a>
-                  </h3>
+                <div class="stats-card" style="--color: 351, 83%, 61%">
+                  <h3 class="card-title">Hands-On Activities</h3>
 
                   <p class="card-text">
-                    Master the basics of vectors, matrices, linear
-                    transformations, eigenvalues, and eigenvectors, essential
-                    for applications in computer graphics, machine learning, and
-                    cryptography.
+                    Immerse yourself in practical exercises and
+                    problem-solving tasks tailored to reinforce your
+                    understanding. Apply mathematical principles to real-world
+                    scenarios, boosting both your skills and confidence. Our
+                    diverse activities cater to various learning styles and
+                    proficiency levels.
                   </p>
                 </div>
               </li>
 
               <li>
-                <div class="category-card" style="--color: 229, 75%, 58%">
-                  <div class="card-icon">
-                    <img
-                      src="./assets/images/category-3.svg"
-                      width="40"
-                      height="40"
-                      loading="lazy"
-                      alt="Calculus"
-                      class="img"
-                    />
-                  </div>
-
-                  <h3 class="h3">
-                    <a href="#" class="card-title">Calculus</a>
-                  </h3>
+                <div class="stats-card" style="--color: 260, 100%, 67%">
+                  <h3 class="card-title">Interactive Lessons</h3>
 
                   <p class="card-text">
-                    Dive into the principles of differential and integral
-                    calculus, used in optimization, numerical analysis, and
-                    algorithms for solving differential equations.
-                  </p>
-                </div>
-              </li>
-
-              <li>
-                <div class="category-card" style="--color: 42, 94%, 55%">
-                  <div class="card-icon">
-                    <img
-                      src="./assets/images/category-4.svg"
-                      width="40"
-                      height="40"
-                      loading="lazy"
-                      alt="Probability and Statistics"
-                      class="img"
-                    />
-                  </div>
-
-                  <h3 class="h3">
-                    <a href="#" class="card-title"
-                      >Probability and Statistics</a
-                    >
-                  </h3>
-
-                  <p class="card-text">
-                    Understand the fundamentals of probability theory,
-                    statistical distributions, hypothesis testing, and
-                    regression analysis, crucial for data analysis, machine
-                    learning, and experimental design.
-                  </p>
-                </div>
-              </li>
-
-              <li>
-                <div class="category-card" style="--color: 42, 94%, 55%">
-                  <div class="card-icon">
-                    <img
-                      src="./assets/images/category-4.svg"
-                      width="40"
-                      height="40"
-                      loading="lazy"
-                      alt="Numerical Methods"
-                      class="img"
-                    />
-                  </div>
-
-                  <h3 class="h3">
-                    <a href="#" class="card-title">Numerical Methods</a>
-                  </h3>
-
-                  <p class="card-text">
-                    Learn techniques for approximating solutions to mathematical
-                    problems using computational methods, such as numerical
-                    integration, root finding, and optimization algorithms.
-                  </p>
-                </div>
-              </li>
-
-              <li>
-                <div class="category-card" style="--color: 229, 75%, 58%">
-                  <div class="card-icon">
-                    <img
-                      src="./assets/images/category-3.svg"
-                      width="40"
-                      height="40"
-                      loading="lazy"
-                      alt="Boolean Algebra and Logic"
-                      class="img"
-                    />
-                  </div>
-
-                  <h3 class="h3">
-                    <a href="#" class="card-title">Boolean Algebra and Logic</a>
-                  </h3>
-
-                  <p class="card-text">
-                    Explore the principles of Boolean algebra, logic gates,
-                    truth tables, and Boolean expressions, fundamental for
-                    digital logic design and algorithm analysis.
-                  </p>
-                </div>
-              </li>
-
-              <li>
-                <div class="category-card" style="--color: 351, 83%, 61%">
-                  <div class="card-icon">
-                    <img
-                      src="./assets/images/category-2.svg"
-                      width="40"
-                      height="40"
-                      loading="lazy"
-                      alt="Algorithm Analysis and Complexity Theory"
-                      class="img"
-                    />
-                  </div>
-
-                  <h3 class="h3">
-                    <a href="#" class="card-title"
-                      >Algorithm Analysis and Complexity Theory</a
-                    >
-                  </h3>
-
-                  <p class="card-text">
-                    Gain insights into the analysis of algorithms, including
-                    time and space complexity, big-O notation, and complexity
-                    classes, essential for understanding algorithm efficiency
-                    and scalability.
-                  </p>
-                </div>
-              </li>
-              <li>
-                <div class="category-card" style="--color: 170, 75%, 41%">
-                  <div class="card-icon">
-                    <img
-                      src="./assets/images/category-1.svg"
-                      width="40"
-                      height="40"
-                      loading="lazy"
-                      alt="Graph Theory"
-                      class="img"
-                    />
-                  </div>
-
-                  <h3 class="h3">
-                    <a href="#" class="card-title">Graph Theory</a>
-                  </h3>
-
-                  <p class="card-text">
-                    Discover the concepts of graphs, trees, paths, and cycles,
-                    with applications in network analysis, data structures, and
-                    algorithm design.
+                    Participate actively in our interactive lessons, where you
+                    can engage directly with mathematical concepts. Customize
+                    your learning experience with interactive quizzes,
+                    exercises, and demos. Receive instant feedback and
+                    guidance to monitor your progress and refine your skills.
                   </p>
                 </div>
               </li>
             </ul>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <!-- 
-        - #ABOUT
-      -->
-
-        <section class="section about" id="about" aria-label="about">
-          <div class="container">
-            <figure class="about-banner">
-              <div class="img-holder" style="--width: 520; --height: 370">
-                <img
-                  src="./assets/images/about-banner.png"
-                  width="520"
-                  height="370"
-                  loading="lazy"
-                  alt="about banner"
-                  class="img-cover"
-                />
-              </div>
-              <img
-                src="./assets/images/about-shape-3.png"
-                width="722"
-                height="528"
-                loading="lazy"
-                alt=""
-                class="shape about-shape-3"
-              />
-            </figure>
-
-            <div class="about-content">
-              <p class="section-subtitle">About Us</p>
-
-              <h2 class="h2 section-title">
-                About <span class="span">ComputeMath Hub</span>
-              </h2>
-
-              <p class="section-text">
-                At ComputeMath Hub, we're passionate about bridging the gap
-                between mathematics and computing. Our mission is to empower
-                learners with the essential mathematical knowledge needed to
-                excel in the world of computer science and computational
-                problem-solving. Whether you're a beginner taking your first
-                steps into the realm of coding or an experienced professional
-                looking to deepen your understanding of mathematical concepts,
-                ComputeMath Hub is here to guide you on your learning journey.
-              </p>
-
-              <img
-                src="./assets/images/about-shape-4.svg"
-                width="100"
-                height="100"
-                loading="lazy"
-                alt=""
-                class="shape about-shape-4"
-              />
+      <section class="section about" id="about" aria-label="about" style="margin-top: -50px;">
+        <div class="container">
+          <figure class="about-banner">
+            <div class="img-holder" style="--width: 520; --height: 370">
+              <img src="./assets/images/banner02.png" width="520" height="370" loading="lazy" alt="about banner"
+                class="img-cover" />
             </div>
-          </div>
-        </section>
+            <img src="./assets/images/about-shape-3.png" width="722" height="528" loading="lazy" alt=""
+              class="shape about-shape-3" />
+          </figure>
 
-        <!-- 
-        - #COURSE
-      -->
-
-        <section class="section course" id="courses" aria-label="course">
-          <div class="container">
-            <p class="section-subtitle">Features</p>
+          <div class="about-content">
+            <p class="section-subtitle">MathExplained</p>
 
             <h2 class="h2 section-title">
-              Features of ComputeMath Hub</h2>
+              Start Your Journey with <span class="span">MathExplained</span>
+            </h2>
 
-            <div class="container">
-              <ul class="grid-list">
-                <li>
-                  <div class="stats-card" style="--color: 170, 75%, 41%">
-                    <h3 class="card-title">Interactive Learning Experience</h3>
+            <p class="section-text">
+              Are you ready to embark on a journey of mathematical discovery? Dive into our interactive tutorials, solve
+              real-world problems, and unlock the potential of mathematics for computer science. Let's explore, learn,
+              and innovate together at <b>MathExplained.com!</b>
+            </p>
 
-                    <p class="card-text">
-                      Engage dynamically with mathematical concepts through our
-                      interactive platform. Explore visually-rich lessons and
-                      simulations that facilitate deeper comprehension. Our
-                      user-friendly interface ensures an intuitive and enjoyable
-                      learning journey.
-                    </p>
-                  </div>
-                </li>
+            <a href="./blog.html" class="btn">
+              <span class="span">Go to Blog</span>
+  
+              <ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon>
+            </a>
 
-                <li>
-                  <div class="stats-card" style="--color: 351, 83%, 61%">
-                    <h3 class="card-title">Hands-On Activities</h3>
-
-                    <p class="card-text">
-                      Immerse yourself in practical exercises and
-                      problem-solving tasks tailored to reinforce your
-                      understanding. Apply mathematical principles to real-world
-                      scenarios, boosting both your skills and confidence. Our
-                      diverse activities cater to various learning styles and
-                      proficiency levels.
-                    </p>
-                  </div>
-                </li>
-
-                <li>
-                  <div class="stats-card" style="--color: 260, 100%, 67%">
-                    <h3 class="card-title">Interactive Lessons</h3>
-
-                    <p class="card-text">
-                      Participate actively in our interactive lessons, where you
-                      can engage directly with mathematical concepts. Customize
-                      your learning experience with interactive quizzes,
-                      exercises, and demos. Receive instant feedback and
-                      guidance to monitor your progress and refine your skills.
-                    </p>
-                  </div>
-                </li>
-              </ul>
-            </div>
+            <img src="./assets/images/about-shape-4.svg" width="100" height="100" loading="lazy" alt=""
+              class="shape about-shape-4" />
           </div>
-        </section>
+        </div>
+      </section>
 
-      </br>
-      </br>
-      </br>
-      </article>
-    </main>
+      <section class="section course" id="courses" aria-label="course" style="margin-top: -180px;">
+        <div class="container">
+          <p class="section-subtitle"> </p>
 
-    <!-- 
+          <h2 class="h2 section-title">
+            Connect With Us</h2>
+
+          <p class="section-text">
+            Join our community forums, follow us on social media, and sign up for our newsletter to stay updated on new
+            content and special offers. We're here to support your learning journey every step of the way.
+          </p>
+      </section>
+
+      <section class="section course" id="courses" aria-label="course" style="margin-top: -180px;">
+        <div class="container">
+          <p class="section-subtitle"> </p>
+
+          <h2 class="h2 section-title">
+            Start Learning Today</h2>
+
+          <p class="section-text">
+            Begin your exploration of mathematics for computer science and open doors to endless possibilities in
+            technology, innovation, and problem-solving. Let's make math come alive at MathExplained.com!
+          </p>
+         
+      </section>
+
+    </article>
+  </main>
+
+  <!-- 
     - #FOOTER
   -->
 
-    <footer
-    id="footer"
-      class="footer"
-      style="background-image: url('./assets/images/footer-bg.png')"
-    >
-      <div class="footer-top section">
-        <div class="container grid-list">
-          <div class="footer-brand">
-            <a href="#" class="logo">
-              <img
-                src="./assets/images/logo-dark.png"
-                width="260"
-                alt="EduWeb logo"
-              />
-            </a>
+  <footer id="footer" class="footer" style="background-image: url('./assets/images/footer-bg.png')">
+    <div class="footer-top section">
+      <div class="container grid-list">
+        <div class="footer-brand">
+          <a href="./index.html" class="logo">
+            <img src="./assets/images/logoWhite.png" width="260" alt="MathExplained" />
+          </a>
 
-            <p class="footer-brand-text">
-              Discover the synergy between mathematics and computing with our interactive platform.
-            </p>
+          <p class="footer-brand-text">
+            Discover the synergy between mathematics and computing with our interactive platform.
+          </p>
 
-            <div class="wrapper">
-              <span class="span">Email:</span>
+          <div class="wrapper">
+            <span class="span">Email:</span>
 
-              <a href="mailto:info@computemathhub.com" class="footer-link"
-                >info@computemathhub.com</a
-              >
-            </div>
+            <a href="mailto:info@MathExplained.com" class="footer-link">info@mathexplained.com</a>
           </div>
- 
+        </div>
 
-          <ul class="footer-list">
+        <div class="footer-list">
+         
+        </div>
+
+        <div class="footer-list">
+         
+        </div>
+
+        <div class="footer-list">
+          <p class="footer-list-title">Contacts</p>
+
+          <p class="footer-list-text">
+            Enter your email address to register to our newsletter
+            subscription
+          </p>
+
+          <form action="" class="newsletter-form">
+            <input type="email" name="email_address" placeholder="Your email" required class="input-field" />
+
+            <button type="submit" class="btn has-before">
+              <span class="span">Subscribe</span>
+
+              <ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon>
+            </button>
+          </form>
+
+          <ul class="social-list">
             <li>
-              <p class="footer-list-title">Links</p>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-facebook"></ion-icon>
+              </a>
             </li>
 
             <li>
-              <a href="#" class="footer-link">Contact Us</a>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-linkedin"></ion-icon>
+              </a>
             </li>
 
             <li>
-              <a href="#" class="footer-link">Gallery</a>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-instagram"></ion-icon>
+              </a>
             </li>
 
             <li>
-              <a href="#" class="footer-link">News & Articles</a>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-twitter"></ion-icon>
+              </a>
             </li>
 
             <li>
-              <a href="#" class="footer-link">FAQ's</a>
-            </li>
-
-            <li>
-              <a href="#" class="footer-link">Coming Soon</a>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-youtube"></ion-icon>
+              </a>
             </li>
           </ul>
-
-          <div class="footer-list">
-            <p class="footer-list-title">Contacts</p>
-
-            <p class="footer-list-text">
-              Enter your email address to register to our newsletter
-              subscription
-            </p>
-
-            <form action="" class="newsletter-form">
-              <input
-                type="email"
-                name="email_address"
-                placeholder="Your email"
-                required
-                class="input-field"
-              />
-
-              <button type="submit" class="btn has-before">
-                <span class="span">Subscribe</span>
-
-                <ion-icon
-                  name="arrow-forward-outline"
-                  aria-hidden="true"
-                ></ion-icon>
-              </button>
-            </form>
-
-            <ul class="social-list">
-              <li>
-                <a href="#" class="social-link">
-                  <ion-icon name="logo-facebook"></ion-icon>
-                </a>
-              </li>
-
-              <li>
-                <a href="#" class="social-link">
-                  <ion-icon name="logo-linkedin"></ion-icon>
-                </a>
-              </li>
-
-              <li>
-                <a href="#" class="social-link">
-                  <ion-icon name="logo-instagram"></ion-icon>
-                </a>
-              </li>
-
-              <li>
-                <a href="#" class="social-link">
-                  <ion-icon name="logo-twitter"></ion-icon>
-                </a>
-              </li>
-
-              <li>
-                <a href="#" class="social-link">
-                  <ion-icon name="logo-youtube"></ion-icon>
-                </a>
-              </li>
-            </ul>
-          </div>
         </div>
       </div>
+    </div>
 
-      <div class="footer-bottom">
-        <div class="container">
-          <p class="copyright">
-            Copyright 2024 All Rights Reserved by
-            <a href="#" class="copyright-link">ComputeMath Hub</a>
-          </p>
-        </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p class="copyright">
+          Copyright 2024 All Rights Reserved by
+          <a href="#" class="copyright-link">MathExplained</a>
+        </p>
       </div>
-    </footer>
+    </div>
+  </footer>
 
-    <!-- 
+  <!-- 
     - #BACK TO TOP
   -->
 
-    <a
-      href="#top"
-      class="back-top-btn"
-      aria-label="back top top"
-      data-back-top-btn
-    >
-      <ion-icon name="chevron-up" aria-hidden="true"></ion-icon>
-    </a>
+  <a href="#top" class="back-top-btn" aria-label="back top top" data-back-top-btn>
+    <ion-icon name="chevron-up" aria-hidden="true"></ion-icon>
+  </a>
 
-    <!-- 
+  <!-- 
     - custom js link
   -->
-    <script src="./assets/js/script.js" defer></script>
+  <script src="./assets/js/script.js" defer></script>
 
-    <!-- 
+  <!-- 
     - ionicon link
   -->
-    <script
-      type="module"
-      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
-    ></script>
-    <script
-      nomodule
-      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
-    ></script>
-  </body>
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+
 </html>
