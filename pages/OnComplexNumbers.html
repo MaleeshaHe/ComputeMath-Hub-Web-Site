@@ -1,0 +1,277 @@
+
+<!-- saved from url=(0073)http://www.personal.reading.ac.uk/~shsmchlr/jsmaths/OnComplexNumbers.html -->
+<html style="--canvbgcol: #e9eae8; --canvhcol: #a00000; --canvtcol: #101010; --h1col: #bf0000; --h2col: #50535a; --ppcol: #0f0f0f; --ibgcol: #fffdf0; --ipcol: #0f0f0f; --butcol: #202020; --butbgcol: #d0d0d0; --linknorm: #000036; --linkvisited: #36003b; --linkactive: #360000;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<link rel="stylesheet" type="text/css" href="./OnComplexNumbers_files/style.css">
+<script type="text/javascript" src="./OnComplexNumbers_files/forcolours.js.download"></script>
+
+<script type="text/javascript" src="./OnComplexNumbers_files/complexLib.js.download"></script>
+<script type="text/javascript" src="./OnComplexNumbers_files/mytimer.js.download"></script>
+
+
+
+<script language="JavaScript">
+
+
+<!-- Begin
+
+// Richard Mitchell's web page for demonstrating complex numbers
+// 23/2/23
+
+var cnA, cnB, cnR		// colplex numbers A, B and result R
+var isR = false;		// is there a result
+var opDone;				// which operator done + - * /
+
+// just prints the given message
+function reportString (rstr) {
+	document.getElementById("mess").innerHTML=rstr
+}
+
+// puts the points in data to the canvas ctx and then draws or fills the shape
+function putPoints (ctx, data, isFill) {			
+	ctx.beginPath()										// start path top be drawn
+	for (ct=0; ct<data.length; ct+=2) {					// for each x,y pair
+		if (ct==0) ctx.moveTo(data[ct], data[ct+1])		// position first pair
+		else ctx.lineTo(data[ct], data[ct+1])			// join to subsequent pair
+	}
+	if (isFill) ctx.fill()								// then either fill or draw(stroke) shape
+	else ctx.stroke()
+}
+
+		// draw string in bstr into canvas ctx, centred ay position x,y
+function drawText (ctx, bstr, x, y) {
+	ctx.textAlign = "center"				// set up alignmengt of string
+	ctx.textBaseline="middle"
+	ctx.fillText(bstr, x, y)				// and draw at x,y
+}	
+
+	// show complex number xn, preceded by message, at x = 25% of canvas in cartesian form or 75% in polar form
+function drawcn(ctx, mess, cn, x, y) {
+	drawText(ctx, mess + cn.toStringCart(), x, y);
+	drawText(ctx, mess + cn.toStringPolar(), x*3, y);
+}
+
+	// draw or fill arc origin x,y, radius rr, angle aa
+function putArc(ctx, x, y, rr, aa, isFill) {
+	ctx.beginPath();						// start path
+	ctx.arc(x, y, rr, aa, false);			// do arc
+	if (isFill) ctx.fill();					// either fill or draw
+	else ctx.stroke();	
+}
+
+	// draw a dot at x,y, by filling a 360deg arc
+function putDot (ctx, x, y) {
+	putArc(ctx, x, y, 4, 2*Math.PI, true);
+}
+
+// plot complex number cN origin of plot is xo,yo, size of plot xs*ys, isP if plot polar
+function doPlotCN (ctx, cN, xo,yo, xs,ys, isP) {
+var maxX = 1 + Math.abs(cN.getRePart());				// sers scale in x and y
+var maxY = 1 + Math.abs(cN.getImPart());
+	putPoints(ctx, [xo-xs, yo, xo+xs, yo], false);		// plots axes
+	putPoints(ctx, [xo, yo-ys, xo, yo+ys], false);
+	var x = xo + cN.getRePart()*xs/maxX;				// calculate x,y position of complex number
+	var y = yo - cN.getImPart()*ys/maxY;
+	
+	if (isP) {
+		putPoints(ctx, [xo, yo, x, y], false)			// draw line from origin to x,y of cN
+		var xa = 0.3*cN.getRePart()*xs/maxX;			// calculate rel position on this line where draw angle
+		var ya = - 0.3*cN.getImPart()*ys/maxY;
+		var rr = Math.sqrt(xa*xa+ya*ya);				// calculate radius to go through this
+		var aa = Math.atan2(ya,xa);						// and angle
+		putArc(ctx, xo, yo, rr, aa, false);				// plot arc for angle
+	}
+	else {
+		putPoints(ctx, [x, yo, x, y], false)			// plot line from x axis to point
+		putPoints(ctx, [xo, y, x, y], false)			// and from y axis to point
+	}
+	putDot(ctx, x, y);									// plot dot at position of cN
+}
+
+// plot complex number cn on left in Cart form on right in Polar
+// axis origin at xo,yo, size xs,ys  xoo is offset between cartesion and polar
+function plotCN(ctx, cn, xo, yo, xs, ys, xoo) {	
+	doPlotCN(ctx, cn, xo, yo, xs, ys, false);			// cart plot
+	doPlotCN(ctx, cn, xo+xoo, yo, xs, ys, true);
+}
+
+// draw string representing the operation at x,y, s1 defines +,-,*,/ s2 is +,- ie what do to angles if mult/div
+function doDrawOp (ctx, x, y, s1, s2) {
+var angch = "\u2220"   // "\u03C0"
+var mess = "A" + s1 + "B = ";
+	if (opDone<3)		// show on left if adding/subtracting
+		mess = mess + cnA.getRePart().toFixed(2) + s1 + cnB.getRePart().toFixed(2) + " i " + cnA.getImPart().toFixed(2) + s1 + cnB.getImPart().toFixed(2);
+	else				// show on right if multor divide
+		mess = mess + cnA.getMod().toFixed(3) + s1 + cnB.getMod().toFixed(3) + " " + angch + " " + cnA.getAngle().toFixed(1) + s2 + cnB.getAngle().toFixed(1);
+	drawText (ctx, mess, x, y);	
+}
+
+// show on canvas the operation of add/sub/mult/div : add.sub on left, mult div on right
+function drawOp (ctx, cw, y) {
+	if (opDone==1) doDrawOp (ctx, cw*25, y, " + ", "")
+	else if (opDone==2) doDrawOp (ctx, cw*25, y, " - ", "")
+	else if (opDone==3) doDrawOp (ctx, cw*75, y, " * ", " + ")
+	else if (opDone==4) doDrawOp (ctx, cw*75, y, " / ", " - ")
+}
+
+// shows on canvas complex numbers A and B, and result R if given - print values and plot on argand
+function showAB() {
+var canvas = document.getElementById("myCanvasSYS");		// set up canvas 
+var ctx = canvas.getContext("2d");
+var cw = canvas.width / 100;								// for calulating sizes
+var ch = canvas.height / 100;
+	ctx.fillStyle = getrootcol("--canvbgcol");				// set background colour
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+		
+	ctx.strokeStyle = getrootcol("--canvtcol") 				// colour for lines 
+	ctx.lineWidth = 2
+	
+	ctx.fillStyle = getrootcol("--canvtcol") 				// colour for fill shapes/text
+	ctx.font = "16pt Calibri"								// set font aligned centre
+	ctx.textAlign = "center";
+	
+	drawcn(ctx, "A is ", cnA, cw*25, ch*5);					// show A
+	drawcn(ctx, "B is ", cnB, cw*25, ch*11);				// show B
+	if (isR) {												// if result r calculated
+		drawOp(ctx, cw, ch*18);								// show how calculated
+		drawcn(ctx, "R is ", cnR, cw*25, ch*25);			// show result R
+	}	
+
+	ctx.fillStyle = getrootcol("--canvhcol") 				// colour for dots
+	
+	plotCN(ctx, cnA, cw*12, ch*40, cw*11, ch*10, cw*50);	// plot A in both forms on Argand plane
+	plotCN(ctx, cnB, cw*37, ch*40, cw*11, ch*10, cw*50);	// and B
+	if (isR) plotCN(ctx, cnR, cw*25, ch*75, cw*22, ch*20, cw*50);		// and if calulated the result
+}
+
+// function to do operation: op is 1..4 being + - * /
+function doIt(op) {
+isR = true;
+	if (op>0) opDone = op;
+	if (op == 1) cnR = cnA.complexAdd(cnB)
+	else if (op == 2) cnR = cnA.complexSub(cnB)
+	else if (op == 3) cnR = cnA.complexMult(cnB)
+	else if (op == 4) cnR = cnA.complexDiv(cnB)
+	else isR = false;
+	if (isR) showAB();
+}
+
+// swap A and B and then redraw
+function swapData() {
+var cnT = cnA;
+	cnA = cnB;
+	cnB = cnT;
+	isR = false;
+	showAB();
+}
+
+// conjugate A is opt = 0, else B
+function setConj(opt) {
+	if (opt==0) cnA = cnA.complexConj();
+	else cnB = cnB.complexConj();
+	isR = false;
+	showAB();
+}
+	
+// generate a new random number, real/imag parts in range -5..+5
+function getNewCN() {
+var rp = Math.floor(Math.random() * 10 - 5);
+var ip = Math.floor(Math.random() * 10 - 5);
+	return new aComplex(rp, ip, false);
+}
+
+// set new values for A and Bm, and show them
+function setNewData() {
+	isR = false;
+	cnA = getNewCN();
+	cnB = getNewCN();
+	showAB();
+}
+
+// for toggling between light / dark backgrounds
+function doTogColours() {
+	togColours();
+	showAB();
+}
+
+// start of page, set up colours, set new values for A and B and show.
+function load() {
+	window.defaultStatus="RJM's Demo of Vectors";
+	initPageColours();
+	setNewData();
+}
+
+
+// End -->
+</script>
+
+<!-- STEP TWO: Add the relevant event handlers to the BODY tag  --> 
+
+</head><body onload="load()" data-new-gr-c-s-check-loaded="14.1165.0" data-gr-ext-installed="">
+	<div id="wrapper">
+
+		<div class="intro">
+				<h1>Complex Numbers </h1>
+				<p>This page shows various aspects of complex numbers, and how they are processed. They involve i, √-1.</p> 
+				 <p>They can be expressed in Catersian form as x + i y, where x is the 'real' part and y the 'imaginary' part.</p>
+				 <p>Alternatively the polar form can be used as r ∠ a being a size r and an angle a.</p>
+				<p>Random pairs of complex numbers are generated, and you can see them represented in both forms, 
+				   and shown on the Argand plane. The x axis is for 'real' parts and the y for 'imaginary' parts.
+				   The distance from the origin is r and the angle a is from the x axis.</p>
+				<p>You can then specify add, subtract, multiply and divide, and see the results. Whether the operation is
+				done in Cartesion or Polar form is shown.</p>
+			  <p>See <a href="http://www.personal.reading.ac.uk/~shsmchlr/jsmaths/OnComplexFractal.html" onclick="location.href=this.href+colstr(); return false;">On Complex Fractal</a> 
+					for an application in both forms.</p>
+
+		</div>
+		<div class="robot">
+			<form name="mathssys">
+				<canvas id="myCanvasSYS" name="myCanvasSYS" width="700" height="500"></canvas>
+			</form>
+			<div class="left">
+			<p>
+			<input type="button" class="button" id="newData" value="New A B " onclick="setNewData();">
+			<input type="button" class="button" id="swapData" value="Swap A B " onclick="swapData();">
+			<input type="button" class="button" id="swapData" value="Conj(A) " onclick="setConj(0);">
+			<input type="button" class="button" id="swapData" value="Conj(B) " onclick="setConj(1);">
+				</p>
+				<p id="mess"></p>
+			</div>
+			<div class="right">
+				<p>Operations: &nbsp; 
+				<input type="button" class="button" id="cAdd" value="Add" onclick="doIt(1);">
+				<input type="button" class="button" id="cSub" value="Sub " onclick="doIt(2);">
+				<input type="button" class="button" id="cAdd" value="Mult" onclick="doIt(3);">
+				<input type="button" class="button" id="cSub" value="Div " onclick="doIt(4);"></p>
+			</div>
+		</div>
+
+
+		<div class=""></div>
+	
+	</div>
+
+
+
+
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
+      div.grammarly-desktop-integration {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select:none;
+        user-select:none;
+      }
+
+      div.grammarly-desktop-integration:before {
+        content: attr(data-content);
+      }
+    </style><div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>

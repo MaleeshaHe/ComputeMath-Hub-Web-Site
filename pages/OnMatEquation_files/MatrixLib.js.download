@@ -1,0 +1,136 @@
+// RJMs library of routines for matrices
+// Richard Mitchell Nov 2016
+
+
+
+function aMatrix (rows, cols, theMatVals) {
+this.matrixAdd = matrixAdd		// define functions for Add, Mod, Arg, Power
+this.matrixMult = matrixMult
+this.scalarMult = scalarMult
+this.transpose = transpose
+this.toString = toString			// convert to string
+this.fromString = fromString
+this.setUp = setUp
+this.getVal = getVal
+this.setVal = setVal
+this.detMatrix = detMatrix
+this.partMatrix = partMatrix
+this.detSubMatrix = detSubMatrix
+this.adjointVal = adjointVal
+this.numRows = 0
+this.numCols = 0	
+if (typeof rows == "string")		// if call with a string as only argument, process it
+	this.fromString(rows)
+else {
+	this.setUp(rows, cols)
+	for (ct=0; ct<rows*cols; ct++) 
+		if (theMatVals.length==1) this.theMat[ct] = theMatVals[0]    // so can have at with all onev value
+		else if (ct<theMatVals.length) this.theMat[ct]=theMatVals[ct]
+		else this.theMat[ct]=0
+}
+	function setUp(rows, cols){
+		this.numRows = rows
+		this.numCols = cols	
+		this.theMat = new Array(rows*cols)
+	}
+	function fromString(str) {
+	var rowsplitStr = str.split(";")
+	var colsplitStr = rowsplitStr[0].split(",")
+		this.setUp(rowsplitStr.length, colsplitStr.length)
+	var ct = 0, n
+		for (var row=0; row<this.numRows; row++)  {
+			colsplitStr = rowsplitStr[row].split(",")
+			for (var col=0; col<this.numCols; col++) {
+				n = colsplitStr[col].includes(".") ? parseFloat(colsplitStr[col]) : parseInt(colsplitStr[col])
+				this.theMat[ct++] = n
+			}	
+		}
+	}	
+	function toString() {
+		var ans = ""
+		for (var row = 0; row < this.numRows; row++) {
+			if (row>0) ans = ans + "; "
+			for (var col = 0; col < this.numCols; col++) {
+				if (col>0) ans = ans + ", "
+				var n = this.getVal(row, col)
+				if (Number.isInteger(n) == false) n = Math.round(10*n)/10
+				ans = ans + n.toString()
+			}
+		}	
+		return ans		
+	}  
+	function getVal(row, col) {
+		return this.theMat[row*this.numCols+col]
+	}
+	function setVal(row, col, val) {
+		this.theMat[row*this.numCols+col] = val
+	}
+	function matrixAdd(other) {
+		var ans
+		if (other.numRows == this.numRows && other.numCols == this.numCols) {
+			ans = new aMatrix(this.numRows, this.numCols, [0])
+			for (var ct = 0; ct<this.theMat.length; ct++) ans.theMat[ct] = this.theMat[ct] + other.theMat[ct]
+		}
+		else ans = new aMatrix (0, 0, [])
+		return ans
+	}
+	function detMatrix() {
+	var ans = 0;
+		if (this.numRows==1) ans = this.getVal(0,0)
+		else if (this.numRows==2) ans = this.getVal(0,0)*this.getVal(1,1) - this.getVal(0,1) * this.getVal(1,0);
+		else for (var cct=0; cct<this.numCols; cct++) ans += this.getVal(0, cct) * this.adjointVal(0, cct)
+		return ans;
+	}
+	function matrixMult(other) {
+		var ans
+		if (other.numRows == this.numCols ) {
+			ans = new aMatrix(this.numRows, other.numCols, [0])
+			for (var row = 0; row<this.numRows; row++) 
+				for (var col = 0; col<other.numCols; col++) {
+					var tval = 0
+					for (oct=0; oct<this.numCols; oct++)
+						 tval += this.getVal(row, oct)*other.getVal(oct, col)
+					ans.setVal(row,col,tval)
+				}
+		}
+		else ans = new aMatrix (0, 0, [])
+		return ans;
+	}
+	function scalarMult(s) {
+		var ans = new aMatrix(this.numRows, this.numCols, [0]);
+		for (var ct = 0; ct<this.theMat.length; ct++) ans.theMat[ct] = this.theMat[ct] * s;
+		return ans;		
+	}	
+	function transpose() {
+		var ans = new aMatrix(this.numCols, this.numRows, [0]);
+			for (var row = 0; row<this.numRows; row++) 
+				for (var col = 0; col<this.numCols; col++) 
+					ans.setVal(col, row, this.getVal(row, col))
+		return ans;		
+	}	
+	function partMatrix(nrow, ncol) {
+	// return part matrix being this without given row,col
+	var vals = [];
+	var dest = 0;
+	var ans;
+		for (var rct=0; rct < this.numRows; rct++) {
+			if (rct != nrow) {
+				for (var cct=0; cct< this.numCols; cct++)
+					if (cct != ncol) vals[dest++] = this.getVal(rct, cct);
+			}		
+		}
+		if (nrow >= 0) ans = new aMatrix(this.numRows-1, this.numCols-1, vals);	
+		else ans =  new aMatrix(this.numRows, this.numCols-1, vals);	// for case when just remove column
+		return ans	;	
+	}
+	function detSubMatrix (missrow, misscol) {
+		var subM = this.partMatrix(missrow, misscol);
+		return subM.detMatrix();
+	}
+	function adjointVal(row, col) {
+	// compute adjoint value of submatrix excluding row,col
+		return this.detSubMatrix(row, col) * Math.pow(-1, row+col);
+	}	
+}
+
+

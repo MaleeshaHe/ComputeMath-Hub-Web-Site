@@ -1,0 +1,429 @@
+
+<!-- saved from url=(0066)http://www.personal.reading.ac.uk/~shsmchlr/jsmaths/OnVectors.html -->
+<html style="--canvbgcol: #e9eae8; --canvhcol: #a00000; --canvtcol: #101010; --h1col: #bf0000; --h2col: #50535a; --ppcol: #0f0f0f; --ibgcol: #fffdf0; --ipcol: #0f0f0f; --butcol: #202020; --butbgcol: #d0d0d0; --linknorm: #000036; --linkvisited: #36003b; --linkactive: #360000;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<link rel="stylesheet" type="text/css" href="./OnVectors_files/style.css">
+<script type="text/javascript" src="./OnVectors_files/forcolours.js.download"></script>
+
+<script type="text/javascript" src="./OnVectors_files/MatrixLib.js.download"></script>
+<script type="text/javascript" src="./OnVectors_files/ThreeDMatrix.js.download"></script>
+<script type="text/javascript" src="./OnVectors_files/matShow.js.download"></script>
+<script type="text/javascript" src="./OnVectors_files/mytimer.js.download"></script>
+
+
+
+<script language="JavaScript">
+
+
+<!-- Begin
+
+
+var canvasback = "rgb(233, 234, 232)"
+
+function reportString (rstr) {
+	document.getElementById("mess").innerHTML=rstr
+}
+
+
+function changeData() {
+		// called when press New Equation or Change Size of A
+var sopt = document.getElementById("setOption").selectedIndex;
+var mSize 
+	if (sopt == 2) {
+		createMat(0, 3, 3, 0);		// matrix for 3 x,y,z vectors
+		matNames = ["P1,P2,P3", "v1", "v2", "n"]
+		matMax = 1;
+	}
+	else {
+		if (sopt == 0) mSize = 2; else mSize = 3;
+		createMat(0, mSize, 1, 0);
+		createMat(1, mSize, 1, 0);
+		matMax = 2
+	}
+	matMess = "";
+	drawAllMats();
+
+}
+
+
+function myPoly2str(p) {
+var n = p.length-1
+var res = ""
+	for (var ct = 0; ct<p.length; ct++) {
+		if (p[ct] != 0) {
+			if (p[ct]<0) res = res + " -"
+			else if (ct > 0) res = res + " +"
+			if ( (Math.abs(p[ct])>1) || (n == 0) ) res = res + Math.abs(p[ct]).toString();
+			if (n>1) res = res + lambda + "^" + n.toString(); 
+			else if (n>0) res = res + lambda
+		}
+		n--
+	}	
+	return res;
+}	
+	
+function plusMinusString(num, isplus, showPlus) {
+			// return + num or - num as string    
+	var res = " "
+	if ((num<0) == isplus) res=" - "; else if (showPlus) res = " + "
+	res = res + Math.abs(num).toString();
+	return res;
+}
+
+function getDot(v1, v2, vres, dosqrt) {
+	var ans = 0;
+	var t1, t2;
+	var sans = matNames[vres] + " = "
+	if (dosqrt) sans = sans + "sqrt("
+	for (var ct = 0; ct<getRows(v1); ct++) {
+		t1 = getMatVal(v1, ct, 0);
+		t2 = getMatVal(v2, ct, 0);
+		sans = sans + plusMinusString(t1, true, ct>0)+"*"+t2.toString();
+		ans = ans + t1*t2
+	}
+	if (dosqrt) {
+		sans = sans + ")"
+		ans = Math.sqrt(ans)
+	}
+	sans = sans + " = " + ans.toFixed(2);
+	setMatVal(vres, 0, 0, ans);
+	return sans;
+}
+
+function getMod(v, vres) {
+	return getDot(v, v, vres, true)
+}
+
+function getCross(v1, v2, res, wrow) {
+var ijk="ijk"
+	var ans = 0;
+	var ndx=[1,2,2,0,0,1];
+	var t1, t2;
+	var sans = "For " + matNames[res] + ": " + ijk[wrow] + " = "
+	t1 = ndx[wrow*2]		//index intio v1 or v2
+	t2 = ndx[wrow*2+1]
+	var ab = [getMatVal(v1,t1,0), getMatVal(v2,t2,0), getMatVal(v1,t2,0), getMatVal(v2,t1,0)]
+	ans = ab[0] * ab[1] - ab[2] * ab[3]
+	sans = sans + plusMinusString(ab[1], true, false) + "*" + ab[1].toString() + plusMinusString(ab[2], false, true) + "*" + ab[3].toString() + " = " + ans.toString() 
+	setMatVal(res, wrow, 0, ans)	
+	return sans
+}
+
+function simVector2() {
+	if (simStage==1) {
+		matNames = ["a", "b", "", "|a|", "|b|", "a.b"];
+		createMat(2, 0, 0, 0)
+		matMax = 3;
+		drawAllMats()
+		reportString("First find |a|")
+		simStage = 2;
+	}	
+	else if (simStage==2) {
+		createMat(3, 1, 1, 0);
+		matMess = getMod(0,3);
+		matMax = 4;
+		drawAllMats()
+		reportString("Next find |b|");
+		simStage = 3;
+	}
+	else if (simStage == 3) {
+		createMat(4, 1, 1, 0);
+		matMess = getMod(1,4);
+		matMax = 5;
+		drawAllMats()
+		reportString("Next find a.b");
+		simStage = 4;
+	}
+	else if (simStage == 4) {
+		createMat(5, 1, 1, 0);
+		matMess = getDot(0,1,5,false);
+		matMax = 6;
+		drawAllMats()
+		simStage = 5;
+	}
+	else if (simStage == 5) {
+		createMat(2, 1, 1, 0);
+		var d = getMatVal(3,0,0) * getMatVal(4,0,0)
+		var ans = 0;
+		if (d != 0) ans = Math.acos(getMatVal(5,0,0) / d)
+		ans = ans * 180 / Math.PI;
+		matMess = "arccos(a.b/|a||b|) = " + ans.toFixed(2) + " deg"
+		matNames[2] = "angle"
+		setMatVal(2,0,0,ans)
+		drawAllMats()
+		reportString("");
+		simStage = 6;
+	}
+	else {	
+		matMess = ""
+		drawAllMats();
+		simMode = -1
+	}	
+}
+
+function simVector3() {
+	if (simStage==1) {
+		matNames = ["a", "b", "", "|a|", "a.b", "axb"];
+		createMat(2, 0, 0, 0)
+		matMax = 3;
+		drawAllMats()
+		reportString("First find |a|")
+		simStage = 2;
+	}	
+	else if (simStage==2) {
+		createMat(3, 1, 1, 0);
+		matMess = getMod(0,3);
+		matMax = 4;
+		drawAllMats()
+		reportString("Next find a.b");
+		simStage = 3;
+	}
+	else if (simStage == 3) {
+		createMat(4, 1, 1, 0);
+		matMess = getDot(0,1,4,false);
+		matMax = 5;
+		drawAllMats()
+		reportString("Next find axb");
+		simStage = 4;
+	}
+	else if (simStage < 7) {
+		if (simStage==4) createMat(5, 3, 1, 1);
+		matMess = getCross(0,1,5, simStage-4);
+		matMax = 6;
+		drawAllMats()
+		reportString("");
+		simStage = simStage + 1;
+	}
+	else {	
+		matMess = ""
+		drawAllMats();
+		simMode = -1
+	}	
+}
+
+function getVecfromP(m, res, col) {
+var sans = "V" + (col).toString() + " = ";
+	for (var r = 0; r<3; r++) {
+		if (r>0) sans = sans + "; ";
+		sans = sans + getMatVal(m, r, col).toString() + plusMinusString(getMatVal(m, r, col-1), false, true);
+		setMatVal(res, r, 0, getMatVal(m, r, col)-getMatVal(m, r, col-1));
+	}
+	return sans;
+}
+
+function getEquation (emode, ems) {
+var eqmess = ems;
+var xyz="xyz"
+var esum = 0
+	for (var ct = 0; ct<3; ct++) {
+		if (ct>0) {
+			if (emode == 0) eqmess = eqmess + ", "; 
+		}	
+		if (emode > 0) eqmess = eqmess + plusMinusString(getMatVal(3, ct, 0), true, ct>0) 
+		if (emode == 1) eqmess = eqmess + "("
+		eqmess = eqmess + xyz[ct] 
+		if (emode < 2) eqmess = eqmess + plusMinusString(getMatVal(0,ct,1), false, true)
+		else esum = esum - getMatVal(3, ct, 0) *  getMatVal(0, ct, 1)
+		if (emode == 1) eqmess = eqmess + ")"
+	}
+	if (emode==2) eqmess = eqmess + plusMinusString(esum, true, true)
+	if (emode>0) eqmess = eqmess + " = 0"
+	return eqmess;
+}	
+
+function simPlane() {
+	if (simStage==1) {
+		matNames = ["P1,P2,P3", "v1", "v2", "n", "", ""];
+		matMax = 1;
+		drawAllMats()
+		reportString("First find v1 = P2-P1")
+		simStage = 2;
+	}	
+	else if (simStage==2) {
+		createMat(1, 3, 1, 1);
+		matMess = getVecfromP(0,1,1);
+		matMax = 2;
+		drawAllMats()
+		reportString("Next find v2 = P3-P2");
+		simStage = 3;
+	}
+	else if (simStage==3) {
+		createMat(2, 3, 1, 1);
+		matMess = getVecfromP(0,2,2);
+		matMax = 3;
+		drawAllMats()
+		reportString("Next find n = v1 x v2");
+		simStage = 4;
+	}
+	else if (simStage < 7) {
+		if (simStage==4) createMat(3, 3, 1, 1);
+		matMess = getCross(1,2,3, simStage-4);
+		matMax = 4;
+		drawAllMats()
+		if (simStage==6) reportString("Next generate vector (x,y,z)-P2");
+		simStage = simStage + 1;
+	}
+	else if (simStage == 7 ) {
+		matMess = getEquation(0, "P(x,yz)-P2 = ");
+		drawAllMats();
+		simStage = simStage + 1;
+		reportString("Next do n.this = 0")
+	}
+	else if (simStage == 8 ) {
+		matMess = getEquation(1, "n.(P-P2) is ");
+		drawAllMats();
+		simStage = simStage + 1;
+		reportString("Next get in form ax + by + cz + d = 0")
+	}
+	else if (simStage == 9 ) {
+		matMess = getEquation(2, "Plane is ");
+		createMat(4,0,0,0);
+		drawAllMats();
+		simStage = simStage + 1;
+		reportString("")
+	}
+	else {	
+		matMess = ""
+		matNames[4] = getEquation(2, "")
+		matMax = 5
+		drawAllMats();
+		simMode = -1
+	}	
+
+}
+
+function simNext() {
+	if (simMode==-1) {		// mode when done, to tidy up
+		endAnim()		// say done.
+		reportString("Done")
+		drawAllMats()
+	}
+    else if (simMode == 1) {  // do inverse
+		wopt = document.getElementById("setOption").selectedIndex
+		if (wopt == 0) simVector2();
+		else if (wopt == 1) simVector3();
+		else simPlane();
+	}	
+}
+
+function setAnimStart (mode, sstage) {
+	if (document.getElementById("setOption").selectedIndex<2) matMax = 2; else matMax = 1;
+	matMess = ""
+	reportString("")
+	drawAllMats();
+	startAnim (mode, sstage)
+}
+
+function setOption (newM) {
+	var ndx = getRows(newM)-2;			// now update drop down list for A being 0 if 2*2, 1 for 3*3B
+	var ndxStr = ndx.toString();
+	if (newM==1)
+		document.getElementById("setAsize").selectedIndex = ndxStr;
+	else
+		document.getElementById("setBsize").selectedIndex = ndxStr;
+
+}
+
+function doAnswer() {
+	setAnimStart(1,1);
+}
+
+function doTogColours() {
+	togColours();
+	endAnim();
+	matMax = 2;
+	matMess = "";
+	drawAllMats();
+}
+
+function load() {
+	window.defaultStatus="RJM's Demo of Vectors";
+	initPageColours();
+
+	setupgraphs("myCanvasSYS");
+	setTimer();
+	document.getElementById("setOption").selectedIndex = "0";
+	matNames = ["a", "b", "ans", "P1toP2", "P2toP3", "n"];
+	changeData();
+}
+
+
+// End -->
+</script>
+
+<!-- STEP TWO: Add the relevant event handlers to the BODY tag  --> 
+
+</head><body onload="load()" data-new-gr-c-s-check-loaded="14.1165.0" data-gr-ext-installed="">
+	<div id="wrapper">
+
+		<div class="intro">
+				<h1>On Vectors </h1>
+				<p>You can have 2 or 3 element vectors or a plane question</p>
+				<p>For 2 element vectors a and b, find |a|, |b|, a.b and angle between them.</p>
+				<p>For 3 element vectors a and b, find |a|, a.b and a x b.</p>
+				<p>For plane you have 3 points on plane, P1..P3, find a = P1 to P2, b = P2 to P3, n = a x b, and equation of plane
+				by n.(P(x,y,z)-P2) in two stages.</p>
+				<p>Note for cross products, the i, j and k terms are calculated in turn.</p>
+				<p>By default these operations are animated, showing the stages in the method - 
+				    and you can speed up/slow down or pause/resume the animation. However you can
+					choose to manually step through the process.</p>
+	
+		</div>
+		<div class="robot">
+			<form name="mathssys">
+				<canvas id="myCanvasSYS" name="myCanvasSYS" width="600" height="300"></canvas>
+			</form>
+			<div class="left">
+			<p>
+			Options&nbsp;
+			<select id="setOption" onchange="changeData()">
+				<option>2 element</option>
+				<option>3 element</option>
+				<option>Plane</option>
+			</select>
+			<input type="button" class="button" id="new" value="New Data" onclick="changeData();">
+			</p>
+				<p id="mess"></p>
+			</div>
+			<div class="right">
+				<p><input type="button" id="findanswer" value="Start Answer" onclick="doAnswer();">
+				</p>
+				<p>
+					<input type="checkbox" id="animCheck" checked="true" onclick="setchecked();">  Animate &nbsp;
+					<input type="button" class="button" id="pauseB" value="Pause" onclick="doPause();">
+					<input type="button" class="button" id="spUp" value="Faster" onclick="dospeed(-1);">
+					<input type="button" class="button" id="spDn" value="Slower" onclick="dospeed(1);">
+				</p>
+			</div>
+		</div>
+
+
+
+		<div class=""></div>
+	
+	</div>
+
+
+
+
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
+      div.grammarly-desktop-integration {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select:none;
+        user-select:none;
+      }
+
+      div.grammarly-desktop-integration:before {
+        content: attr(data-content);
+      }
+    </style><div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>

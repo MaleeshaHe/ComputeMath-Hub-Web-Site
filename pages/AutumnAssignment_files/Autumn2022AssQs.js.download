@@ -1,0 +1,418 @@
+<!-- Begin
+
+// Code with the questions for the assignment
+
+
+var snoOk = false
+var studentNo = "12345678"
+// 2020 version    var sIndex=[2,6,4,3,1,7,0,5,  3,1,2,6,7,0,4,5,  1,7,3,0,2,6,4,5,  7,5,2,6,4,3,0,1]
+// 2021 version		var sIndex=[3,1,2,6,7,0,4,5,  7,5,2,6,4,3,0,1,  2,6,4,3,1,7,0,5,  1,7,3,0,2,6,4,5 ]
+var sIndex=[7,5,2,6,4,3,0,1,  2,6,4,3,1,7,0,5,  1,7,3,0,2,6,4,5, 3,1,2,6,7,0,4,5 ]
+
+var qsInString = ""
+var ansInString = ""
+var lambda = "\u039B".toLowerCase();
+
+function reportString (rstr) {
+	document.getElementById("mess").innerHTML=rstr
+}
+
+function chFromSno(n) {
+	return fromSno(n).toString();
+}
+
+function fromSno(n) {
+	return 10 - (studentNo.charCodeAt(sIndex[n]) - 48);		// get char at pos n, subtract '0' but sub from 10 so no 0s
+}
+
+function allnumbers () {
+var allNums = true;
+  for (var ct = 0; ct<studentNo.length; ct++)
+    if (fromSno(ct)<0 || fromSno(ct)>10) allNums = false;
+  return allNums;	
+}
+	
+function getStudentNo() {
+ studentNo = document.getElementById("sno").value
+ snoOk = false
+ if (studentNo.length == 8)
+    if (studentNo == "12345678") 
+		reportString("12345678 not valid student niumber")
+	else if (allnumbers() == false)
+		reportString("Need eight digits 0..9")
+	else
+		snoOk = true
+ else reportString("Student Number should be 8 digits each 0..9")
+ if (snoOk == false)
+	document.getElementById("Question").selectedIndex = "0";
+}
+
+
+function setMatVals(matNdx, sNdx) {
+var mNdx = sNdx;
+	for (rct = 0; rct<getRows(matNdx); rct++)
+		for (cct = 0; cct<getCols(matNdx); cct++) {
+			setMatVal(matNdx, rct, cct, fromSno(mNdx));
+			mNdx++;
+		}	
+}
+
+function drawQ (ctx, Qstr, qno) {
+	drawText(ctx, Qstr, matCanvas.width/2, matCanvas.height/2 + qno*25);
+	qsInString += Qstr + "\n";
+}
+
+function addMatQs() {
+	for (var ct=0; ct<matMax; ct++)
+		qsInString += matNames[ct] + " = " + allMats[ct].matAsString(matNames[ct]) + "\n";
+}
+
+function addQTitle(ctx) {
+	drawQ(ctx, document.getElementById("Question").value + " : " + studentNo, -0.5);
+}
+
+function doMatCalc(ctx) {
+	createMat(0, 2, 3, 1);
+	createMat(1, 2, 3, 1);
+	createMat(2, 3, 2, 1);
+	matMax = 3;
+	matNames = ["A", "B", "C"];
+	
+	setMatVals(0, 3);
+	setMatVals(1, 8);
+	setMatVals(2, 13);
+	
+	drawAllMats();
+	addQTitle(ctx);
+	addMatQs();
+	drawQ(ctx, "This is to be done by hand, though you can use MatLab to check", 1)
+	drawQ(ctx, "Calculate "+chFromSno(3)+"A + " + chFromSno(16) + "B" +"   {2 marks}", 2)
+	drawQ(ctx, "Calculate "+chFromSno(12)+"A - " + chFromSno(23) + "C'" + "   {2}", 3)
+	drawQ(ctx, "Calculate A x C" + "   {3}", 4)
+	drawQ(ctx, "Calculate C x B" + "   {3}", 5)
+	
+	doMatCalcAns();
+}
+
+function incElem(m, r, c) {
+	setMatVal(m, r, c, getMatVal(m, r, c) + 1)
+}
+
+function createUniqueVec(m, sz, sp) {
+	// create vec with sz rows of unique elements
+	createMat(m, sz, 1, sp)
+	if (getMatVal(m, 0, 0)==getMatVal(m, 1, 0)) incElem(m, 1, 0)
+	if (sz>2) {
+		if (getMatVal(m, 0, 0)==getMatVal(m, 2, 0)) incElem(m, 2, 0)
+		if (getMatVal(m, 1, 0)==getMatVal(m, 2, 0)) incElem(m, 2, 0)
+		if (getMatVal(m, 0, 0)==getMatVal(m, 2, 0)) incElem(m, 2, 0)
+	}
+} 
+
+function createAxb (ctx, sz, s1, s2) {
+// create Ax=b for A = sz*sz, values starting at s1 and s2
+	createMat(0, sz, sz, 1);
+	createUniqueVec(1, sz, 1);
+	allMats[1].showAsString =  true
+	createMat(2, sz, 1, 0);
+	
+	setMatVals(0, s1);
+	if (allMats[0].actualMat.detMatrix()==0) incElem(0, 1, 1);    
+	if (allMats[0].actualMat.detMatrix()==0) incElem(0, 2, 2);    
+	if (allMats[0].actualMat.detMatrix()==0) setMatVal(0, 1, 1, getMatVal(0, 1, 1) + 1);    
+	setMatVals(1, s2);
+	
+	allMats[2].actualMat = allMats[0].actualMat.matrixMult(allMats[1].actualMat);
+	matNames = ["A", "x", "b"];
+
+	matMax = 3;
+	
+	drawAllMats();
+	addQTitle(ctx);
+	addMatQs();
+
+}
+
+function doMagicMat(ctx) {
+	createAxb (ctx, 2, 7, 12);
+
+	drawQ(ctx, "This is to be done by hand", 1);
+	drawQ(ctx, "Find matrix M, such that M A is a diagonal matrix"+ "   {2}", 2);
+	drawQ(ctx, "Use M to find x in the equation Ax = b"+ "   {2}", 3);
+	drawQ(ctx, "Show that Ax does equal b"+ "   {2}", 4);
+	
+	doMagicAns ()
+}
+
+function doTrigonometry(ctx) {
+	matMax = 0;
+	drawAllMats();
+	ctx.font = "16pt Calibri"						
+	addQTitle(ctx);
+	var y = fromSno(19);
+	var x = fromSno(24);
+	if (fromSno(5)<5) x = -x;
+	drawQ(ctx, "Here arctan(y/x) = arctan2(y,x) where x and y are as on the above", 1);
+	drawQ(ctx, "Find arctan("+y.toString()+"/"+x.toString()+")"+ "   {2}", 2);
+	drawQ(ctx, "Find arctan(-"+y.toString()+"/"+x.toString()+")"+ "   {2}", 3);
+	drawQ(ctx, "Plot both these in graphs like that shown above"+ "   {3}", 4);
+	drawQ(ctx, "Express "+chFromSno(4)+"sin(x) + "+chFromSno(12)+"cos(x) in form Ksin(x+p)"+ "   {3}", 5);
+	
+	var xo = matCanvas.width/2;
+	var yo = matCanvas.height/4;
+	putPoints(ctx, [xo, yo-50, xo, yo+50], false);
+	putPoints(ctx, [xo-50, yo, xo+50, yo], false);
+	putPoints(ctx, [xo, yo, xo+40, yo+20], false);
+	drawText(ctx, "y", xo-8, yo-50);
+	drawText(ctx, "x", xo+50, yo-8);
+	ctx.beginPath(); ctx.arc(xo, yo, 15, 0, Math.PI/6); ctx.stroke();
+	doTrigans(x, y);
+}
+
+function doExpetc(ctx) {
+	matMax = 0;
+	drawAllMats();
+	ctx.font = "16pt Calibri"						
+
+	addQTitle(ctx);
+	drawQ(ctx, "In MatLab create 2 by 2 subplots as follows:"+ "   {4}", 1);
+	var val = chFromSno(5);
+	drawQ(ctx, chFromSno(7)+" exp(-x/"+val+") for x from 0 to " + val, 2);
+	var valint = 3 + Math.round(fromSno(9)/3);
+	drawQ(ctx, "On log log scales from x = 1 to 10 a plot of x^"+valint.toString(), 3);
+	val = chFromSno(15);
+	drawQ(ctx, "sinh(3x/"+val+") for x from -"+val+" to +"+val, 4);
+	val = chFromSno(18);
+	drawQ(ctx, "cosh(4x/"+val+") for x from -"+val+" to +"+val, 5);
+}
+
+function doLinearTransform(ctx) {
+	matMax = 0;
+	drawAllMats();
+	addQTitle(ctx);
+	var y = fromSno(12);
+	var x = fromSno(15);
+	var a = fromSno(3)*10;
+	ctx.font = "16pt Calibri"						
+	drawQ(ctx, "In MatLab, define a matrix with homogenous coordinates", 1)
+	drawQ(ctx, "to represent the arrow above" + " {2}", 2);
+	drawQ(ctx, "Plot the shape in an area from -15,-15 to 15,15"  + " {2}", 3);
+	drawQ(ctx, "Define a 3*3 matrix to rotate the shape by "+a.toString() + " degrees" + "  {2}", 4);
+	drawQ(ctx, "Define a 3*3 matrix to move the shape by "+x.toString()+","+y.toString() + "  {2}", 5);
+	drawQ(ctx, "Plot the shape (and the area) when it has been rotated" + "  {1}", 6);
+	drawQ(ctx, "Then plot it after it has also been moved"  + " {1}", 7);
+	
+	var xo = matCanvas.width/2;
+	var yo = matCanvas.height/4;
+	putPoints(ctx, [xo, yo-60, xo, yo+60], false);
+	putPoints(ctx, [xo-50, yo, xo+50, yo], false);
+	putPoints(ctx, [xo+40, yo, xo, yo-40, xo, yo-20, xo-40, yo-20, xo-40,yo+20, xo, yo+20, xo, yo+40, xo+40, yo], false);
+	drawText(ctx, "2", xo+40, yo+15);
+	drawText(ctx, "2", xo-10, yo-40);
+	
+	doLTans(x, y, a);
+}
+
+function doInverseAxb(ctx, sz, s1, s2) {
+	createAxb (ctx, sz, s1, s2);
+	var m1 = (sz==2) ? " {1}" : " {2}"
+	var m2 = (sz==2) ? " {2}" : " {3}"
+
+	drawQ(ctx, "By hand do the following:", 1);
+	drawQ(ctx, "Find the determinant of A" + m1, 2);
+	drawQ(ctx, "Then find the inverse of A" + m2, 3);
+	drawQ(ctx, "Hence find x in the equation Ax = b" + " {2}", 4);
+	drawQ(ctx, "Then, use MatLab to confirm your answer is correct" + " {1}", 5);
+	drawQ(ctx, "Remember to include the MatLab commands in the report", 6);
+	
+	doInvAxbAns ()
+}
+
+function doCramer(ctx, sz, s1, s2) {
+	createAxb (ctx, sz, s1, s2);
+	if (sz==2) {
+		drawQ(ctx, "By hand, use Cramer's Rule to find x"+ " {3}", 1);
+		drawQ(ctx, "Use MatLab to confirm your answer"+ " {2}", 2);
+	}
+	else {
+		drawQ(ctx, "In MatLab, use Cramer's Rule to find x"+ " {5}", 1); 
+		drawQ(ctx, "Remember to include the MatLab commands in the report", 2);
+	}
+	doCramerAns();
+}
+
+function setVecPos(num, s1, s2, f1, f2) {
+var x, y, z;
+	x = 1 + f1 *  fromSno(s1);
+	y = 1 + f2 *  fromSno(s2);
+	z = 5 - 2*x - 3*y;
+	createMat(num, 3, 1, 0);
+	setMatVal(num, 0, 0, x);
+	setMatVal(num, 1, 0, y);
+	setMatVal(num, 2, 0, z);
+}
+
+function getP (m) {
+	var p = [0,0,0];
+	for (var ct=0; ct<3; ct++) p[ct] = getMatVal(m, ct, 0);
+	return p;
+}
+
+function vfromPs(p1, p2) {
+	var v = [0,0,0];
+	for (var ct=0; ct<3; ct++) v[ct] = p2[ct]-p1[ct];
+	return v;
+}
+
+function dot(v1, v2) {
+	var dp = 0;
+	for (var ct=0; ct<3; ct++) dp += v1[ct]*v2[ct];
+	return dp;
+}
+
+function cross(v1, v2) {
+	var v = [0, 0, 0];
+	v[0] = v1[1]*v2[2] - v1[2]*v2[1];
+	v[1] = v1[2]*v2[0] - v1[0]*v2[2];
+	v[2] = v1[0]*v2[1] - v1[1]*v2[0];
+	return v;
+}
+
+function vlength(v) {
+	return Math.sqrt(dot(v, v));
+}
+
+function doVCalcs() {
+	var p1 = getP(0);
+	var p2 = getP(1);
+	var p3 = getP(2);
+	var v1 = vfromPs(p1, p2);
+	var v2 = vfromPs(p2, p3);
+	var n = cross(v1, v2);
+	var ep = [0,0,0]
+	for (var ct=0; ct<3; ct++) ep[ct] = p3[ct] + Math.round(n[ct]*4/vlength(n));
+	doVAns(ep, p2, v1, v2, n);
+	return ep;
+}
+
+function doVectors(ctx) {
+	setVecPos(0, 12, 15, -1, -1);
+	setVecPos(1, 1, 1, 0, 0);
+	setVecPos(2, 9, 23, 1, -1);
+	matNames = ["P1", "P2", "P3"];
+	matMax = 3;
+	drawAllMats();
+	addQTitle(ctx);
+	drawQ(ctx, "Points P1..P3 are on a plane. Find vectors P1 to P2 and P2 to P3" + " {2}", 1);
+	drawQ(ctx, "Hence, find the vector normal to the plane" + " {2}", 2);
+	drawQ(ctx, "Now find the equation of the plane" + " {2}", 3);
+	
+	var ep = doVCalcs();
+	drawQ(ctx, "The plane is viewed by an eye at "+ep[0].toString()+","+ep[1].toString()+","+ep[2].toString(), 4);
+	drawQ(ctx, "Find the vector from P2 to the eye, and show the plane is visible" + " {2}", 5);
+	drawQ(ctx, "In MatLab, plot the plane, the vector P2 to the eye", 6)
+	drawQ(ctx, "and the normal from P2 of length 5" + " {2}", 7);
+}
+
+function doGaussianElim(ctx) {
+	createAxb (ctx, 3, 15, 27);
+
+	drawQ(ctx, "By hand:", 1);
+	drawQ(ctx, "Form the Augmented Matrix" + " {1}", 2);
+	drawQ(ctx, "Use Row Operations so this is in Row Echelon form" + " {3}", 3);
+	drawQ(ctx, "Hence find x in the equation Ax = b" + " {2}", 4);
+	drawQ(ctx, "Go to MatLab, and first confirm your answer" + " {2}", 5);
+	drawQ(ctx, "Then use determinants to find Augmented Matrix's Rank" + " {2}", 6);
+	drawQ(ctx, "Show all working. Is it what you expect?", 7);
+	doGEans();
+}
+
+function findAfromEigen(nrows, svals) {
+var e1 = fromSno(svals);		// eigenvals
+var e2 = fromSno(svals+1);
+var avals = [];
+	setMatVal(1, 0, 0, e1);
+	setMatVal(1, 1, 0, e2);
+	if (nrows == 2) {
+		avals[0] = Math.floor(fromSno(svals+2) * (e1+e2) / 10);
+		avals[3] = e1+e2-avals[0];
+		var temp = avals[0]*avals[3] - e1*e2;
+		avals[1] = (temp % 2 == 0) ? 2 : 1;
+		avals[2] = temp / avals[1];
+	}
+	else {
+		var e3 = fromSno(svals+2);	// third eval	
+		setMatVal(1, 2, 0, e3);
+		avals[0] = fromSno(svals+3) - 5;    // Math.floor(Math.random() * 3) - 3;	// a = rnd -3..3
+		avals[4] = fromSno(svals+4) - 5;    // Math.floor(Math.random() * 3) - 3;							// so a + b = 1
+		avals[8] = e1 + e2 + e3 - avals[0] - avals[4];		// have diagonal elements
+		avals[1] = 0;										// values to make maths easier
+		avals[2] = 1;
+		avals[7] = 1;
+		avals[6] = fromSno(svals[2]+3) - 5;    //  Math.floor(Math.random() * 3) - 3;									// g = rnd value
+		avals[5] = avals[0]*avals[4] + avals[0]*avals[8] + avals[4]*avals[8] - e1*e2 - e2*e3 - e3*e1 - avals[6];		// f = a+b+c-e1-e2-e3+g
+		avals[3] = -avals[0] * avals[4] * avals[8] + e1 * e2 * e3 + avals[0]*avals[5] + avals[6]*avals[4];
+	}
+	var ndx = 0;
+	for (var rct = 0; rct<nrows; rct++)
+		for (var cct = 0; cct<nrows; cct++)
+			setMatVal(0, rct, cct, avals[ndx++])
+}
+
+function doEigens(ctx, sz, ws) {
+	createMat(0, sz, sz, 1);
+	createUniqueVec(1, sz, 1);
+	findAfromEigen(sz, ws);
+	matMax = 1;  					// only show A
+	matNames = ["A", "ev"];
+	drawAllMats();
+	addQTitle(ctx);
+	if (sz==2) {
+		drawQ(ctx, "By hand, find the characteristic equation for the matrix A" + " {2}", 1);
+		drawQ(ctx, "and hence find the eigenvalues of A" + " {2}", 2);
+		drawQ(ctx, "and then find an eigenvector for each eigenvalue" + " {2}", 3);
+		drawQ(ctx, "Go to MatLab, and find the eigenvalues and eigenvectors, {1}", 4);
+		drawQ(ctx, "then show that your eigenvectors are multiples of MatLab's" + " {1}", 5);
+	}
+	else {
+		drawQ(ctx, "In MatLab, find the eigenvalues and eigenvectors of A" + " {2}", 1);
+		drawQ(ctx, "By hand, find the characteristic equation of A" + " {2}", 2);
+		drawQ(ctx, "Show that the 3 eigenvalues are roots of this" + " {2}", 3);
+		drawQ(ctx, "In MatLab, form matrix X from the three eigenvectors and ", 4);
+		drawQ(ctx, "show Inv(X) * A * X is a diagonal matrix" + " {2}", 5);
+	}
+	doEigAns();
+}
+
+
+function changeQuestion() {
+	getStudentNo()
+	if (snoOk) {
+		reportString("")
+		qsInString = "";
+		ansInString = "";
+		var ctx = matCanvas.getContext("2d");
+//		ctx.fillStyle="black"
+		ctx.textAlign = "left";
+
+		var qno = parseInt(document.getElementById("Question").selectedIndex);
+		switch (qno) {
+		   case 1 : doMatCalc(ctx); break
+		   case 2 : doMagicMat(ctx); break
+		   case 3 : doTrigonometry(ctx); break
+		   case 4 : doExpetc(ctx); break
+		   case 5 : doLinearTransform(ctx); break
+		   case 6 : doInverseAxb(ctx,2, 10, 15); break
+		   case 7 : doInverseAxb(ctx,3, 17, 8); break
+		   case 8 : doCramer(ctx, 2, 18, 20); break
+		   case 9 : doCramer(ctx, 3, 21, 5); break
+		   case 10 : doVectors(ctx); break
+		   case 11 : doGaussianElim(ctx); break
+		   case 12 : doEigens(ctx, 2, 26); break
+		   case 13 : doEigens(ctx, 3, 11); break
+		 } 
+		 document.getElementById("myTextarea").value = ""
+	}	
+}
+
+// End -->

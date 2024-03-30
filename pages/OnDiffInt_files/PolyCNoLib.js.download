@@ -1,0 +1,230 @@
+// RJMs library of routines for Complex Numbers and Polynomials
+// Richard Mitchell Mar 2013
+
+// first a complex number
+
+function complex (repart, impart) {
+this.re = repart
+this.im = impart
+this.toString = toString			// convert to string
+this.complexAdd = complexAdd		// define functions for Add, Mod, Arg, Power
+this.complexMult = complexMult
+this.complexDiv = complexDiv
+this.complexMod = complexMod
+this.complexArg = complexArg
+this.complexPower = complexPower
+	function toString() {
+		var polarForm = (arguments.length==0) ? "false" : arguments[0]
+		if (polarForm) return this.complexMod().toFixed(2)+" "+"\u2220"+" "+this.complexArg().toFixed(2)
+		else return this.re.toString()+" +j"+this.im.toString()
+	}  
+	function complexAdd (other) {
+		return new complex (this.re + other.re, this.im + other.im)
+	}
+	function complexMult (other) {
+		return new complex (this.re * other.re - this.im * other.im, this.re * other.im + this.im * other.re)
+	}
+	function complexDiv (other) {
+	    var den = other.re * other.re + other.im * other.im
+		return new complex ((this.re * other.re + this.im * other.im)/den, (-this.re * other.im + this.im * other.re)/den)
+	}
+	function complexPower (n) {
+	    if (n == 0) return new complex(1, 0)
+		else if (n == 1) return new complex(this.re, this.im)
+		else {
+		    var ans = this.complexPower(n-1)
+			return this.complexMult(ans)
+		}	
+	}
+	function complexMod () {
+		return Math.sqrt (this.re * this.re + this.im * this.im)
+	}
+	function complexArg () {
+		return Math.atan2 (this.im, this.re)
+	}
+}
+
+// Polynomials are just arrays [1 2 3] = 1 + 2x + 3x^2
+// The following converts numbers separated by spaces or tabs into an array of numbers
+
+function strToPoly(str) {
+var ans = new Array()				// empty array
+var ct = 0
+var act = -1
+var sct 
+var astr
+var gotdot
+	do {							// keep going til end of string
+		while (ct < str.length && str.charAt(ct) == " ") ct = ct + 1		// skip spaces
+		if (ct < str.length) {												// if not at end of string
+			astr = ""														// form string with next number
+			act = act + 1
+			sct = 0
+			gotdot = false													// assume integer
+			while (ct < str.length && str.charAt(ct) > " ") {
+				astr = astr + str.charAt(ct)
+				if (str.charAt(ct) == ".") gotdot = true					// . means is float
+				sct = sct + 1
+				ct = ct + 1
+			}
+			ans[act] = (gotdot)  ? parseFloat(astr) : parseInt(astr)
+		}
+	}
+	while (	ct < str.length )
+	return ans
+}
+
+function polyToStr(poly) {
+// convert polynomial into string of numbers
+var ans = ""
+var ct = 0
+	for (ct = 0; ct < poly.length; ct++) {
+	   if (ct > 0 ) ans = ans + " "
+	   ans = ans + poly[ct].toString()
+	}
+	return ans
+}
+
+function polyStrVar (poly, pvar) {
+// convert polynomial into string of form a + bx + cx^2   pvar sets whether in x, y etc
+var ans = ""
+	for (var ct = 0; ct < poly.length; ct++) {
+	     if (ct > 0) ans = ans + " + "
+		 ans = ans + poly[ct].toPrecision(2)
+		 if (ct > 0) ans = ans + pvar
+		 if (ct > 1) ans = ans + "^" + ct.toString()
+	}
+	return ans
+}
+
+function polyStrVarFixed (poly, pvar) {
+// convert polynomial into string of form a + bx + cx^2   pvar sets whether in x, y, s etc
+var ans = ""
+	for (var ct = 0; ct < poly.length; ct++) {
+	     if (ct > 0) ans = ans + " + "
+		 ans = ans + poly[ct].toFixed(3)
+		 if (ct > 0) ans = ans + pvar
+		 if (ct > 1) ans = ans + "^" + ct.toString()
+	}
+	return ans
+}
+
+function polyAddSub(py1, py2, addsubSign) {
+// add two polynomials
+// cope if of different sizes
+var maxct = (py1.length > py2.length) ? py1.length : py2.length		// which is longer
+var ans = new Array(maxct)
+	for (var ct = 0; ct < maxct; ct++) {
+	    ans[ct] = (ct < py1.length) ? py1[ct] : 0 					// include from first poly if not passed end
+		if (ct < py2.length) ans[ct] = ans[ct] +  py2[ct] * addsubSign	// add/sub  second if not passed end
+	}	
+	return ans
+}
+
+function polyAdd(py1, py2) {
+	return polyAddSub (py1, py2, 1)
+}
+
+function polySub(py1, py2) {
+	return polyAddSub (py1, py2, -1)
+}
+
+function polyMult(py1, py2) {
+// multiply two polys
+var ans = new Array (py1.length + py2.length - 1)					// set length of answer
+var ct
+	for (ct = 0; ct<ans.length; ct++) ans[ct] = 0					// set to 0 0 0 0
+	for (ct = 0; ct<py1.length; ct++) {
+		for (var ct2 = 0; ct2<py2.length; ct2++) {
+			ans[ct+ct2] = ans[ct+ct2] + py1[ct]*py2[ct2]
+		}
+	}
+	return ans
+}
+
+function polyDotMult (py1, py2) {
+// do p1[n]*p2[n] for all elements
+var ans = new Array(py1.length)
+	for (var ct = 0; ct < py1.length; ct++) {
+	   ans[ct] = py1[ct] *  py2[ct]	// multiply each element in turn
+	}	
+	return ans
+}
+
+function polyDotDiv (py1, py2) {
+// do p1[n]/p2[n] for all elements
+var ans = new Array(py1.length)
+	for (var ct = 0; ct < py1.length; ct++) {
+	   ans[ct] = py1[ct] /  py2[ct]	// multiply each element in turn
+	}	
+	return ans
+}
+
+function polyDotProd (py1, py2) {
+// do sum (p1[n]*p2[n]) for all elements
+var ans = 0
+	for (var ct = 0; ct < py1.length; ct++) {
+	   ans = ans + py1[ct] * py2[ct]	// multiply each element in turn
+	}	
+	return ans
+}
+
+
+
+function polyPart (p, i1, i2) {
+// return polynomial comprising elements p[i1]..p[i2]
+var ans = new Array(i2-i1+1)		// set length of answer
+	for (var ct = i1; ct <= i2; ct++) {
+	   ans[ct-i1] = p[ct]
+	}
+return ans
+}
+
+function polyZero (n) {
+// return n element polynomial with all element zero
+var ans = new Array (n)					// set length of answer
+	for (var ct = 0; ct <n; ct++) {
+	   ans[ct] = 0
+	}
+return ans
+}
+
+function polyScalarMult (p, scal) {
+// return n element polynomial with all element zero
+var ans = new Array (p.length)					// set length of answer
+	for (var ct = 0; ct <p.length; ct++) {
+	   ans[ct] = p[ct]*scal
+	}
+return ans
+}
+
+
+function polyEval(py, pv) {
+// evaluate polynomials py whetre variable is pv  
+// [1 2 3], 4 = 1 + 2*4 + 3*4^2
+var ans = 0
+	for (ct = 0; ct<py.length; ct++) ans = ans + py[ct] * Math.pow(pv, ct)
+	return ans
+}
+
+function polyComplexEval(py, pv) {
+// evaluate polynomal where variable is j pv
+// returns complex number
+var rp = 0
+var ip = 0
+var pval = 0
+	for (ct = 0; ct<py.length; ct++) {
+		pval = py[ct] * Math.pow(pv, ct)
+		switch (ct % 4) {
+			case 0: rp = rp + pval
+					break
+			case 1: ip = ip + pval
+					break
+			case 2: rp = rp - pval
+					break
+			case 3: ip = ip - pval
+					break
+		}			
+	}	
+	return new complex (rp, ip)
+}

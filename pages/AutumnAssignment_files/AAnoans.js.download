@@ -1,0 +1,33 @@
+<!-- Begin
+
+// Code with dummy functions so Qs dont have answers
+
+function doMatCalcAns() {
+}
+
+function doMagicAns () {
+}
+
+function doTrigans(x, y) {
+}
+
+function doLTans(x, y, a) {
+}
+
+function doInvAxbAns () {
+}
+
+function doCramerAns() {
+}
+
+function doVAns(ep, p2, v1, v2, n) {
+}
+
+function doGEans() {
+}
+
+function doEigAns() {
+}
+
+
+// End -->

@@ -216,6 +216,30 @@ body {
   overflow: hidden;
 }
 
+.btnx {
+  background-color: var(--kappel);
+  color: var(--white);
+  font-family: var(--ff-league_spartan);
+  font-size: var(--fs-4);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  max-width: max-content;
+  padding: 5px 15px;
+  border-radius: var(--radius-5);
+  overflow: hidden;
+}
+
+.button-container {
+  white-space: nowrap; /* Prevent line breaks */
+}
+
+.btnx {
+  display: inline-block;
+  margin-right: 10px; /* Adjust spacing between buttons if needed */
+}
+
+
 .has-before,
 .has-after {
   position: relative;

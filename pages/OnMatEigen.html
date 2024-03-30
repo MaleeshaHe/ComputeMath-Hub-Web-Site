@@ -1,0 +1,416 @@
+
+<!-- saved from url=(0067)http://www.personal.reading.ac.uk/~shsmchlr/jsmaths/OnMatEigen.html -->
+<html style="--canvbgcol: #e9eae8; --canvhcol: #a00000; --canvtcol: #101010; --h1col: #bf0000; --h2col: #50535a; --ppcol: #0f0f0f; --ibgcol: #fffdf0; --ipcol: #0f0f0f; --butcol: #202020; --butbgcol: #d0d0d0; --linknorm: #000036; --linkvisited: #36003b; --linkactive: #360000;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<link rel="stylesheet" type="text/css" href="./OnMatEigen_files/style.css">
+<script type="text/javascript" src="./OnMatEigen_files/forcolours.js.download"></script>
+
+<script type="text/javascript" src="./OnMatEigen_files/MatrixLib.js.download"></script>
+<script type="text/javascript" src="./OnMatEigen_files/ThreeDMatrix.js.download"></script>
+<script type="text/javascript" src="./OnMatEigen_files/matShow.js.download"></script>
+<script type="text/javascript" src="./OnMatEigen_files/mytimer.js.download"></script>
+
+
+
+<script language="JavaScript">
+
+
+<!-- Begin
+
+
+var chareq = [];		// terms for Char Eqn
+var lambda = "\u039B".toLowerCase();
+
+var canvasback = "rgb(233, 234, 232)"
+
+function reportString (rstr) {
+	document.getElementById("mess").innerHTML=rstr
+}
+
+function findAfromEigen(aMat, EigValMat) {
+var e1 = getMatVal(EigValMat, 0, 0);		// eigenvals
+var e2 = getMatVal(EigValMat, 1, 0);
+var avals = [];
+	if (getRows(1) == 2) {
+		avals[0] = Math.floor(Math.random() * (e1+e2));
+		avals[3] = e1+e2-avals[0];
+		var temp = avals[0]*avals[3] - e1*e2;
+		avals[1] = (temp % 2 == 0) ? 2 : 1;
+		avals[2] = temp / avals[1];
+	}
+	else {
+		var e3 = getMatVal(EigValMat, 2, 0);	// third eval	
+		avals[0] = Math.floor(Math.random() * 3) - 3;	// a = rnd -3..3
+		avals[4] = Math.floor(Math.random() * 3) - 3;							// so a + b = 1
+		avals[8] = e1 + e2 + e3 - avals[0] - avals[4];		// have diagonal elements
+		avals[1] = 0;										// values to make maths easier
+		avals[2] = 1;
+		avals[7] = 1;
+		avals[6] = Math.floor(Math.random() * 3) - 3;									// g = rnd value
+		avals[5] = avals[0]*avals[4] + avals[0]*avals[8] + avals[4]*avals[8] - e1*e2 - e2*e3 - e3*e1 - avals[6];		// f = a+b+c-e1-e2-e3+g
+		avals[3] = -avals[0] * avals[4] * avals[8] + e1 * e2 * e3 + avals[0]*avals[5] + avals[6]*avals[4];
+	}
+	var ndx = 0;
+	for (var rct = 0; rct<getRows(1); rct++)
+		for (var cct = 0; cct<getRows(1); cct++)
+			setMatVal(aMat, rct, cct, avals[ndx++])
+}
+
+function setMatrix (sstr) {
+var sopt = document.getElementById(sstr).value;
+var mSize =  sopt.charCodeAt(0) - 48; 
+   
+	createMat(1, mSize, 1, 0);
+	allMats[1].showAsString = true
+	createMat(0, mSize, mSize, 0);
+	findAfromEigen(0, 1);
+	createMat(2, mSize, mSize, 1);
+	matMax = 1;
+	
+	matMess = "";
+	drawAllMats();
+
+}
+
+function changeASize() {
+		// called when press New Equation or Change Size of A
+   setMatrix ("setAsize");
+}
+
+function myPoly2str(p) {
+var n = p.length-1
+var res = ""
+	for (var ct = 0; ct<p.length; ct++) {
+		if (p[ct] != 0) {
+			if (p[ct]<0) res = res + " -"
+			else if (ct > 0) res = res + " +"
+			if ( (Math.abs(p[ct])>1) || (n == 0) ) res = res + Math.abs(p[ct]).toString();
+			if (n>1) res = res + lambda + "^" + n.toString(); 
+			else if (n>0) res = res + lambda
+		}
+		n--
+	}	
+	return res;
+}	
+	
+function getCharEqn() {
+var res = "Char Eqn is ";
+	if (getRows(0)==2) {
+		var a = getMatVal(0,0,0)
+		var d = getMatVal(0,1,1);
+		chareq = [1, -(a + d), a*d - getMatVal(0,0,1)*getMatVal(0,1,0)];
+	}
+	else {
+		var a = getMatVal(0,0,0);
+		var b = getMatVal(0,1,1);
+		var c = getMatVal(0,2,2);
+		var f = getMatVal(0, 1, 2);
+		var e = getMatVal(0, 1, 0);
+		var g = getMatVal(0, 2, 0);
+		chareq = [-1, a + b + c, -a*b - b*c - c*a + f + g, a*b*c - a*f + e - b*g];
+		
+	}
+	return "Char Eqn is " + myPoly2str(chareq)+" = 0";
+}
+
+function plusMinusString(num, isplus) {
+			// return + num or - num as string    
+	var res = " "
+	if ((num>=0) == isplus) res="+ "; else res= "- "
+	res = res + Math.abs(num).toString();
+	return res;
+}
+
+function getGCF (v1, v2) {
+var temp;
+	v1 = Math.abs(v1);
+	v2 = Math.abs(v2);
+	if (v1 < v2) {
+		temp = v1;
+		v1 = v2;
+		v2 = temp;
+	}
+	while (v2>0) {
+		temp = v1 % v2;
+		v1 = v2;
+		v2 = temp;
+	}
+	return v1;
+}
+	
+function doRowOp(r1, r2, c) {
+	// row r2 = row r1 * x + row r2 * y
+	var temp
+	var rabove = getMatVal(4, r1, c);						// get values in the two rows
+	var rthis = getMatVal(4, r2, c);
+	if (rthis != 0) {										// if this already 0 do nowt
+		if (rabove == 0) {									// if above 0, swap rows
+			for (var cct=0; cct<getCols(4); cct++) {
+				temp = getMatVal(4,r1,cct);
+				setMatVal(4, r1, cct, getMatVal(4,r2,cct));
+				setMatVal(4, r2, cct, temp);
+			}
+		}
+		else {
+			var gcf = getGCF(Math.abs(rabove), Math.abs(rthis)) ;	// find gcf so use smallest values
+			if (gcf>0) {
+				rthis = rthis / gcf;
+				rabove = rabove / gcf;
+			}	
+					// now do this row = other & this - this * rabove
+			for (var cct=0; cct<getCols(4); cct++)
+				setMatVal(4, r2, cct, getMatVal(4, r1, cct)*rthis - getMatVal(4, r2, cct)*rabove)
+		}		
+	}		
+}
+
+
+
+function loadEigenvalue(whichEig) {
+	// Copy A matrix, into Mat 3, and subtract eigen value down diagonal
+var eigVal = getMatVal(1, whichEig, 0);
+	matMess = "A " + plusMinusString(eigVal, false) + "I";
+	doCopyMat(0,3,false)
+	for (var ct=0; ct<getRows(0); ct++) setMatVal(3,ct, ct, getMatVal(0, ct, ct) - eigVal)
+	matMax = 4;
+}
+
+function sayNextEigen(we) {
+	var eigVal = getMatVal(1, we, 0);
+	reportString("Next form A " + plusMinusString(eigVal, false) + "I");
+}
+
+function doEigenStage() {
+var ans = true;
+var eStage = simStage - 5
+	if (getRows(0)==2) {
+		if (eStage < 2* getRows(0) ){
+			var whichEig = Math.floor(eStage / 2);
+			if (eStage % 2 == 0)	{			// generate A-lI
+				loadEigenvalue(whichEig)
+				reportString("Next find and install eigenvectors")
+			}
+			else {
+				var efac = getGCF (getMatVal(3, 0, 0), getMatVal(3, 0, 1));
+				setMatVal(2, 0, whichEig, getMatVal(3, 0, 1) / efac)   // for 2*2 only
+				setMatVal(2, 1, whichEig, -getMatVal(3, 0, 0) / efac)   // for 2*2 only
+				if (whichEig==0) sayNextEigen(1); else ans = false
+			}	
+		}	
+		else ans = false;
+	}
+	else {
+		if (eStage <  3* getRows(0) ){
+			var whichEig = Math.floor((simStage-5)/3);
+			if (eStage % 3 == 0)	{			// generate A-lI
+				loadEigenvalue(whichEig)
+				reportString("Next get into Row Echelon form")
+			}
+			else if (eStage % 3 == 1)	{		// do row ops on  A-lI
+				doCopyMat(3, 4, false);
+				doRowOp(0, 1, 0);
+				doRowOp(0, 2, 0);
+				doRowOp(1, 2, 1);
+				matMax = 5
+				reportString("Next find and install eigenvectors")
+			}
+			else {
+				var efac = getGCF (getMatVal(4, 1, 1), getMatVal(4, 1, 2));
+				var xval = getMatVal(4,0,0);				// remember first val
+				var evec = [0, Math.abs(xval)*getMatVal(4, 1, 2) / efac, -Math.abs(xval)*getMatVal(4, 1, 1) / efac];
+				evec[0] = (-getMatVal(4,0,1)*evec[1] - getMatVal(4,0,2)*evec[2])/xval;
+				var gcf1 = getGCF(evec[0], evec[1]);
+				var gcf2 = getGCF(evec[1], evec[2]);
+				var gcf = getGCF(gcf1, gcf2)
+				for (var ct=0; ct<3;ct++)
+					setMatVal(2, ct, whichEig, evec[ct]/gcf)
+				if (whichEig<2) sayNextEigen(whichEig+1); else ans = false
+				
+			}
+		}
+		else ans = false
+	}
+	if (ans == false) reportString("")
+
+	return ans
+}
+
+function termString (val) {
+		// return as (lamda - val)
+	return "(" + lambda + plusMinusString(val, false)+")";
+}
+
+function simEigen() {
+	if (simStage==1) {
+		reportString("First find characteristic equation")
+		simStage = 2;
+	}
+	else if (simStage==2) {
+		matMess = getCharEqn();
+		drawAllMats();
+		reportString("Next factorise char eqn");
+		simStage = 3;
+	}
+	else if (simStage == 3) {
+		if (getRows(1)==2) {
+			var rsq = Math.sqrt(chareq[1]*chareq[1] - 4*chareq[2]);
+			var r1 = (-chareq[1] + rsq) / 2;
+			var r2 = (-chareq[1] - rsq) / 2;
+			matMess = "Factorise as " + termString(r1) + termString(r2) + " = 0";
+		}
+		else {
+			matMess = "Factorise as " + termString(getMatVal(1, 0, 0)) + termString(getMatVal(1, 1, 0)) + termString(getMatVal(1, 2, 0))+ " = 0";
+		}
+		drawAllMats();
+		reportString("So eigenvalues are?")
+		simStage = 4;
+	}
+	else if (simStage == 4) {
+		matMess = "Eigenvalues installed"
+		allMats[1].showAsString = false		
+		matMax = 2;
+		drawAllMats();
+		sayNextEigen(0);
+		simStage = 5;
+	}
+	else if (doEigenStage() ) {
+		drawAllMats();
+		simStage++
+	}	
+	else {	
+		matMax = 3;
+		matMess = ""
+		drawAllMats();
+		simMode = -1
+	}	
+}
+
+function simNext() {
+	if (simMode==-1) {		// mode when done , to tidy up
+		endAnim();		// say done.
+		reportString("Done")
+		drawAllMats()
+	}
+    else if (simMode == 1) {  // do inverse
+		simEigen();
+	}	
+}
+
+function setAnimStart (mode, sstage) {
+	matMax = 1;							// so just show Ax=b
+	matMess = ""
+	allMats[1].showAsString = true		// hide values in x
+	createMat(2, getRows(0), getCols(0), 1);	// force eigen vec to 0
+	drawAllMats();
+	startAnim (mode, sstage)
+}
+
+function setSelectIndex (newM) {
+	var ndx = getRows(newM)-2;			// now update drop down list for A being 0 if 2*2, 1 for 3*3B
+	var ndxStr = ndx.toString();
+	if (newM==1)
+		document.getElementById("setAsize").selectedIndex = ndxStr;
+	else
+		document.getElementById("setBsize").selectedIndex = ndxStr;
+
+}
+
+function doFindEigen() {
+	setAnimStart(1,1);
+}
+
+function doTogColours() {
+	togColours();
+	endAnim();
+	matMax = 1;
+	matMess = "";
+	drawAllMats();
+}
+
+
+function load() {
+	window.defaultStatus="RJM's Demo of Eigenvalues";
+	initPageColours();
+
+	setupgraphs("myCanvasSYS");
+	setTimer();
+	document.getElementById("setAsize").selectedIndex = "0";
+	matNames = ["A", "Eigenvalues", "EigenVectors", "A - "+lambda +"I", "Post RowOp"];
+	setMatrix("setAsize");
+}
+
+
+// End -->
+</script>
+
+<!-- STEP TWO: Add the relevant event handlers to the BODY tag  --> 
+
+</head><body onload="load()" data-new-gr-c-s-check-loaded="14.1165.0" data-gr-ext-installed="">
+	<div id="wrapper">
+
+		<div class="intro">
+				<h1>On Eigenvalues </h1>
+				<p>You can set matrix A to be 2*2 or 3*3, whose eignvalues and eigenvectors are determined</p>
+				<p>First the characteristic equation is found. Its roots are the eigenvalues.</p>
+				<p>For each eigenvalue λ, A-λ I is processed to fond the eigenvector.</p> 
+				<p>By default these operations are animated, showing the stages in the method - 
+				    and you can speed up/slow down or pause/resume the animation. However you can
+					choose to manually step through the process.</p>
+
+		</div>
+		<div class="robot">
+			<form name="mathssys">
+				<canvas id="myCanvasSYS" name="myCanvasSYS" width="600" height="300"></canvas>
+			</form>
+			<div class="left">
+			<p>
+			Size A
+			<select id="setAsize" onchange="changeASize()">
+				<option>2*2</option>
+				<option>3*3</option>
+			</select>
+			<input type="button" class="button" id="new" value="New Matrix" onclick="changeASize();">
+			</p>
+				<p id="mess"></p>
+			</div>
+			<div class="right">
+				<p><input type="button" class="button" id="findEigen" value="Start method" onclick="doFindEigen();">
+				</p>
+				<p>
+					<input type="checkbox" id="animCheck" checked="true" onclick="setchecked();">  Animate &nbsp;
+					<input type="button" class="button" id="pauseB" value="Pause" onclick="doPause();">
+					<input type="button" class="button" id="spUp" value="Faster" onclick="dospeed(-1);">
+					<input type="button" class="button" id="spDn" value="Slower" onclick="dospeed(1);">
+				</p>
+			</div>
+		</div>
+
+
+		<div class=""></div>
+	
+	</div>
+
+
+
+
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
+      div.grammarly-desktop-integration {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select:none;
+        user-select:none;
+      }
+
+      div.grammarly-desktop-integration:before {
+        content: attr(data-content);
+      }
+    </style><div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>

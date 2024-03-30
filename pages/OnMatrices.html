@@ -1,0 +1,337 @@
+
+<!-- saved from url=(0067)http://www.personal.reading.ac.uk/~shsmchlr/jsmaths/OnMatrices.html -->
+<html style="--canvbgcol: #e9eae8; --canvhcol: #a00000; --canvtcol: #101010; --h1col: #bf0000; --h2col: #50535a; --ppcol: #0f0f0f; --ibgcol: #fffdf0; --ipcol: #0f0f0f; --butcol: #202020; --butbgcol: #d0d0d0; --linknorm: #000036; --linkvisited: #36003b; --linkactive: #360000;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<link rel="stylesheet" type="text/css" href="./OnMatrices_files/style.css">
+<script type="text/javascript" src="./OnMatrices_files/forcolours.js.download"></script>
+
+<script type="text/javascript" src="./OnMatrices_files/MatrixLib.js.download"></script>
+<script type="text/javascript" src="./OnMatrices_files/ThreeDMatrix.js.download"></script>
+<script type="text/javascript" src="./OnMatrices_files/matShow.js.download"></script>
+<script type="text/javascript" src="./OnMatrices_files/mytimer.js.download"></script>
+
+
+
+<script language="JavaScript">
+
+
+<!-- Begin
+
+var simrct, simcct;
+
+var canvasback = "rgb(233, 234, 232)"
+
+function reportString (rstr) {
+	document.getElementById("mess").innerHTML=rstr
+}
+
+function setMatrix (ndx, sstr) {
+var sopt = document.getElementById(sstr).value;
+var row, col;
+   row =  sopt.charCodeAt(0) - 48; 
+   col =  sopt.charCodeAt(2) - 48; 
+  
+/*switch (sopt) {
+	case 0 : row = 1; col = 1; break
+	case 1 : row = 1; col = 2; break
+	case 2 : row = 2; col = 1; break
+	case 3 : row = 2; col = 2; break
+}
+*/
+	createMat(ndx, row, col, 0);
+	drawAllMats();
+
+}
+
+function changeASize() {
+   setMatrix (1, "setAsize");
+}
+function changeBSize() {
+   setMatrix (2, "setBsize");
+}
+
+function nextRowCol() {  // move to next row and col
+	drawAllMats();
+	if (simcct<getCols(0)-1)
+		simcct++;
+	else if ( simrct<getRows(0)-1 ){
+		simcct=0;
+		simrct++;
+	}
+	else {
+
+		simMode = -1;
+	}	
+
+}
+
+function simNext() {
+	if (simMode==-1) {		// mode when done , to tidy up
+		for (mct=0; mct<3; mct++) allMats[mct].createHighlight (0);
+		matMess = "";
+		drawAllMats()
+		endAnim()		// say done.
+		reportString("Done")
+	}
+    else if (simMode == 1) {  // matAdd
+		for (mct=0; mct<3; mct++) {
+			allMats[mct].createHighlight (0);
+			allMats[mct].highLightElement(simrct,simcct,1);
+		}
+		aval = getMatVal(1, simrct, simcct)
+		bval = getMatVal(2, simrct, simcct)
+		matMess = "Doing elements " + (simrct+1) + "," + (simcct+1) + " ie " + aval + " + " + bval;
+		setMatVal(0, simrct, simcct, aval + bval );
+		nextRowCol();
+	}	
+    else if (simMode == 2) {  // matMult		for (mct=0; mct<3; mct++) {
+		for (mct=0; mct<3; mct++) allMats[mct].createHighlight (0);
+		allMats[0].highLightElement(simrct,simcct,1);
+		allMats[1].highLightRow(simrct, 1);
+		allMats[2].highLightCol(simcct, 1);
+
+		matMess = "Doing row " + (simrct+1) + " in A and col " + (simcct+1) + " in B";
+		setMatVal(0, simrct, simcct, matMultElem(1, 2, simrct, simcct) );
+		nextRowCol();
+	}	 
+    else if (simMode == 3) {  // trans
+		for (mct=0; mct<2; mct++) allMats[mct].createHighlight (0);
+		allMats[0].highLightElement(simcct,simrct,1);
+		allMats[1].highLightElement(simrct,simcct,1);
+		matMess = "Doing elements " + (simrct+1) + "," + (simcct+1) ;
+		setMatVal(0, simrct, simcct, getMatVal(1, simcct, simrct) );
+		nextRowCol();
+	}	
+	else if (simMode == 4) {   // det
+	    if (getCols(1)==1) {
+			matMess = "1*1 matrix so answer is this element " + getMatVal(1, simrct, simcct);
+			setMatVal(0, simrct, simcct, getMatVal(1, simrct, simcct) );
+		}
+		else {
+			allMats[1].createHighlight (1);
+			allMats[1].highLightRow(simrct, 0);
+			allMats[1].highLightCol(simcct, 0);
+			allMats[1].highLightElement(simrct,simcct,2);
+			matMess = "Add A[1,"+(simcct+1)+"] * (-1)^"+(2+simrct+simcct)+" * det(remainder)";
+			var numval = getMatVal(1, 0, simcct);
+			var detVal = (getCols(1)==2) ? getMatVal(1,1,1-simcct) : detSubM(1, simrct, simcct);
+			setMatVal(0,0,0, getMatVal(0,0,0) + numval * Math.pow(-1, simcct) * detVal);
+
+		}
+		drawAllMats();
+		if (simcct<getCols(1)-1) simcct++; else simMode = -1;
+	}
+	else if (simMode == 5) {   // adj
+		if (getCols(1)==1) {
+			matMess = "1*1 matrix so answer is this element " + getMatVal(1, simrct, simcct);
+			setMatVal(0, simrct, simcct, getMatVal(1, simrct, simcct) );
+		}
+		else {
+			allMats[0].createHighlight (0);
+			allMats[0].highLightElement(simcct,simrct,1);
+			allMats[1].createHighlight (1);
+			allMats[1].highLightRow(simrct, 0);
+			allMats[1].highLightCol(simcct, 0);
+			allMats[1].highLightElement(simrct,simcct,2);
+			matMess = "R["+(simcct+1)+","+(simrct+1)+"] * (-1)^"+(2+simrct+simcct)+" * det(remainder)";
+			setMatVal(0,simcct, simrct, matAdjointVal(1, simrct, simcct))
+		}
+		nextRowCol();
+	}
+
+}
+
+function setAnimStart (mode, Rrow, Rcol) {
+	reportString("")
+	createMat(0, Rrow, Rcol, 1);		// create R of correct size
+	allMats[0].showBracket = (mode != 4);	// if R = det(A) then dont show bracket
+	simrct = 0;							// initialise counters
+	simcct = 0;
+	startAnim (mode, 0)
+	drawAllMats();
+}
+
+function doAdd() {
+var rows, cols 
+   rows = getRows(1);
+   cols = getCols(1);
+   if ((rows == getRows(2)) && (cols == getCols(2)) )  setAnimStart(1, rows, cols)
+   else reportString("Incompatible sizes");
+}
+
+function doMult() {
+var rows, cols 
+   rows = getRows(1);
+   cols = getCols(1);
+   if ( cols == getRows(2) )  setAnimStart(2, rows, getCols(2))
+   else reportString("Incompatible sizes");
+}
+
+function doTrans() {
+var rows, cols 
+   rows = getRows(1);
+   cols = getCols(1);
+   setAnimStart(3, cols, rows)
+} 
+
+function doDet() {
+var rows, cols 
+   rows = getRows(1);
+   cols = getCols(1);
+   if ( cols == rows )  setAnimStart(4, 1, 1)
+   else reportString("Must be Square Matrix");
+}
+
+function doAdj() {
+var rows, cols 
+   rows = getRows(1);
+   cols = getCols(1);
+   if ( cols == rows )  setAnimStart(5, rows, cols)
+   else reportString("Must be Square Matrix");
+}
+
+function setSelectIndex (newM) {
+	var ndx = (getRows(newM)-1)*3+getCols(newM)-1;			// now update drop down list for A or B
+	var ndxStr = ndx.toString();
+	if (newM==1)
+		document.getElementById("setAsize").selectedIndex = ndxStr;
+	else
+		document.getElementById("setBsize").selectedIndex = ndxStr;
+
+}
+
+function doCopy(toM) {
+		// copy AllMats[0] to AllMats[toM]
+	doCopyMat(0, toM, true);
+	setSelectIndex(toM);
+}
+
+function doSwap() {
+	doSwapMats();
+	setSelectIndex(1);
+	setSelectIndex(2);
+}
+
+function doTogColours() {
+	togColours();
+	endAnim();
+	matMax = 3;
+	drawAllMats();
+}
+
+
+function load() {
+	window.defaultStatus="RJM's Demo of Matrix Operations";
+	initPageColours();
+	setupgraphs("myCanvasSYS");
+	setTimer();
+	document.getElementById("setAsize").selectedIndex = "7";
+	document.getElementById("setBsize").selectedIndex = "5";
+
+}
+
+
+// End -->
+</script>
+
+<!-- STEP TWO: Add the relevant event handlers to the BODY tag  --> 
+
+</head><body onload="load()" data-new-gr-c-s-check-loaded="14.1165.0" data-gr-ext-installed="">
+	<div id="wrapper">
+
+		<div class="intro">
+				<h1>On Matrices </h1>
+				<p>Three matrices are shown, in order R, A and B. You can select different sizes for A and B.
+				If you select an element, you can change its value.</p> 
+				<p>You can then command operations to be performed, such as R = A+B or R = A*B.
+				   You can compute the transpose, determinant or adjoint of A.
+				   You can copy the result to either A or B, and swap A and B.</p>
+				<p>By default these operations are animated, showing the stages in the method - 
+				    and you can speed up/slow down or pause/resume the animation. However you can
+					choose to manually step through the process.</p>
+
+		</div>
+		<div class="robot">
+			<form name="mathssys">
+				<canvas id="myCanvasSYS" name="myCanvasSYS" width="600" height="300"></canvas>
+			</form>
+			<div class="left">
+			<p>
+			Size A
+			<select id="setAsize" onchange="changeASize()">
+				<option>1*1</option>
+				<option>1*2</option>
+				<option>1*3</option>
+				<option>2*1</option>
+				<option>2*2</option>
+				<option>2*3</option>
+				<option>3*1</option>
+				<option>3*2</option>
+				<option>3*3</option>
+			</select>
+			Size B
+			<select id="setBsize" onchange="changeBSize()">
+				<option>1*1</option>
+				<option>1*2</option>
+				<option>1*3</option>
+				<option>2*1</option>
+				<option>2*2</option>
+				<option>2*3</option>
+				<option>3*1</option>
+				<option>3*2</option>
+				<option>3*3</option>
+			</select>
+			</p>
+			<p><input type="button" class="button" id="RtoA" value="Copy R to A" onclick="doCopy(1);">
+			<input type="button" class="button" id="RtoB" value="Copy R to B" onclick="doCopy(2);">
+			<input type="button" class="button" id="swapAB" value="Swap A and B" onclick="doSwap();">
+			</p>
+				<p id="mess"></p>
+			</div>
+			<div class="right">
+				<p><input type="button" class="button" id="AplusB" value="R = A + B" onclick="doAdd();">
+				    <input type="button" class="button" id="AplusB" value="R = A * B" onclick="doMult();">
+				    <input type="button" class="button" id="Atrans" value="R = Trans(A)" onclick="doTrans();">
+				</p>
+				<p><input type="button" class="button" id="detA" value="det(A)" onclick="doDet();">
+				<input type="button" class="button" id="detA" value="R = adj(A)" onclick="doAdj();">
+				</p>
+				<p>
+					<input type="checkbox" id="animCheck" checked="true" onclick="setchecked();">  Animate &nbsp;
+					<input type="button" class="button" id="pauseB" value="Pause" onclick="doPause();">
+					<input type="button" class="button" id="spUp" value="Faster" onclick="dospeed(-1);">
+					<input type="button" class="button" id="spDn" value="Slower" onclick="dospeed(1);">
+				</p>
+			</div>
+		</div>
+
+
+
+		<div class=""></div>
+	
+	</div>
+
+
+
+
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
+      div.grammarly-desktop-integration {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select:none;
+        user-select:none;
+      }
+
+      div.grammarly-desktop-integration:before {
+        content: attr(data-content);
+      }
+    </style><div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>

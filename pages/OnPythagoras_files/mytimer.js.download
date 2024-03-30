@@ -1,0 +1,81 @@
+<!-- Begin
+
+// Code to handle timer for pages which can either step or be animated
+// Assumes the following in the pages
+//					<input type="checkbox" id="animCheck" checked="true" onclick="setchecked();">  Animate &nbsp;
+//					<input type="button" id="pauseB" value = "Pause" onclick="doPause();">
+//					<input type="button" id="spUp" value = "Faster" onclick="dospeed(-1);">
+//					<input type="button" id="spDn" value = "Slower" onclick="dospeed(1);">
+
+
+var simtime = 200
+var speedCount = 0, speedMax = 10
+var simMode = 0;
+var simStage = 0;
+var paused = false;
+
+function startAnim (mode, sstage) {
+	simCount = speedMax-1;				// so do something immediately
+	simStage = sstage;					// stage in mode
+	simMode = mode;						// set mode
+	if (document.getElementById("animCheck").checked == false) 
+		document.getElementById("pauseB").style.visibility = "visible";
+}
+
+function endAnim() {
+	simMode = 0
+	if (document.getElementById("animCheck").checked == false) 
+		document.getElementById("pauseB").style.visibility = "hidden";
+		
+
+}
+
+function doTimer() {
+    if ( (paused == false) && (simMode != 0) ) {
+		speedCount++
+		if (speedCount > speedMax) {
+			speedCount = 0
+			 simNext() 
+		}
+	}	
+} 
+
+function doPause() {
+	if (document.getElementById("animCheck").checked) {
+		paused = ! paused;
+		if (paused)
+			document.getElementById("pauseB").value="Resume";
+		else 
+			document.getElementById("pauseB").value="Pause";
+	}
+	else simNext()
+}
+
+function setTimer() {
+	timerVar = setInterval(function(){doTimer()},simtime);
+}
+
+function dospeed(ds) {
+	speedMax += ds
+}	
+
+function setchecked() {
+	if (document.getElementById("animCheck").checked) {
+		document.getElementById("spUp").style.visibility = "visible";
+		document.getElementById("spDn").style.visibility = "visible";
+		document.getElementById("pauseB").value="Pause";
+		document.getElementById("pauseB").style.visibility = "visible";
+		paused = false
+	}
+	else {
+		document.getElementById("spUp").style.visibility = "hidden";
+		document.getElementById("spDn").style.visibility = "hidden";
+		if (simMode<=0) document.getElementById("pauseB").style.visibility = "hidden";
+		document.getElementById("pauseB").value="Next";
+		paused = true
+	}	
+}
+	
+	
+
+// End -->+

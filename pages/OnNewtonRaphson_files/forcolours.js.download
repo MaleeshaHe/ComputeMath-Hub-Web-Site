@@ -1,0 +1,85 @@
+// RJMs file for handling colours
+
+ var colourMode = 0;
+ //              canvbgcol  canvhcol  canvtcol     h1col   h2col      pcol      ibgcol     ipcol      butcol   butbgcol linknorm linkvisited linkhover  
+ var normCol = ["#e9eae8", "#a00000", "#101010", "#bf0000", "#50535a", "#0f0f0f", "#fffdf0", "#0f0f0f", "#202020", "#d0d0d0", "#000036", "#36003b", "#360000"];
+ var invCol  = ["#161715", "#ff0000", "#f0f0f0", "#ff0000", "#afafa5", "#ffffff", "#2f2f2f", "#fefefe", "#a0a0a0", "#000020", "#00ff00", "#ffc0cb", "#ff0000"];
+var canvasback = "rgb(233, 234, 232)"
+
+// normal link colours were "#004600", "#46303b", "#460000"s 
+
+// https://css-tricks.com/a-complete-guide-to-dark-mode-on-the-web/#aa-using-a-body-class
+
+var r = document.querySelector(':root');
+
+function initPageColours() {				// sets up colour mode as specified from page called 
+var pageurl = window.location; //.href;
+var urlquery = pageurl.search;
+var setdark = urlquery.includes("dark"); 
+	if (setdark) colourMode = 1;
+	togColours();
+}
+
+
+function togColours() {
+	colourMode = 1 - colourMode;
+	if (colourMode == 1) {
+	  r.style.setProperty('--canvbgcol', normCol[0]);
+	  r.style.setProperty('--canvhcol', normCol[1]);
+	  r.style.setProperty('--canvtcol', normCol[2]);
+	  r.style.setProperty('--h1col', normCol[3]);
+	  r.style.setProperty('--h2col', normCol[4]);
+	  r.style.setProperty('--ppcol', normCol[5]);
+	  r.style.setProperty('--ibgcol', normCol[6]);
+	  r.style.setProperty('--ipcol', normCol[7]);
+	  r.style.setProperty('--butcol', normCol[8]);
+	  r.style.setProperty('--butbgcol', normCol[9]);
+	  r.style.setProperty('--linknorm', normCol[10]);
+	  r.style.setProperty('--linkvisited', normCol[11]);
+	  r.style.setProperty('--linkactive', normCol[12]);
+	}  
+	else {
+	  r.style.setProperty('--canvbgcol', invCol[0]);
+	  r.style.setProperty('--canvhcol', invCol[1]);
+	  r.style.setProperty('--canvtcol', invCol[2]);
+	  r.style.setProperty('--h1col', invCol[3]);
+	  r.style.setProperty('--h2col', invCol[4]);
+	  r.style.setProperty('--ppcol', invCol[5]);
+	  r.style.setProperty('--ibgcol', invCol[6]);
+	  r.style.setProperty('--ipcol', invCol[7]);
+	  r.style.setProperty('--butcol', invCol[8]);
+	  r.style.setProperty('--butbgcol', invCol[9]);
+	  r.style.setProperty('--linknorm', invCol[10]);
+	  r.style.setProperty('--linkvisited', invCol[11]);
+	  r.style.setProperty('--linkactive', invCol[12]);
+	}
+}
+ 
+function getrootcol(wcol) {
+   var rs = getComputedStyle(r);
+   return rs.getPropertyValue(wcol);
+} 
+
+function clearcanvas(cname) {
+var canvas = document.getElementById(cname);
+var ctx=canvas.getContext("2d");
+    ctx.fillStyle = getrootcol("--canvbgcol");	//canvasback
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+	return ctx;
+}
+
+function colstr() {			// when navigating add info on colours
+   if (colourMode == 0) return "?dark"; else return "";
+}
+
+function gobackwithcol() {			/// so can go bacjk toi prev page but keep current colour setting
+var referrer = document.referrer;
+	if (referrer.length > 0) {
+		referrer = referrer.replace("?dark", "");		// remove calling parameter ?dark if existrs
+		referrer = referrer + colstr();					// add ?dark if current mode is dark
+		window.open(referrer, "_self");
+	}
+	else history.back();
+}
+
+

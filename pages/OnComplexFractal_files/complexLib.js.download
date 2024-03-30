@@ -1,0 +1,67 @@
+// RJMs library of routines for complex numbers
+// Richard Mitchell Feb 2023
+
+
+function aComplex (v1, v2, isPolar) {
+// create complex number as either v1 + i v2 or v1 / v2
+this.rePart;
+this.imPart;
+this.getRePart = getRePart;			// getters of real and imag parts
+this.getImPart = getImPart;
+this.getMod = getMod;			// getters of polar parts
+this.getAngle = getAngle;
+this.complexAdd = complexAdd;		// define functions for Add, Sub, etc
+this.complexSub = complexSub;		
+this.complexMult = complexMult;
+this.complexDiv = complexDiv;
+this.complexConj = complexConj;
+this.toStringCart = toStringCart;
+this.toStringPolar = toStringPolar;
+ if (isPolar) {
+    this.rePart = v1 * Math.cos(v2*Math.PI/180);
+    this.imPart = v1 * Math.sin(v2*Math.PI/180);
+ }
+ else {
+	this.rePart = v1;
+	this.imPart = v2;
+ }
+
+	function getRePart() {
+		return this.rePart;
+	}		
+	function getImPart() {
+		return this.imPart;
+	}
+	function getMod() {
+		return Math.sqrt(this.rePart * this.rePart + this.imPart * this.imPart);
+	}	
+	function getAngle() {
+		return Math.atan2(this.imPart, this.rePart) * 180 / Math.PI;
+	}	
+	function complexAdd(other) {
+		return new aComplex(this.rePart + other.rePart, this.imPart + other.imPart, false);
+	}
+	function complexSub(other) {
+		return new aComplex(this.rePart - other.rePart, this.imPart - other.imPart, false);
+	}
+	function complexMult(other) {
+//		return new aComplex(this.rePart * other.rePart - this.imPart * other.imPart, this.rePart * other.imPart + this.imPart * other.rePart, false);
+		return new aComplex(this.getMod() * other.getMod(), this.getAngle() + other.getAngle(), true);
+
+	}
+	function complexDiv(other) {
+		return new aComplex(this.getMod() / other.getMod(), this.getAngle() - other.getAngle(), true);
+	}
+	function complexConj() {
+		return new aComplex(this.rePart, -this.imPart, false);
+	}
+	function toStringCart() {
+		return this.rePart.toFixed(2) + " + i" + this.imPart.toFixed(2)
+	}
+	function toStringPolar() {
+		var angch = "\u2220"   // "\u03C0"
+		return this.getMod().toFixed(3) + angch + this.getAngle().toFixed(1)
+	}
+}
+
+

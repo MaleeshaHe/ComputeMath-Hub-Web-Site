@@ -1,0 +1,343 @@
+
+<!-- saved from url=(0069)http://www.personal.reading.ac.uk/~shsmchlr/jsmaths/OnPythagoras.html -->
+<html style="--canvbgcol: #e9eae8; --canvhcol: #a00000; --canvtcol: #101010; --h1col: #bf0000; --h2col: #50535a; --ppcol: #0f0f0f; --ibgcol: #fffdf0; --ipcol: #0f0f0f; --butcol: #202020; --butbgcol: #d0d0d0; --linknorm: #000036; --linkvisited: #36003b; --linkactive: #360000;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<link rel="stylesheet" type="text/css" href="./OnPythagoras_files/style.css">
+<script type="text/javascript" src="./OnPythagoras_files/forcolours.js.download"></script>
+
+<script type="text/javascript" src="./OnPythagoras_files/mytimer.js.download"></script>
+
+
+
+<script language="JavaScript">
+
+
+<!-- Begin
+
+// Richard Mitchell's web page for demonstrating aspects of pythagoras
+// 21/8/23
+
+var sA, sB, sC		// a b and c
+var pTrip = [3,4,5, 5,12,13, 8,15,17, 7,24,25, 20,21,29, 12,35,37, 9,40,41, 28,45,53, 11,60,61, 16,63,65, 33,56,65, 48,55,73, 13,84,85, 36,77,85, 39,80,89, 65,72,97];
+var tripCt = 0;
+var opDone;				// which operator done + - * /
+var simToggle = 1;
+
+// just prints the given message
+function reportString (rstr) {
+	document.getElementById("mess").innerHTML=rstr
+}
+
+function reportString2 (rstr) {
+	document.getElementById("mess2").innerHTML=rstr
+}
+
+// puts the points in data to the canvas ctx and then draws or fills the shape
+function putPoints (ctx, data, isFill) {			
+	ctx.beginPath()										// start path top be drawn
+	for (ct=0; ct<data.length; ct+=2) {					// for each x,y pair
+		if (ct==0) ctx.moveTo(data[ct], data[ct+1])		// position first pair
+		else ctx.lineTo(data[ct], data[ct+1])			// join to subsequent pair
+	}
+	if (isFill) ctx.fill()								// then either fill or draw(stroke) shape
+	else ctx.stroke()
+}
+
+		// draw string in bstr into canvas ctx, centred ay position x,y
+function drawText (ctx, bstr, x, y) {
+	ctx.textAlign = "center"				// set up alignmengt of string
+	ctx.textBaseline="middle"
+	ctx.fillText(bstr, x, y)				// and draw at x,y
+}	
+
+	// draw or fill arc origin x,y, radius rr, angle aa
+function putArc(ctx, x, y, rr, aa, isFill) {
+	ctx.beginPath();						// start path
+	ctx.arc(x, y, rr, aa, false);			// do arc
+	if (isFill) ctx.fill();					// either fill or draw
+	else ctx.stroke();	
+}
+
+	// draw a dot at x,y, by filling a 360deg arc
+function putDot (ctx, x, y) {
+	putArc(ctx, x, y, 4, 2*Math.PI, true);
+}
+
+function putShape (ctx, xo, yo, scalf, data, isFill) {
+var ndata = [];
+	for (var ct=0; ct<data.length; ct+=2) {
+		ndata[ct] = xo + data[ct]*scalf;
+		ndata[ct+1] = yo + data[ct+1]*scalf;
+    }
+	if (data.length > 4) {
+		ndata[data.length] = ndata[0];
+		ndata[data.length+1] = ndata[1];
+	}	
+    if (isFill) putPoints(ctx, ndata, false);  // to draw outline also
+    putPoints(ctx, ndata, isFill);
+}
+
+function triText (ctx, xo, yo, scalf, x, y, tStr) {
+	drawText(ctx, tStr, xo+x*scalf, yo+y*scalf);
+}
+
+function putDotScal(ctx, xo, yo, scalf, x, y) {
+	putDot(ctx, xo+x*scalf, yo+y*scalf);
+}
+	
+function lineTriText (ctx, xo, yo, scalf, x1, y1, x2, y2, tStr) {
+     /// draw horiz/vert line around text
+	putDotScal (ctx, xo, yo, scalf, x1, y1); 
+	putDotScal (ctx, xo, yo, scalf, x2, y2); 
+	putShape (ctx, xo, yo, scalf, [x1, y1, (x1*3+x2)/4, (y1*3+y2)/4], false);
+	putShape (ctx, xo, yo, scalf, [x2, y2, (x2*3+x1)/4, (y2*3+y1)/4], false);
+	drawText(ctx, tStr, xo+(x2 + x1)*scalf/2, yo+(y2+y1)*scalf/2);
+}
+
+function labelApB(ctx, cw, ch, xoff, yoff, scalf, vopt, hopt) {	
+// labels area a+b square
+// lopt is how first column labelled,    A then B   or B then A
+var sApB = sA + sB;
+	ctx.fillStyle = getrootcol("--canvtcol") 				// colour for text
+	if (hopt) {
+		lineTriText(ctx, xoff, yoff-ch*5, scalf, 0, 0, sB, 0, sB.toString());
+		lineTriText(ctx, xoff, yoff-ch*5, scalf, sB, 0, sApB, 0, sA.toString());
+	}
+	else {
+		lineTriText(ctx, xoff, yoff-ch*5, scalf, 0, 0, sA, 0, sA.toString());
+		lineTriText(ctx, xoff, yoff-ch*5, scalf, sA, 0, sApB, 0, sB.toString());
+	}
+	if (vopt) {
+		lineTriText(ctx, xoff-cw*2, yoff, scalf, 0, 0, 0, sA, sA.toString());
+		lineTriText(ctx, xoff-cw*2, yoff, scalf, 0, sA, 0, sApB, sB.toString());
+	}
+	else {
+		lineTriText(ctx, xoff-cw*2, yoff, scalf, 0, 0, 0, sB, sB.toString());
+		lineTriText(ctx, xoff-cw*2, yoff, scalf, 0, sB, 0, sApB, sA.toString());
+	}
+
+	lineTriText(ctx, xoff+cw*2, yoff, scalf, sApB, 0, sApB, sB, sB.toString());
+	lineTriText(ctx, xoff+cw*2, yoff, scalf, sApB, sB, sApB, sApB, sA.toString());
+	lineTriText(ctx, xoff, yoff+ch*5, scalf, 0, sApB, sA, sApB, sA.toString());
+	lineTriText(ctx, xoff, yoff+ch*5, scalf, sA, sApB, sApB, sApB, sB.toString());
+}
+
+// shows on canvas complex numbers A and B, and result R if given - print values and plot on argand
+function showData() {
+var canvas = document.getElementById("myCanvasSYS");		// set up canvas 
+var ctx = canvas.getContext("2d");
+var cw = canvas.width / 100;								// for calulating sizes
+var ch = canvas.height / 100;
+	ctx.fillStyle = getrootcol("--canvbgcol");				// set background colour
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+		
+	ctx.strokeStyle = getrootcol("--canvtcol") 				// colour for lines 
+	ctx.lineWidth = 2
+	
+	ctx.fillStyle = getrootcol("--h1col") 				// colour for fill shapes/text
+	ctx.font = "16pt Calibri"								// set font aligned centre
+	ctx.textAlign = "center";
+
+var sApB = sA + sB;
+var xoff = cw * 5;
+// var scalf = cw * 25 / sApB;
+var scalf = cw * 40 / sApB;
+var yoff = ch*10;
+
+	putShape (ctx, xoff, yoff, scalf, [0, 0, 0, sApB, sApB, sApB, sApB, 0, 0, 0], false);		// outside area
+	putShape (ctx, xoff, yoff, scalf, [0, 0, sB, 0, 0, sA], true);
+	putShape (ctx, xoff, yoff, scalf, [sB, 0, sApB, 0, sApB, sB], true);
+	putShape (ctx, xoff, yoff, scalf, [sApB, sB, sApB, sApB, sA, sApB], true);
+	putShape (ctx, xoff, yoff, scalf, [sA, sApB, 0, sApB, 0, sA], true);
+
+	ctx.fillStyle = getrootcol("--h2col") 				// colour for fill shapes/text
+	putShape (ctx, xoff, yoff, scalf, [0,sA, sB,0, sApB,sB, sA,sApB], true, true);
+
+/*	ctx.fillStyle = getrootcol("--canvtcol") 				// colour for text
+	triText(ctx, xoff, yoff-ch*5, scalf, sB, 0, sB.toString());
+	triText(ctx, xoff-cw*2, yoff, scalf, 0, sA, sA.toString());
+	triText(ctx, xoff+cw*2, yoff, scalf, sApB, sB, sB.toString());
+	triText(ctx, xoff, yoff+ch*5, scalf, sA, sApB, sA.toString());
+	triText(ctx, xoff, yoff+ch*5, scalf, sApB, sApB, sApB.toString());
+*/
+	labelApB(ctx, cw, ch, xoff, yoff, scalf, true);
+	
+	ctx.fillStyle = getrootcol("--h1col") 				// colour for fill shapes/text
+	
+//	xoff = cw*37
+	xoff = cw*55;						// now draw other version
+	
+	putShape (ctx, xoff, yoff, scalf, [0, 0, 0, sApB, sApB, sApB, sApB, 0, 0, 0], false);
+	putShape (ctx, xoff, yoff, scalf, [0, sA, sB, sA, sB, 0], true);
+	putShape (ctx, xoff, yoff, scalf, [sB, 0, sB, sB, sApB, sB], true);
+	putShape (ctx, xoff, yoff, scalf, [0, sA, sA, sA, sA, sApB], simToggle == 0);
+	putShape (ctx, xoff, yoff, scalf, [sA, sApB, sA, sB, sApB, sB], simToggle == 0);
+
+	if (simToggle > 0) {																// draw moved triangles
+		putShape (ctx, xoff, yoff, scalf, [0, 0, 0, sA, sB, 0], true);
+		putShape (ctx, xoff, yoff, scalf, [sB, 0, sApB, 0, sApB, sB], true);
+		putShape (ctx, xoff, yoff, scalf, [sA, 0, sA, sB], false);						// line to complete square of size B
+	}
+	
+	ctx.fillStyle = getrootcol("--h2col") 				// colour for fill shapes/text
+	putShape (ctx, xoff, yoff, scalf, [sA,sA, sB,sA, sB,sB, sA,sB], true);
+
+/*	ctx.fillStyle = getrootcol("--canvtcol") 				// colour for text
+	triText(ctx, xoff, yoff-ch*5, scalf, sB, 0, sB.toString());
+	triText(ctx, xoff-cw*2, yoff, scalf, 0, sA, sA.toString());
+	triText(ctx, xoff+cw*2, yoff, scalf, sApB, sB, sB.toString());
+	triText(ctx, xoff, yoff+ch*5, scalf, sA, sApB, sA.toString());
+	triText(ctx, xoff, yoff+ch*5, scalf, sApB, sApB, sApB.toString());
+*/
+	labelApB(ctx, cw, ch, xoff, yoff, scalf, true, simToggle==0);
+	ctx.fillStyle = getrootcol("--h1col") 				// colour for fill shapes/text
+
+var sqch = "\u00b2"   
+var tripstr = "Triple is : " + sA.toString()+sqch+" + "+sB.toString()+sqch + " = "+sC.toString()+sqch;
+var invtripstr = "Inverse is : 1/" + (sB*sC).toString()+sqch+" + 1/"+(sA*sC).toString()+sqch + " = 1/"+(sA*sB).toString()+sqch;
+	
+	reportString(tripstr)
+	reportString2(invtripstr);
+}
+
+
+// set new values A, B and C
+function setNewData(opt) {
+	if (opt == 0) tripCt = 0;
+    else if (opt == 1) {
+		tripCt += 3;
+		if (tripCt>=pTrip.length) tripCt = 0;
+	}
+	else {
+		tripCt -= 3;
+		if (tripCt<0) tripCt = pTrip.length - 3;
+	}
+	sA = pTrip[tripCt];
+	sB = pTrip[tripCt+1];
+	sC = pTrip[tripCt+2];
+	showData();
+}
+
+function simNext() {
+	simToggle = 1 - simToggle;
+	showData();
+}
+
+function doExplain() {
+var sqch = "\u00b2"   
+var fstr = "First construct: (a+b)"+sqch+" = a"+sqch+" + 2ab + b"+sqch+ " = 2ab + c"+sqch+"\n   Get result by subtracting 2ab from both sides.";
+var sstr = "Second construct first way, c"+sqch+" must equal 2ab + (b-a)"+sqch+" = 2ab + b"+sqch+" -2ab + a"+sqch+ "= b"+sqch+" + a"+sqch+".";
+var tstr = "Second way, grey square of size b-a,\n   when combined with rectangles of size a, forms square of size b." 
+   alert(fstr + "\n\n" + sstr+ "\n\n" + tstr);
+}
+
+function doExplain2() {
+var sqch = "\u00b2";   
+var nch = "\u207f";
+var fstr = "I teased a colleague in Maths about a poster which said a"+nch+"+b"+nch+"=c"+nch+" was true only if n is 1 or 2 as 1/4+1/4=1/2, so ok for n = -1.";
+var sstr = "We then realised it works for n = -2, and each Pythagorean triple a"+sqch+"+b"+sqch+"=c"+sqch+" has an inverse 1/(bc)"+sqch+"+1/(ac)"+sqch+"=1/(ab)"+sqch+".";
+var tstr = "To show this, simply divide a"+sqch+"+b"+sqch+"=c"+sqch+" by (abc)"+sqch+".";
+var f4str = "I doubt the Major General knew that!";
+   alert(fstr + "\n\n" + sstr+ "\n\n" + tstr + "\n\n" + f4str);
+}
+
+// for toggling between light / dark backgrounds
+function doTogColours() {
+	togColours();
+	showData();
+}
+
+// start of page, set up colours, set new values for A and B and show.
+function load() {
+	window.defaultStatus="RJM's Demo of Vectors";
+	initPageColours();
+	tripCt = -3;
+	setNewData(0);
+
+	simToggle = 1;
+	simTime = 500;
+	simMode = 1;
+	setTimer();
+}
+
+
+// End -->
+</script>
+
+<!-- STEP TWO: Add the relevant event handlers to the BODY tag  --> 
+
+</head><body onload="load()" data-new-gr-c-s-check-loaded="14.1165.0" data-gr-ext-installed="">
+	<div id="wrapper">
+
+		<div class="intro">
+				<h1>Pythagoras </h1>
+				<p>For a right angled triangle whose shorter sides are of length a and b, and whose longer side (hypotenuse) is of length c, 
+				Pythagoras' theorem states a<sup>2</sup> + b<sup>2</sup> = c<sup>2</sup>.</p> 
+				<p>This page demonstrates geometric constructs to demonstrate the theorem. 
+				They comprise four triangles each of area a*b/2 (hence having a combined area 2ab), occupying some or all of a square of size a+b.</p>
+				<p>In the first construct, the four triangles surround a square of size c.
+				This shows (a+b)<sup>2</sup> = 2ab + c<sup>2</sup>.</p>
+				<p>In the second construct, shown two ways, they surround a square of size b-a, forming a square of size c.</p>
+				<p>The first way shows c<sup>2</sup> = 2ab + (b-a)<sup>2</sup>.</p>
+				<p>The second way, where two of the triangles are moved to form squares of size a and b, 
+				shows c<sup>2</sup> = a<sup>2</sup> + b<sup>2</sup>. </p>
+				 
+				<p>Pythagorean triples are sets of three integers a, b and c which fulfill the theorem. The page draws the constructs with some of these triples.
+				Also given are inverse triples. See also my <a href="http://www.personal.reading.ac.uk/~shsmchlr/jsmaths/OnInversePythagoras.html" onclick="location.href=this.href+colstr(); return false;"> Inverse Pythagoras page</a></p>
+				<p>Use the 'explain' buttons to find out more.</p>
+
+		 
+		</div>
+		<div class="robot">
+			<form name="mathssys">
+				<canvas id="myCanvasSYS" name="myCanvasSYS" width="800" height="400"></canvas>
+			</form>
+				<p>The first method is widely used, the second was explained by J Bronowski in Ascent of Man, episode 5, who stated that this was probably how Pythagoras demonstrated his theorem (as it does not need algebra).</p>
+				<p>However, triangles can be moved with the first method too - see my <a href="http://www.personal.reading.ac.uk/~shsmchlr/jsmaths/OnPythagorasAndBinomial.html" onclick="location.href=this.href+colstr(); return false;"> Pythagoras and Binomial page</a></p>
+				<p>Like WS Gilbert's Major General said, there are many useful facts about the square on the hypotenuse!</p>
+			<div class="left">
+			<p>
+			<input type="button" class="button" id="newDataF" value="First Triple " onclick="setNewData(0);">
+			<input type="button" class="button" id="newDataN" value="Next Triple " onclick="setNewData(1);">
+			<input type="button" class="button" id="newDataP" value="Prev Triple " onclick="setNewData(2);"></p>
+			<p>
+			<input type="button" class="button" id="explainIt" value="Explanation" onclick="doExplain();">
+			<input type="button" class="button" id="explainIt" value="On Inverse" onclick="doExplain2();">
+			</p>
+			</div>
+			<div class="right">
+				<p id="mess">Triple is : 3² + 4² = 5²</p>
+				<p id="mess2">Inverse is : 1/20² + 1/15² = 1/12²</p>
+			</div>
+		</div>
+
+ 
+
+		<div class=""></div>
+	
+	</div>
+
+
+
+
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
+      div.grammarly-desktop-integration {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select:none;
+        user-select:none;
+      }
+
+      div.grammarly-desktop-integration:before {
+        content: attr(data-content);
+      }
+    </style><div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>

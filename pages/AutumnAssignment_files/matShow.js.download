@@ -1,0 +1,296 @@
+<!-- Begin
+
+// Code to show Matrices
+
+var allMats = []
+var matMax = 3;
+var matNames = ["R", "A", "B"];
+var matMess = ""
+var canvasback = "rgb(233, 234, 232)"
+var matCanvas
+ 
+function putPoints (ctx, data, isFill) {			
+// puts the points in data to the canvas ctx and then draws or fills the shape
+	ctx.beginPath()										// start path top be drawn
+	for (ct=0; ct<data.length; ct+=2) {					// for each x,y pair
+		if (ct==0) ctx.moveTo(data[ct], data[ct+1])		// position first pair
+		else ctx.lineTo(data[ct], data[ct+1])			// join to subsequent pair
+	}
+	if (isFill) ctx.fill()								// then either fill or draw(stroke) shape
+	else ctx.stroke()
+}
+ 
+function drawText (ctx, bstr, x, y) {
+		// draw string in bstr into canvas ctx, centred ay position x,y
+	ctx.textAlign = "center"				// set up alignmengt of string
+	ctx.textBaseline="middle"
+	ctx.fillText(bstr, x, y)				// and draw at x,y
+}	
+
+function promptforval (promptName, currval) {
+// Prompt the user to enter the gain of the appropriate component
+var cstring = currval.toString();
+var newval = prompt("Enter "+promptName, cstring)
+if (newval!=null) {
+  currval = parseFloat(newval);
+}
+return currval;
+}
+
+function getMousePos(canvas, event) {
+		// the mouse has clicked on the canvas - find and return at what location ?
+ var rect = canvas.getBoundingClientRect();
+    return {
+	     x : event.clientX - rect.left,				// x is the actual position - the left of the canvas rectangle
+		 y : event.clientY - rect.top				// y is the y position - the top of the canvas
+	};
+}	 
+
+function doMousedown(event)  {
+			// event function called when click mouse down
+			// if over tile next to gap, move that tile
+var canvas = document.getElementById("myCanvasSYS");
+var ctx = canvas.getContext("2d");
+var mousePos = getMousePos(canvas, event);				// find where
+	for (var ct=0; ct<allMats.length; ct++)
+		allMats[ct].checkMouseDown(mousePos.x, mousePos.y)
+}
+
+
+function showMat (actMat, specMatArea) {
+	this.actualMat = actMat		// this is the actual matrix ... MatrixLib
+	this.tiles = []
+	this.pcMatArea = specMatArea		// array [pleft, ptop, pwidth, pheight] as percentage of whole canvas
+	this.matArea = [0, 0, 0, 0]		// actual mat area computed when drawPuzzle
+	this.highlightMat = null				// for highlighting certain areas
+	this.elemWidth = 0
+	this.elemHeight = 0
+	this.showBracket = true
+	this.showAsString = false		// to allow matrix displayed as unknown vars
+	this.drawMat = drawMat
+	this.drawBrack = drawBrack
+	this.drawElem = drawElem
+	this.elemAt = elemAt
+	this.mouseInMatrix = mouseInMatrix
+	this.checkMouseDown = checkMouseDown
+	this.createHighlight = createHighlight
+	this.highLightElement = highLightElement
+	this.highLightRow = highLightRow
+	this.highLightCol = highLightCol
+	this.matAsString = matAsString
+	
+	function matAsString(name) {
+		var ans = "[";
+		for (var rct=0; rct<this.actualMat.numRows; rct++) {
+			for (var cct=0; cct<this.actualMat.numCols; cct++) {
+				var elemVal = this.elemAt(rct, cct)
+				if (this.showAsString) ans = ans+name+rct.toString(); 
+				else if (Number.isInteger(elemVal)) ans = ans +  elemVal.toString();
+				else ans = ans +  elemVal.toFixed(2)			
+								
+				// else ans = ans + this.elemAt(rct, cct).toString();
+				if (cct<this.actualMat.numCols-1) ans = ans + ", ";
+			}
+			if (rct<this.actualMat.numRows-1) ans = ans + "; ";
+		}
+		ans = ans + "]";		
+		return ans;
+	}
+	
+	function elemAt(row, col) {
+			// return the value of the matrix at the position row,col
+	var ans = NaN			// default in case row,col not valid
+		if (row>=0 && row<this.actualMat.numRows && col>=0 && col<this.actualMat.numCols) 
+			ans = this.actualMat.getVal(row,col)
+		return ans			// just return value found.
+	}
+	function drawElem (ctx, row, col) {   // row 0..puzzleSize-1, col 0..puzzleSize-1
+			// draw the Tile at position row,col into the canvas context ctx
+	var elemVal = this.elemAt(row, col)				// find value of element
+	var    drawCol = getrootcol("--canvtcol");
+ 
+		if (isNaN(elemVal)== false) {						// if not the blank space, draw it
+			var x = this.matArea[0] + col*this.elemWidth + this.elemWidth/2		// calculate x,y position of middle of tile
+			var y = this.matArea[1] + row*this.elemHeight + this.elemHeight/2
+			if (this.highlightMat==null)  drawCol = getrootcol("--canvtcol"); //"black"
+			else if (this.highlightMat.getVal(row, col) == 1) drawCol = "red"
+			else if (this.highlightMat.getVal(row, col) == 2) drawCol = "darkgreen"
+			ctx.fillStyle=drawCol
+			var s=""
+			if (this.showAsString) s = "x"+row.toString();
+			else if (Number.isInteger(elemVal)) s = elemVal.toString();
+			else s = elemVal.toFixed(2)
+			drawText(ctx, s, x, y)	// write number on the tile
+		}	
+	}
+	function drawBrack (ctx, bx, by, h, fac) {
+		// put bracket at bx,by, height h, with fac being +/- 1
+		putPoints(ctx, [bx+2*fac, by, bx+10*fac, by, bx+10*fac, by+h, bx+2*fac, by+h],0);
+	}
+		
+	function drawMat() {
+			// draw the matrix in the main canvas
+		var ctx = matCanvas.getContext("2d");
+		this.matArea = [this.pcMatArea[0]*matCanvas.width/100, this.pcMatArea[1]*matCanvas.height/100, this.pcMatArea[2]*matCanvas.width/100, this.pcMatArea[3]*matCanvas.height/100]
+				// above computes the actual part of the canvas where the matrix is drawn
+		ctx.fillStyle = getrootcol("--butbgcol");    // "bisque"  
+		ctx.fillRect(this.matArea[0], this.matArea[1], this.matArea[2], this.matArea[3])	
+						// fill matrix area with green background
+		var fsize = 16 
+		ctx.font = fsize.toString()+"pt Calibri"						// font size for drawing number
+		
+		this.elemWidth = this.matArea[2]/this.actualMat.numCols				// calculate size of each element
+		this.elemHeight = this.matArea[3]/this.actualMat.numRows		
+
+		for (var r=0; r<this.actualMat.numRows; r++)					// draw numbers ... for each row
+			for (var c=0; c<this.actualMat.numCols; c++)						// then for each column
+				this.drawElem(ctx, r, c)								// draw element
+		if (this.showBracket && this.actualMat.numRows > 0) {
+			ctx.strokeStyle = getrootcol("--butcol");    //"black"
+			this.drawBrack (ctx, this.matArea[0], this.matArea[1], this.matArea[3], -1)
+			this.drawBrack (ctx, this.matArea[0]+this.matArea[2], this.matArea[1], this.matArea[3], 1)
+		}
+	}
+	function mouseInMatrix(x, y) {
+				// is x,y within matrix
+		return (x>=this.matArea[0] && x<=(this.matArea[0]+this.matArea[2]) && y>=this.matArea[1] && y<=(this.matArea[1]+this.matArea[3]) )
+	}
+	function checkMouseDown (x, y) {
+		if (this.mouseInMatrix(x,y)) {
+		var col = Math.floor((x - this.matArea[0]) / this.elemWidth)				// calculate appropriate column
+		var row = Math.floor((y - this.matArea[1]) / this.elemHeight)			// and row of potential tile
+		var elemVal = this.elemAt(row, col)
+			elemVal = promptforval (">", elemVal)
+			this.actualMat.setVal(row, col, elemVal)
+			this.drawMat()			
+		}
+	} 
+	function createHighlight (allVal) {
+		 // create highlight matrix ... eitehr full of 0's (highlight none) or 1's as set by allVal
+		 this.highlightMat = new aMatrix(this.actualMat.numRows, this.actualMat.numCols, [allVal]);
+	}
+	function highLightElement (row, col, hVal) {
+		// sets so that the given element is highlight  . hVal is typically inverese of allVal above
+		this.highlightMat.setVal(row, col, hVal);
+	}
+	function highLightRow (row, hVal) {
+		for (var c=0; c<this.actualMat.numCols; c++) this.highLightElement(row, c, hVal)
+	}
+	function highLightCol (col, hVal) {
+		for (var r=0; r<this.actualMat.numRows; r++) this.highLightElement(r, col, hVal)
+	}
+}
+
+function getMat(ndx) {
+   return allMats[ndx].actualMat;	
+}
+	
+function getRows(ndx) {
+    return allMats[ndx].actualMat.numRows;
+}
+function getCols(ndx) {
+    return allMats[ndx].actualMat.numCols;
+}
+
+function getMatVal(ndx, row, col) {
+	return allMats[ndx].actualMat.getVal(row, col);
+}
+
+function setMatVal(ndx, row, col, val) {
+   	allMats[ndx].actualMat.setVal(row, col, val);
+}
+
+
+function matMultElem(aMat, bMat, row, col) {
+	// computer elementr of matrix multiply of aMat.row and bMat.col
+var ans = 0;
+	for (var ct=0; ct<getCols(aMat); ct++)
+		ans += getMatVal(aMat, row, ct) * getMatVal(bMat, ct, col)
+	return ans
+}
+
+function matAdjointVal(ndx, row, col) {
+	// computer adjoint value of ndx'th matrix exclusing given row,col
+	return allMats[ndx].actualMat.adjointVal(row, col);
+}
+
+function detSubM (ndx, row, col) {
+//	return allMats[ndx].actualMat.detSubMatrix(row, col)
+	var subM = allMats[ndx].actualMat.partMatrix(row, col);
+		return subM.detMatrix();
+
+}
+
+function drawAllMats() {
+	var ctx = matCanvas.getContext("2d");
+		ctx.fillStyle = getrootcol("--canvbgcol");
+		ctx.fillRect(0, 0, matCanvas.width, matCanvas.height)	// fill screen with green background
+  	for (var ct=0; ct<matMax; ct++) allMats[ct].drawMat();	
+	
+	ctx.fillStyle=getrootcol("--canvhcol");
+	ctx.textAlign = "left";
+//	for (var ct=0; ct<matMax; ct++) drawText(ctx, matNames[ct], matCanvas.width*(1+ct*3)/9, (ct<3) ? 15 : 40)
+	for (var ct=0; ct<matMax; ct++) 
+		drawText(ctx, matNames[ct], allMats[ct].matArea[0]+10, allMats[ct].matArea[1]-15)
+	if (matMess.length>0) drawText(ctx, matMess, matCanvas.width/2, matCanvas.height-25)
+}
+
+function createMat (ndx, row, col, setZ) {
+	var data = [];
+	for (var ct=0; ct<row*col; ct++) data[ct] = (setZ) ? 0 : Math.floor(Math.random() * 20 - 10);
+	var x = (ndx<3) ? 5+ndx*32 : 5 + (ndx-3)*32;
+	var y = (ndx<3) ? 10 : 50;
+	allMats[ndx] = new showMat(new aMatrix(row, col, data), [x, y, col*8, row*8]);
+	
+}
+
+function doAdjoint(fromM, toM, andDraw) {
+	createMat(toM, getRows(fromM), getCols(fromM), 1);
+	for (var rct = 0; rct<getRows(fromM); rct++)
+		for (var cct = 0; cct<getCols(fromM); cct++)
+			setMatVal(toM, cct, rct, matAdjointVal(fromM, rct, cct))
+	if (andDraw) drawAllMats();
+}
+
+function doCopyMat(fromM, toM, andDraw) {
+		// copy AllMats[fromM] to AllMats[toM]
+	createMat(toM, getRows(fromM), getCols(fromM), 1);
+	for (var rct = 0; rct<getRows(fromM); rct++)
+		for (var cct = 0; cct<getCols(fromM); cct++)
+			setMatVal(toM, rct, cct, getMatVal(fromM, rct, cct))
+	if (andDraw) drawAllMats();
+}
+	
+function doSwapMats() {
+	doCopyMat(1, 4, false);
+	doCopyMat(2, 1, false);
+	doCopyMat(4, 2, true);
+}
+	
+function setMatrixGraphs(cString, setMouseEvent) {
+    matCanvas = document.getElementById(cString);
+	var ctx = matCanvas.getContext("2d");
+		ctx.fillStyle = getrootcol("--canvbgcol");  
+		ctx.fillRect(0, 0, matCanvas.width, matCanvas.height)	// fill screen with green background
+
+	if (setMouseEvent) matCanvas.addEventListener("mousedown", doMousedown, false);		// define mouse down event function
+	ctx.font = "12pt Calibri"						// font size for drawing tile numbers
+	ctx.fillStyle = getrootcol("--canvhcol");
+}	
+	
+function setupgraphs(cString) {
+	
+	setMatrixGraphs(cString, true)
+
+	createMat(0, 2, 2, 1);
+	createMat(2, 2, 3, 0);
+	createMat(1, 3, 2, 0);
+	matMax = 3;
+	
+	drawAllMats();
+
+
+}
+
+
+// End -->

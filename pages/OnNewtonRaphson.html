@@ -1,0 +1,372 @@
+<!-- saved from url=(0072)http://www.personal.reading.ac.uk/~shsmchlr/jsmaths/OnNewtonRaphson.html -->
+<html
+	style="--canvbgcol: #e9eae8; --canvhcol: #a00000; --canvtcol: #101010; --h1col: #bf0000; --h2col: #50535a; --ppcol: #0f0f0f; --ibgcol: #fffdf0; --ipcol: #0f0f0f; --butcol: #202020; --butbgcol: #d0d0d0; --linknorm: #000036; --linkvisited: #36003b; --linkactive: #360000;">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+	<link rel="stylesheet" type="text/css" href="./OnNewtonRaphson_files/style.css">
+	<script type="text/javascript" src="./OnNewtonRaphson_files/forcolours.js.download"></script>
+
+	<script type="text/javascript" src="./OnNewtonRaphson_files/BoxLib.js.download"></script>
+	<script type="text/javascript" src="./OnNewtonRaphson_files/GraphLib.js.download"></script>
+	<script type="text/javascript" src="./OnNewtonRaphson_files/PolyCNoLib.js.download"></script>
+
+
+
+	<script language="JavaScript">
+
+
+		<!-- Begin
+		
+		var simtime = 200
+		var nvalwas = 1
+		var tSweep = 0
+		var active = false
+		//var canvasback = "rgb(233, 234, 232)"
+		var InGraph
+		var tData = [], InData = []
+		var trange = []
+		var fpoly = []
+		var fdpoly = []
+		var fevalpts = []
+		var mode = 50
+		var tguess = -10000
+		var NRIter = 0
+		
+		function whichSys() {
+		var ans = 0
+			if ( document.getElementById("fCheck0").checked )  ans = 0
+			else if ( document.getElementById("fCheck1").checked )  ans = 1
+			else if ( document.getElementById("fCheck2").checked )  ans = 2
+			else if ( document.getElementById("fCheck3").checked )  ans = 3
+			else if ( document.getElementById("fCheck4").checked )  ans = 4
+			else if ( document.getElementById("fCheck5").checked )  ans = 5
+		
+			return ans
+		}	
+		
+		function getRelFuncVals(t) {
+		var sys = whichSys()
+		var vals = [0, 0, -4, 4]
+			switch (sys) {
+				case 0 :
+				case 1 :
+				case 2 :
+				case 3 :
+				case 4 :
+						vals = [polyEval(fpoly, t), polyEval(fdpoly, t), trange[0], trange[1]]
+						break
+				case 5 : 
+						var eterm = Math.exp(-2*t)
+						var cterm = Math.cos(5*t)
+						var sterm = Math.sin(5*t)
+						vals = [eterm*(10*sterm-4*cterm), 58*eterm*cterm, trange[0], trange[1]]
+						break
+			}
+			return vals
+		}
+		
+		function getFuncVal(t, opt) {
+			var allVals = getRelFuncVals(t)
+			return	allVals[opt]
+		}
+		
+		function getFuncNames() {
+		var sys = whichSys()
+		var vals = ["", ""]
+			switch (sys) {
+				case 0 :
+				case 1 :
+				case 2 :
+				case 3 :
+				case 4 :
+						vals = [polyStrVar(fpoly, "t"), polyStrVar(fdpoly, "t")]
+						break
+				case 5 : vals = ["exp(-2t)*(10sin(5t)-4cos(5t))", "58exp(-2t)cos(5t)"]
+						 break
+			}
+			return vals
+		}
+		
+		function getMousePos(canvas, event) {
+		 var rect = canvas.getBoundingClientRect();
+				return {
+					 x : event.pageX - rect.left,
+				 y : event.pageY - rect.top - document.body.scrollTop
+			};
+		}	 
+		
+		function getTan(t, y, tnew, ygrad, tmin, tmax, ymin, ymax) {
+		if (tnew<tmin) tnew = tmin
+		else if (tnew>tmax) tnew = tmax
+		var ynew = y + (tnew-t)*ygrad
+		if (ynew<ymin) {
+			ynew = ymin
+			tnew = t + (ynew-y)/ygrad
+		}	
+		else if (ynew>ymax) {
+			ynew = ymax
+			tnew = t + (ynew-y)/ygrad
+		}	
+		return [tnew, ynew]
+		}
+		
+		function reportString (rstr) {
+			document.getElementById("mess").innerHTML=rstr
+		}
+		
+		function doTangent(tval) {
+		var	yvals = getRelFuncVals(tval)
+			var toff = (InGraph.xmax-InGraph.xmin)/30
+			var tanDataP = getTan(tval, yvals[0], tval+toff, yvals[1], InGraph.xmin, InGraph.xmax, InGraph.ymin, InGraph.ymax)
+			var tanDataA = getTan(tval, yvals[0], tval-toff, yvals[1], InGraph.xmin, InGraph.xmax, InGraph.ymin, InGraph.ymax)
+			InGraph.goplotdata("red", [tanDataP[0], tanDataA[0]], [tanDataP[1], tanDataA[1]])
+		var astr = "At "+tval.toFixed(2)+" func is "+yvals[0].toFixed(2)+" deriv is "+yvals[1].toFixed(2)
+			reportString(astr)
+		}
+		
+		function drawTangent(t) {
+			doTangent(t, getFuncVal(t, 0))
+		}
+		
+		function doRaphson (tval) {
+		var NRCols = ["red", "purple", "cyan"]
+		var	yvals = getRelFuncVals(tval)
+			tguess = tval - yvals[0]/yvals[1]
+		
+			var tanDataP = getTan(tval, yvals[0], tval, yvals[1], InGraph.xmin, InGraph.xmax, InGraph.ymin, InGraph.ymax)
+			var tanDataA = getTan(tval, yvals[0], tguess, yvals[1], InGraph.xmin, InGraph.xmax, InGraph.ymin, InGraph.ymax)
+			InGraph.goplotdata(NRCols[NRIter%NRCols.length], [tanDataP[0], tanDataA[0]], [tanDataP[1], tanDataA[1]])
+		
+		var astr = "At "+tval.toFixed(2)+" f is "+yvals[0].toFixed(2)+" f' is "+yvals[1].toFixed(2)+" next guess "+tguess.toFixed(2)
+			reportString(astr)
+			NRIter++
+		}
+		
+		function doMousedown(event)  {
+		var mousepos = getMousePos(document.getElementById("myCanvasGraph"), event);
+		var	dmp = InGraph.findPos(mousepos.x, mousepos.y)
+			if (dmp[0]>0) {
+				if (mode < 100) drawTangent(dmp[1])
+				else {
+					document.getElementById("nextCheck").style.visibility = "visible"
+					document.getElementById("nextCheck").value = "Next Guess"
+					drawFunct(true)
+					NRIter = 0
+					doRaphson (dmp[1])
+				}	
+			}
+		}
+		
+		function drawFunct(doplot) {
+		var nPoints = 360
+			tData = new Array(nPoints)
+			inData = new Array(nPoints)
+			outData = new Array(nPoints)
+		var sys = whichSys()
+		var tmin, tmax
+			tmin = getFuncVal(0, 2)
+			tmax = getFuncVal(0, 3)
+		var fmax = 0, fmin = 0
+			for (var ct=0; ct<nPoints; ct++) {
+				tData[ct] = tmin + ct*(tmax-tmin)/nPoints;
+				inData[ct] = getFuncVal(tData[ct], 0)
+				if (inData[ct]>fmax) fmax = inData[ct]
+				if (inData[ct]<fmin) fmin = inData[ct]
+				outData[ct] = getFuncVal(tData[ct], 1)
+			}
+		var nstrs = getFuncNames()
+		
+			if (fmin==0) fmin = -1
+			else if (fmin>=-7) fmin = fmin*1.2
+			else fmin = 10*Math.floor(fmin/10)
+			if (fmax<=7) fmax = fmax*1.2
+			else fmax = 10*Math.ceil(fmax/10)
+			InGraph.scaleOverride = [0, 0, fmin, fmax]
+			if (doplot) InGraph.graphcols = ["blue", "red"]
+			else InGraph.graphcols = [canvasback, "red"]
+			InGraph.plottworesponse(tData, inData, inData, false, 0, 0, "", nstrs[0], "t")
+		}
+		
+		function reportAt (tval) {
+				doTangent(tval)
+		}	
+		
+		function reportMode() {
+			if (mode < 2) {
+				var bothStrs = getFuncNames()
+				reportString (((mode==0) ? "f(t)" : "f'(t)")+"="+bothStrs[mode])
+			}
+			else if (mode-2<fevalpts.length) reportAt(fevalpts[mode-2])
+			else if (mode<100) {
+				drawFunct(true)
+				reportString ("Click on graph for first guess")
+				mode = 100
+				document.getElementById("nextCheck").style.visibility = "hidden"
+			}
+			else if (tguess > -1000) doRaphson(tguess)
+		}
+		
+		function doNext() {
+			mode++
+			reportMode()
+		}	
+		
+		function setupgraphs() {
+		var canvas = document.getElementById("myCanvasGraph");
+		var ctx=canvas.getContext("2d");
+		
+			InGraph = new myjsGraph(document.getElementById("myCanvasGraph"), 15, 25, 75, 60, true, true, canvasback, "12pt Calibri")
+			InGraph.drawAxes = true
+			
+				ctx.fillStyle = getrootcol("--canvbgcol");	//canvasback;
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+		
+			canvas.addEventListener("mousedown", doMousedown, false);		// define mouse functions
+		}
+		
+		
+		function load() {
+			window.defaultStatus="RJM's Demo of Differentiation and Integration";
+			initPageColours();
+			setupgraphs();
+			setchecked(0);
+		//	setSweepTimer()
+		}
+		
+		function setchecked(val) {
+			if (val >= 0) {
+				document.getElementById("fCheck0").checked=(val==0);
+				document.getElementById("fCheck1").checked=(val==1);
+				document.getElementById("fCheck2").checked=(val==2);
+				document.getElementById("fCheck3").checked=(val==3);
+				document.getElementById("fCheck4").checked=(val==4);
+				document.getElementById("fCheck5").checked=(val==5);
+			}
+			switch (val) {
+				case 0 : fpoly = [30, -11, -4, 1]
+							fdpoly = [-11, -8, 3]
+							fevalpts = [-4, -1, 0, 11/3, 6]
+							trange = [-4, 6]
+							break
+				case 1 : fpoly = [20, 12, -3, -2]
+							fdpoly = [12, -6, -6]
+							fevalpts = [-3, -2, 0, 1, 3]
+							trange = [-3, 3]
+							break
+				case 2 : fpoly = [-10, -30, 0, 4]
+							fdpoly = [-30, 0, 12]
+							fevalpts = [-3, 0, 5]
+							trange = [-3, 5]
+							break
+				case 3 : fpoly = [5, 72, -30, -8, 3]
+							fdpoly = [72, -60, -24, 12]
+							fevalpts = [-3, -2, 0, 1, 3, 4]
+							trange = [-3, 4]
+							break
+				case 4 : fpoly = [24, -10, -15, 0, 1]
+							fdpoly = [-10, -30, 0, 4]
+							fevalpts = [-4, -2.555, -0.34, 0, 2.9, 5]
+							trange = [-4, 5]
+							break
+				case 5 : fpoly = []
+							fdpoly = []
+							fevalpts = [0, Math.PI*0.1, Math.PI*0.3, Math.PI*0.5, Math.PI*0.6]
+							trange = [0, Math.PI*0.6]
+							break
+			}	
+			mode = 0
+			tguess = -10000
+			active = false
+			drawFunct(false);
+			document.getElementById("nextCheck").style.visibility = "visible"
+			document.getElementById("nextCheck").value = "Next Info"
+			
+			reportMode()
+		}
+		
+		function doTogColours() {
+			togColours();
+			clearcanvas("myCanvasGraph");
+			setchecked(-1);
+		}
+		
+		
+		// End -->
+	</script>
+
+	<!-- STEP TWO: Add the relevant event handlers to the BODY tag  -->
+
+</head>
+
+<body onload="load()" data-new-gr-c-s-check-loaded="14.1165.0" data-gr-ext-installed="">
+	<div id="wrapper">
+
+		<div class="intro">
+			<h1>Graph Sketching and Newton Raphson </h1>
+
+			<p>You can select one of various functions, and its equation is shown.</p>
+			<p>Press next and then the equation of its derivative is shown. </p>
+			<p>Press next a number of times and data about the function at certain points are shown
+				and the tangent to the curve plotted. This you might do to aid sketching the curve.</p>
+			<p>Finally the actual function is plotted, and you can interactively find its roots using Newton Raphson.</p>
+			<p>Click on the graph to enter the value of t for the first guess, and see the tangent to the function plotted.
+				Press Next Guess, and see the algorithm iterate.</p>
+
+		</div>
+		<div class="robot">
+			<form name="mathssys">
+				<canvas id="myCanvasGraph" name="myCanvasGraph" width="600" height="300"></canvas>
+			</form>
+			<div class="left">
+				<p><input type="checkbox" id="fCheck0" onclick="setchecked(0);"> Cubic 1 ;
+					<input type="checkbox" id="fCheck1" onclick="setchecked(1);"> Cubic 2
+					<input type="checkbox" id="fCheck2" onclick="setchecked(2);"> Cubic 3
+				</p>
+				<p><input type="checkbox" id="fCheck3" onclick="setchecked(3);"> Quartic 1 ;
+					<input type="checkbox" id="fCheck4" onclick="setchecked(4);"> Quartic 2
+				</p>
+				<p><input type="checkbox" id="fCheck5" onclick="setchecked(5);"> Damped Sinusoid</p>
+			</div>
+			<div class="right">
+				<p><input type="button" id="nextCheck" value="Next Info" onclick="doNext();" style="visibility: visible;"></p>
+				<p id="mess">f(t)=30 + -11t + -4.0t^2 + 1.0t^3</p>
+			</div>
+		</div>
+		<div class=""></div>
+
+	</div>
+
+
+
+
+
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open">
+		<style>
+			div.grammarly-desktop-integration {
+				position: absolute;
+				width: 1px;
+				height: 1px;
+				padding: 0;
+				margin: -1px;
+				overflow: hidden;
+				clip: rect(0, 0, 0, 0);
+				white-space: nowrap;
+				border: 0;
+				-moz-user-select: none;
+				-webkit-user-select: none;
+				-ms-user-select: none;
+				user-select: none;
+			}
+
+			div.grammarly-desktop-integration:before {
+				content: attr(data-content);
+			}
+		</style>
+		<div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration"
+			data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}">
+		</div>
+	</template></grammarly-desktop-integration>
+
+</html>

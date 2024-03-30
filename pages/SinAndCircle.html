@@ -1,0 +1,418 @@
+
+<!-- saved from url=(0069)http://www.personal.reading.ac.uk/~shsmchlr/jsmaths/SinAndCircle.html -->
+<html style="--canvbgcol: #e9eae8; --canvhcol: #a00000; --canvtcol: #101010; --h1col: #bf0000; --h2col: #50535a; --ppcol: #0f0f0f; --ibgcol: #fffdf0; --ipcol: #0f0f0f; --butcol: #202020; --butbgcol: #d0d0d0; --linknorm: #000036; --linkvisited: #36003b; --linkactive: #360000;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<link rel="stylesheet" type="text/css" href="./SinAndCircle_files/style.css">
+<script type="text/javascript" src="./SinAndCircle_files/forcolours.js.download"></script>
+
+<script type="text/javascript" src="./SinAndCircle_files/BoxLib.js.download"></script>
+<script type="text/javascript" src="./SinAndCircle_files/SliderLib.js.download"></script>
+
+
+<script language="JavaScript">
+
+
+<!-- Begin
+
+var ampSlider, wSlider, phaseSlider;
+//var canvasback = "rgb(233, 234, 232)"
+var simtime = 10
+var angTrav = 2*Math.PI
+var timerVar = 1
+ 
+ 	function getMousePos(canvas, event) {
+	   var rect = canvas.getBoundingClientRect();
+	   return {
+	     x : event.pageX - rect.left,
+		 y : event.pageY - rect.top - document.body.scrollTop
+		 };
+	}	 
+
+    function doMousedown(event)  {
+     var mousepos = getMousePos(document.getElementById("myCanvasInSin"), event);
+	   ampSlider.sliderMouseDown(mousepos.x, mousepos.y);
+	   wSlider.sliderMouseDown(mousepos.x, mousepos.y);
+	   phaseSlider.sliderMouseDown(mousepos.x, mousepos.y);
+	}
+
+   function doMousemove(event) {
+   var mousepos = getMousePos(document.getElementById("myCanvasInSin"), event);
+
+	   ampSlider.sliderMouseMove(mousepos.x, mousepos.y);
+	   wSlider.sliderMouseMove(mousepos.x, mousepos.y);
+	   phaseSlider.sliderMouseMove(mousepos.x, mousepos.y);
+	    if (ampSlider.checkActive() || wSlider.checkActive() || phaseSlider.checkActive() ) {
+	         drawSin(true)
+		}  
+   }
+
+    function doMouseup(event) {
+	var mousepos = getMousePos(document.getElementById("myCanvasInSin"), event);
+	   if (ampSlider.checkActive() || wSlider.checkActive() || phaseSlider.checkActive() ) {
+			angTrav = 2000
+			drawSin(false)
+			clearInterval(timerVar)
+			setSinTimer()
+			angTrav = 0
+			animateSin()
+		}			
+	   ampSlider.sliderMouseUp(mousepos.x, mousepos.y);
+	   wSlider.sliderMouseUp(mousepos.x, mousepos.y);
+	   phaseSlider.sliderMouseUp(mousepos.x, mousepos.y);
+    }
+
+function scalevar (val, imax, imin, omax, omin) {
+  if ( val > imax ) {
+      val = imax;
+  }
+  else if ( val < imin ) {
+	   val = imin;
+  } 	   
+  var ans = omin + (val-imin)*(omax-omin)/(imax-imin)
+  
+  return ans
+}
+
+
+function plotoneSin(ctx, maxyv, minyv, xlv, xrv, ytv, ybv, t, s) {
+var penup = true
+var ax = 0, ay = 0
+	ctx.beginPath();
+    for (var ct = 0; ct < 200; ct++) {
+		ax = scalevar (t[ct], t[199], t[0], xlv, xrv) 
+		ay = scalevar (s[ct], maxyv, minyv, ytv, ybv) 
+		if ( penup ) ctx.moveTo(ax, ay) 
+		else ctx.lineTo(ax, ay)
+		penup = false
+	}
+	ctx.stroke()
+}
+
+
+function sinstr (sig, amp, w, ph) {
+var ans = sig + " = "
+	if (amp != 1) ans = ans + amp.toFixed(2)
+	ans = ans + " sin("
+	if (w != 1) ans = ans + w.toFixed(2)
+	ans = ans + "t"
+	if (ph > 0) ans = ans + " + " + ph.toFixed(2)
+	if (ph < 0) ans = ans + " - " + -ph.toFixed(2)
+	ans = ans + "). "
+	return ans
+}
+
+function drawSin(justIn) {
+var amp = ampSlider.getSliderPos()
+var w = Math.pow(10, wSlider.getSliderPos())
+var ph = phaseSlider.getSliderPos() * Math.PI/180;
+var wch = "\u03A9".toLowerCase()
+var pich = "\u03C0"
+
+
+var tdata = new Array(200)
+var sindata = new Array(200)
+    for (var ct = 0; ct < 200; ct++) {
+        tdata[ct] = ct * 2 * w * Math.PI / 200;
+        sindata[ct] = amp * Math.sin(w * tdata[ct] + ph);
+    }
+
+	plotSin("myCanvasInSin", 15, 15, 75, 60, tdata, sindata, sinstr ("I", amp, w, ph))
+	if (justIn == false) plotPolar("myCanvasOutSin", 15, 15, 75, 60, amp, ph, "Sinusoid shown as circle")
+}
+
+function animateSin() {
+var amp = ampSlider.getSliderPos()
+var w = Math.pow(10, wSlider.getSliderPos())
+var ph = phaseSlider.getSliderPos() * Math.PI/180;
+var tdata = [0, angTrav/w, 199*2*w*Math.PI/200]
+	plotSin("myCanvasInSin", 15, 15, 75, 60, tdata, amp*Math.sin(ph+angTrav), "")
+	plotPolar("myCanvasOutSin", 15, 15, 75, 60, amp, angTrav+ph, "")			// was angTrav/w
+}
+
+function moveDot() {
+	if (angTrav < 2 * Math.PI) {    //w * 2* Math.PI) {
+		angTrav = angTrav + Math.PI/128     //w*Math.PI/128
+		animateSin()
+	}
+}
+
+function setSinTimer() {
+var w = Math.pow(10, wSlider.getSliderPos())
+	timerVar = setInterval(function(){moveDot()},simtime/w);
+}
+
+function plotPolar(cname, x, y, w, h, ampIn, phIn, tstr) {
+var canvas = document.getElementById(cname);
+var ctx=canvas.getContext("2d");
+var cw = canvas.width / 100;
+var ch = canvas.height / 100;
+var maxy = 5;
+var miny = -5;
+var maxx = maxy*cw/ch;
+var minx = miny*cw/ch;
+var xorg = cw*(x + w / 2)
+var yorg = ch*(y + h / 2)
+
+if (tstr.length>0) {
+	ctx.fillStyle = getrootcol("--canvbgcol");	//canvasback;
+	ctx.fillRect(cw*(x-1), ch*(y-1), cw*(w+2), ch*(h+2));
+
+	ctx.fillStyle = getrootcol("--canvbgcol");	//canvasback;
+	ctx.fillRect(cw*x, 0, cw*w, ch*(y-4));
+
+	ctx.fillStyle=getrootcol("--canvhcol");	//"black"
+	ctx.textAlign="center"
+	ctx.textBaseline="middle"
+	ctx.fillText(tstr, cw*55, ch*8)
+
+	ctx.lineWidth = 2;
+	ctx.strokeStyle = "rgb(128,128,128)"; 
+	ctx.beginPath();
+	ctx.moveTo(cw*x, yorg);
+	ctx.lineTo(cw*(x+w), yorg);
+	ctx.stroke()
+	ctx.beginPath();
+	ctx.moveTo(xorg, ch*y);
+	ctx.lineTo(xorg, ch*(y+h));
+	ctx.stroke()
+	ctx.rect(cw*(x-1), ch*(y-1), cw*(w+2), ch*(h+2))
+	ctx.stroke()
+	
+	ctx.strokeStyle="blue"
+	ctx.lineWidth = 3;
+	ctx.beginPath();
+	ctx.moveTo(xorg, yorg);
+	ctx.lineTo(xorg+yorg-scalevar(ampIn*Math.cos(phIn), maxy, miny, ch*y, ch*(y+h)), scalevar(ampIn*Math.sin(phIn), maxy, miny, ch*y, ch*(y+h)) )
+	ctx.stroke()
+	ctx.lineWidth = 2;
+	ctx.beginPath();
+	ctx.arc(xorg, yorg, scalevar(ampIn, maxy, miny, ch*(y+h), ch*y)-yorg,0,2*Math.PI);
+	ctx.stroke()
+}
+else {
+   ctx.strokeStyle="green"
+   ctx.beginPath()
+   ctx.arc(xorg+yorg-scalevar(ampIn*Math.cos(phIn), maxy, miny, ch*y, ch*(y+h)), scalevar(ampIn*Math.sin(phIn), maxy, miny, ch*y, ch*(y+h)), 2,0,2*Math.PI);
+   ctx.stroke()
+}
+}
+
+
+function plotSin (cname, x, y, w, h, t, s, tstr) {
+var canvas = document.getElementById(cname);
+var ctx=canvas.getContext("2d");
+var cw = canvas.width / 100;
+var ch = canvas.height / 100;
+var penup = true;
+var xp, yp;
+var maxs = 5;
+var mins = -5;
+if (tstr.length>0) {
+	ctx.fillStyle = getrootcol("--canvbgcol");	//canvasback;
+	ctx.fillRect(cw*(x-1), 0, cw*(w+2), ch*(y+h+2));
+
+	ctx.fillStyle=getrootcol("--canvhcol");	//"black"
+	ctx.textAlign="center"
+	ctx.textBaseline="middle"
+	ctx.fillText(tstr, cw*55, ch*8)
+
+	ctx.lineWidth = 2;
+	ctx.strokeStyle = "rgb(128,128,128)"; 
+	ctx.rect(cw*(x-1), ch*(y-1), cw*(w+2), ch*(h+2))
+	ctx.stroke()
+	ctx.beginPath();
+	ctx.moveTo(scalevar(t[0], t[199], t[0], cw*(x+w), cw*x), ch*(y + h / 2));
+	ctx.lineTo(scalevar(t[199], t[199], t[0], cw*(x+w), cw*x), ch*(y + h / 2));
+	ctx.stroke()
+	plotoneSin(ctx, maxs, mins, cw*(x+w), cw*x, ch*y, ch*(y+h), t, s) 
+
+//	ctx.beginPath();
+//	for (var ct=0; ct<200; ct++) {
+//		xp = scalevar(t[ct], t[199], t[0], cw*(x+w), cw*x);
+//		yp = scalevar(s[ct], maxs, mins, ch*y, ch*(y+h));
+//		( penup ) ? ctx.moveTo(xp, yp) : ctx.lineTo(xp, yp);
+//		penup = false
+//	}
+//	ctx.stroke()	
+}
+else {
+   ctx.strokeStyle="green"
+   if (t[1] < t[2]) {
+		ctx.beginPath()
+		ctx.arc(scalevar(t[1], t[2], t[0], cw*(x+w), cw*x, ch*(y + h / 2)), scalevar(s, maxs, mins, ch*y, ch*(y+h)), 2,0,2*Math.PI);
+		ctx.stroke()
+	}
+}
+
+}
+
+function drawFig() {
+var canvas = document.getElementById("myCanvasFig");
+var ctx=canvas.getContext("2d");
+var cw = canvas.width / 100;
+var ch = canvas.height / 100;
+    ctx.fillStyle = getrootcol("--canvbgcol");	//canvasback;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+	ctx.strokeStyle = "black"
+    ctx.lineWidth = 2;
+	ctx.beginPath()
+	ctx.arc(cw*50, ch*50, ch*40 ,0,2*Math.PI);
+	ctx.stroke()
+	ctx.strokeStyle = "blue"
+	ctx.beginPath()
+	ctx.moveTo(cw*50+ch*40, ch*50)
+	ctx.lineTo(cw*50, ch*50)
+	ctx.lineTo(cw*50+ch*20, ch*50-ch*33)
+	ctx.stroke()
+	ctx.font = '11pt Calibri';
+
+	ctx.fillStyle="blue"
+	ctx.textAlign="center"
+	ctx.textBaseline="middle"
+	ctx.fillText("r", cw*50, ch*30)
+	ctx.fillText("\u03C6", cw*50+ch*15, ch*40)
+}
+
+function clearcanvas(cname) {
+var canvas = document.getElementById(cname);
+var ctx=canvas.getContext("2d");
+    ctx.fillStyle = getrootcol("--canvbgcol");	//canvasback
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+	return ctx;
+}
+
+function labelSliders(ctx, cw, ch) {
+    ctx.fillStyle = getrootcol("--canvtcol");	//canvasback;
+	ctx.textAlign="start"; 
+	ctx.fillText("\u03A9".toLowerCase(), 2*cw, 83*ch);
+	ctx.fillText("p", 2*cw, 93*ch);
+}
+
+function setupgraphs() {
+var canvas = document.getElementById("myCanvasInSin");
+var ctx=canvas.getContext("2d");
+var cw = canvas.width / 100;
+var ch = canvas.height / 100;
+    ctx.fillStyle = getrootcol("--canvbgcol");	//canvasback;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+	ctx.rect(cw*15, ch*15, cw*75, ch*60);
+	ctx.stroke();
+	
+    ctx.lineWidth = 2;
+	ampSlider = new aslider(5*cw, ch*18, 3*cw, ch*25, false, ctx);
+	wSlider = new aslider(15*cw, ch*82, 75*cw, ch*3, false, ctx);
+	phaseSlider = new aslider(15*cw, ch*93, 75*cw, ch*3, false, ctx);
+	wSlider.whichbase = 10;
+	ampSlider.setSliderScale(5, 0);
+	wSlider.setSliderScale(-1, 1);
+	phaseSlider.setSliderScale(-90, 90);
+	phaseSlider.putSliderPos(0);
+	ctx.font = '12pt Calibri';
+	labelSliders(ctx, cw, ch);
+
+	canvas.addEventListener("mousedown", doMousedown, false);		// define mouse functions
+	canvas.addEventListener("mousemove", doMousemove, false);
+	canvas.addEventListener("mouseup", doMouseup, false);
+
+    canvas = document.getElementById("myCanvasOutSin");
+    ctx=canvas.getContext("2d");
+    cw = canvas.width / 100;
+    ch = canvas.height / 100;
+    ctx.fillStyle = getrootcol("--canvbgcol");	//canvasback;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+	ctx.rect(cw*15, ch*15, cw*75, ch*60);
+	ctx.stroke();
+	ctx.font = '12pt Calibri';
+
+	drawSin(false);
+	setSinTimer()
+	angTrav = 0
+	animateSin()
+}
+
+
+function load() {
+	window.defaultStatus="RJM's Demo of Circular Function Sin";
+	initPageColours();
+	setupgraphs();
+	drawFig()
+	drawSin(false);
+}
+
+function doTogColours() {
+	togColours();
+	var ctx = clearcanvas("myCanvasInSin");
+	clearcanvas("myCanvasOutSin");
+	wSlider.redraw(getrootcol("--canvtcol"), "black", getrootcol("--canvtcol"));
+	ampSlider.redraw(getrootcol("--canvtcol"), "black", getrootcol("--canvtcol"));
+	phaseSlider.redraw(getrootcol("--canvtcol"), "black", getrootcol("--canvtcol"));
+	
+	var canvas = document.getElementById("myCanvasInSin");
+
+	labelSliders(ctx, canvas.width/100, canvas.height/100);
+	
+	drawFig();
+	drawSin(false);
+}
+
+
+// End -->
+</script>
+
+<!-- STEP TWO: Add the relevant event handlers to the BODY tag  --> 
+
+</head><body onload="load()" data-new-gr-c-s-check-loaded="14.1165.0" data-gr-ext-installed="">
+	<div id="wrapper">
+
+		<div class="intro">
+				<h1>The Circular Function Sin </h1>
+				
+				<p>Sin is a 'circular' function - as you rotate around a circle, radius r, 
+				the height of a point at angle φ is r*sin(φ).</p>
+				<p><canvas id="myCanvasFig" name="myCanvasInSin" width="120" height="100"></canvas></p>
+				<p>Its peak amplitude equals the radius of the circle. 
+				How many times it repeats per second is its frequency, f.</p>
+				<p>One revolution is 2π radians - so engineers often use angular frequency
+				ω = 2 π * f.</p>
+				<p>The sinusoid is plotted as a function of time : r sin(ω t + φ), 
+				and can also be represented as a line of length r at angle φ.</p>
+				<p>You can change the sinusoid's amplitude, the phase (which sets its initial value) and angular frequency, 
+				using the sliders. When you stop moving a slider, the sinusoid is drawn  
+				both as a plot versus time, and moving round the circle.</p>
+
+
+		</div>
+		<div class="robot">
+			<form name="mathssys">
+				<canvas id="myCanvasInSin" name="myCanvasInSin" width="500" height="300"></canvas>
+				<canvas id="myCanvasOutSin" name="myCanvasOutSin" width="500" height="300"></canvas>
+			</form>
+		</div>
+
+		<div class=""></div>
+	
+	</div>
+
+
+
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
+      div.grammarly-desktop-integration {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select:none;
+        user-select:none;
+      }
+
+      div.grammarly-desktop-integration:before {
+        content: attr(data-content);
+      }
+    </style><div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>

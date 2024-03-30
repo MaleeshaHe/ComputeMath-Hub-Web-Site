@@ -1,0 +1,371 @@
+
+<!-- saved from url=(0076)http://www.personal.reading.ac.uk/~shsmchlr/jsmaths/OnInversePythagoras.html -->
+<html style="--canvbgcol: #e9eae8; --canvhcol: #a00000; --canvtcol: #101010; --h1col: #bf0000; --h2col: #50535a; --ppcol: #0f0f0f; --ibgcol: #fffdf0; --ipcol: #0f0f0f; --butcol: #202020; --butbgcol: #d0d0d0; --linknorm: #000036; --linkvisited: #36003b; --linkactive: #360000;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<link rel="stylesheet" type="text/css" href="./OnInversePythagoras_files/style.css">
+<script type="text/javascript" src="./OnInversePythagoras_files/forcolours.js.download"></script>
+
+<script type="text/javascript" src="./OnInversePythagoras_files/mytimer.js.download"></script>
+
+
+
+<script language="JavaScript">
+
+
+<!-- Begin
+
+// Richard Mitchell's web page for demonstrating aspects of pythagoras inverses
+// 21/8/23
+
+var sA, sB, sC		// a b and c
+var pTrip = [3,4,5, 5,12,13, 8,15,17, 7,24,25, 20,21,29, 12,35,37, 9,40,41, 28,45,53, 11,60,61, 16,63,65, 33,56,65, 48,55,73, 13,84,85, 36,77,85, 39,80,89, 65,72,97];
+var tripCt = 0;
+var opDone;				// which operator done + - * /
+var simToggle = 1;
+
+// just prints the given message
+function reportString (rstr) {
+	document.getElementById("mess").innerHTML=rstr
+}
+function reportString2 (rstr) {
+	document.getElementById("mess2").innerHTML=rstr
+}
+
+// puts the points in data to the canvas ctx and then draws or fills the shape
+function putPoints (ctx, data, isFill) {			
+	ctx.beginPath()										// start path top be drawn
+	for (ct=0; ct<data.length; ct+=2) {					// for each x,y pair
+		if (ct==0) ctx.moveTo(data[ct], data[ct+1])		// position first pair
+		else ctx.lineTo(data[ct], data[ct+1])			// join to subsequent pair
+	}
+	if (isFill) ctx.fill()								// then either fill or draw(stroke) shape
+	else ctx.stroke()
+}
+
+		// draw string in bstr into canvas ctx, centred ay position x,y
+function drawText (ctx, bstr, x, y) {
+	ctx.textAlign = "center"				// set up alignmengt of string
+	ctx.textBaseline="middle"
+	ctx.fillText(bstr, x, y)				// and draw at x,y
+}	
+
+	// draw or fill arc origin x,y, radius rr, angle aa
+function putArc(ctx, x, y, rr, aa, isFill) {
+	ctx.beginPath();						// start path
+	ctx.arc(x, y, rr, aa, false);			// do arc
+	if (isFill) ctx.fill();					// either fill or draw
+	else ctx.stroke();	
+}
+
+	// draw a dot at x,y, by filling a 360deg arc
+function putDot (ctx, x, y) {
+	putArc(ctx, x, y, 4, 2*Math.PI, true);
+}
+
+function putShape (ctx, xo, yo, scalf, data, isFill) {
+var ndata = [];
+	for (var ct=0; ct<data.length; ct+=2) {
+		ndata[ct] = xo + data[ct]*scalf;
+		ndata[ct+1] = yo + data[ct+1]*scalf;
+    }
+	if (data.length > 4) {
+		ndata[data.length] = ndata[0];
+		ndata[data.length+1] = ndata[1];
+	}	
+    if (isFill) putPoints(ctx, ndata, false);  // to draw outline also
+    putPoints(ctx, ndata, isFill);
+}
+
+function triText (ctx, xo, yo, scalf, x, y, tStr, tAlign) {
+	ctx.textAlign = tAlign;
+
+	drawText(ctx, tStr, xo+x*scalf, yo+y*scalf);
+}
+
+// shows on canvas complex numbers A and B, and result R if given - print values and plot on argand
+function showData() {
+var canvas = document.getElementById("myCanvasSYS");		// set up canvas 
+var ctx = canvas.getContext("2d");
+var cw = canvas.width / 100;								// for calulating sizes
+var ch = canvas.height / 100;
+	ctx.fillStyle = getrootcol("--canvbgcol");				// set background colour
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+		
+	ctx.strokeStyle = getrootcol("--canvtcol") 				// colour for lines 
+	ctx.lineWidth = 2
+	
+	ctx.fillStyle = getrootcol("--h1col") 				// colour for fill shapes/text
+	ctx.font = "16pt Calibri"								// set font aligned centre
+	ctx.textAlign = "left";
+
+var sApB = sA + sB;
+var xoff = cw * 5;
+var scalf = cw * 40 / sC;
+var sD = sA*sB/sC;
+var sE = sA*sA/sC;
+var sF = sB*sB/sC;
+var yoff = ch*10;
+
+	putShape (ctx, xoff, yoff, scalf, [0, sD, sE, 0, sC, sD], true);
+	putShape (ctx, xoff, yoff, scalf, [sE, 0, sE, sD], false); 
+
+//	ctx.fillStyle = getrootcol("--h2col") 				// colour for fill shapes/text
+
+	ctx.fillStyle = getrootcol("--canvtcol") 				// colour for text
+	triText(ctx, xoff-cw*3, yoff-ch*4, scalf, sE/3, sD/2, "a="+sA.toString(), "right");
+	triText(ctx, xoff+cw*5, yoff, scalf, sE, sD*2/3, "d="+sD.toFixed(2), "left");
+	triText(ctx, xoff+cw*2, yoff-ch*4, scalf, sC-sF/3 , sD/2, "b="+sB.toString(), "left");
+	triText(ctx, xoff, yoff+ch*5, scalf, sC*2/3, sD, "c="+sC.toString(), "center");
+	
+	triText(ctx, xoff-cw*2, yoff, scalf, 0, sD, "B", "right");
+	triText(ctx, xoff+cw*2, yoff, scalf, sC, sD, "A", "left");
+	triText(ctx, xoff, yoff-ch*4, scalf, sE, 0, "C", "center");
+	triText(ctx, xoff, yoff+ch*4, scalf, sE, sD, "D", "center");
+
+xoff = cw*55;	
+
+var sqch = "\u00b2"   
+	ctx.fillStyle = getrootcol("--h1col") 				// colour for fill shapes/text
+	putShape (ctx, xoff, yoff, scalf, [0, sD, sE, 0, sC, sD], true);
+	putShape (ctx, xoff, yoff, scalf, [sE, 0, sE, sD], false); 
+
+	ctx.fillStyle = getrootcol("--canvtcol") 				// colour for text
+	triText(ctx, xoff-cw*3, yoff-ch*4, scalf, sE/3, sD/2, "ac="+(sA*sC).toString(), "right");
+	triText(ctx, xoff+cw*5, yoff, scalf, sE, sD*2/3, "ab="+(sA*sB).toString(), "left");
+	triText(ctx, xoff+cw*2, yoff-ch*4, scalf, sC-sF/3 , sD/2, "bc="+(sB*sC).toString(), "left");
+	triText(ctx, xoff, yoff+ch*10, scalf, sE, sD, "c"+sqch+"="+(sC*sC).toString(), "center");
+	triText(ctx, xoff, yoff+ch*5, scalf, sE/2, sD, "a"+sqch+"="+(sA*sA).toString(), "center");
+	triText(ctx, xoff, yoff+ch*5, scalf, sC-sF/2, sD, "b"+sqch+"="+(sB*sB).toString(), "center");
+	
+	triText(ctx, xoff-cw*2, yoff, scalf, 0, sD, "B", "right");
+	triText(ctx, xoff+cw*2, yoff, scalf, sC, sD, "A", "left");
+	triText(ctx, xoff, yoff-ch*4, scalf, sE, 0, "C", "center");
+	triText(ctx, xoff, yoff+ch*4, scalf, sE, sD, "D", "center");
+
+
+xoff = cw*5;
+yoff = ch*90
+scalf = cw * 20/sC;
+
+	ctx.fillStyle = getrootcol("--h1col") 				// colour for fill shapes/text
+	
+	if (simToggle>0) {				// show cd = ab by tringle area
+		putShape (ctx, xoff, yoff, scalf, [0, 0, sE, -sD, sC, 0], true);			// draw triangle c at base
+		putShape (ctx, xoff, yoff, scalf, [sE, -sD, sE, 0], false); 
+
+		putShape (ctx, xoff + cw*25, yoff, scalf, [0, 0, 0, -sA, sB, 0], true); 					// and b at base
+
+		ctx.fillStyle = getrootcol("--canvtcol") 				// colour for text
+		triText(ctx, xoff, yoff+ch*5, scalf, sC/2, 0, "Area 0.5*c*d");
+		triText(ctx, xoff-cw, yoff, scalf, 0, 0, "B", "right");
+		triText(ctx, xoff+cw, yoff, scalf, sC, 0, "A", "left");
+		triText(ctx, xoff, yoff-ch*4, scalf, sE, -sD, "C", "center");
+
+		triText(ctx, xoff + cw*25, yoff+ch*5, scalf, sB/2, 0, "Area 0.5*a*b");
+		triText(ctx, xoff + cw*25-cw, yoff, scalf, 0, 0, "C", "right");
+		triText(ctx, xoff + cw*25+cw, yoff, scalf, sB, 0, "A", "left");
+		triText(ctx, xoff + cw*25-cw, yoff-ch*4, scalf, 0, -sA, "B", "right");
+	}
+	else {
+		putShape (ctx, xoff, yoff, scalf, [0, 0, sA*sA/sC, 0, sA*sA/sC, -sD], true);			// draw triangle BCD
+		putShape (ctx, xoff+cw*14, yoff, scalf, [0, 0, sA, 0, sA, -sB], true); 					// triangle ABC
+		
+		ctx.fillStyle = getrootcol("--canvtcol") 				// colour for text
+
+		triText(ctx, xoff-cw, yoff, scalf, 0, 0, "B", "right");
+		triText(ctx, xoff+cw, yoff, scalf, sA*sA/sC, 0, "D", "left");
+		triText(ctx, xoff+cw, yoff, scalf, sA*sA/sC, -sD, "C", "left");
+		triText(ctx, xoff-cw, yoff, scalf, sA*sA/(sC*2), -2*sD/3, "a", "right");
+		triText(ctx, xoff, yoff+ch*4, scalf, sA*sA/(sC*2), 0, "e", "center");
+		triText(ctx, xoff+cw, yoff, scalf, sA*sA/sC, -sD/2, "d", "left");
+
+		triText(ctx, xoff+cw*14-cw*2, yoff, scalf, 0, 0, "B", "right");
+		triText(ctx, xoff+cw*14+cw*2, yoff, scalf, sA, 0, "C", "left");
+		triText(ctx, xoff+cw*14+cw*2, yoff, scalf, sA, -sB, "A", "left");
+		triText(ctx, xoff+cw*14-cw*2, yoff, scalf, sA/2, -2*sB/3, "c", "right");
+		triText(ctx, xoff+cw*14, yoff+ch*4, scalf, sA/2, 0, "a", "center");
+		triText(ctx, xoff+cw*14+cw*2, yoff, scalf, sA, -sB/2, "b", "left");
+		
+		triText(ctx, xoff+cw*36, yoff, scalf, 0, -3*sB/4, "d/a = b/c", "left");
+		triText(ctx, xoff+cw*36, yoff, scalf, 0, -2*sB/4, "d = ab/c", "left");
+		triText(ctx, xoff+cw*36, yoff, scalf, 0, -sB/4, "e/a = a/c", "left");
+		triText(ctx, xoff+cw*36, yoff, scalf, 0, 0, "e = a"+sqch+"/c", "left");
+	
+	}
+
+	
+xoff = cw*55	
+scalf = cw * 40 /(sA + sB + sC)
+
+
+	ctx.fillStyle = getrootcol("--h1col") 				// colour for fill shapes/text
+	putShape (ctx, xoff, yoff, scalf, [0, 0, sA*sA/sC, 0, sA*sA/sC, -sD], true);			// draw triangle BCD
+	putShape (ctx, xoff+cw*12, yoff, scalf, [0, 0, sD, 0, sD, -sB*sB/sC], true); 
+	putShape (ctx, xoff+cw*27, yoff, scalf, [0, 0, sA, 0, sA, -sB], true); 
+
+	ctx.fillStyle = getrootcol("--canvtcol") 				// colour for text
+	triText(ctx, xoff-cw, yoff, scalf, 0, 0, "B", "right");
+	triText(ctx, xoff+cw, yoff, scalf, sA*sA/sC, 0, "D", "left");
+	triText(ctx, xoff+cw, yoff, scalf, sA*sA/sC, -sD, "C", "left");
+	triText(ctx, xoff-cw*2, yoff, scalf, sA*sA/(sC*2), -2*sD/3, "ac", "right");
+	triText(ctx, xoff, yoff+ch*4, scalf, sA*sA/(sC*2), 0, "a"+sqch, "center");
+	triText(ctx, xoff+cw*2, yoff, scalf, sA*sA/sC, -sD/2, "ab", "left");
+
+	triText(ctx, xoff+cw*12-cw, yoff, scalf, 0, 0, "C", "right");
+	triText(ctx, xoff+cw*12+cw, yoff, scalf, sD, 0, "D", "left");
+	triText(ctx, xoff+cw*12+cw, yoff, scalf, sD, -sB*sB/sC, "A", "left");
+	triText(ctx, xoff+cw*12-cw*2, yoff, scalf, sD/2, -2*sB*sB/(3*sC), "bc", "right");
+	triText(ctx, xoff+cw*12, yoff+ch*4, scalf, sD/2, 0, "ba", "center");
+	triText(ctx, xoff+cw*12+cw*2, yoff, scalf, sD, -sB*sB/(2*sC), "b"+sqch, "left");
+
+	triText(ctx, xoff+cw*27-cw, yoff, scalf, 0, 0, "B", "right");
+	triText(ctx, xoff+cw*27+cw, yoff, scalf, sA, 0, "C", "left");
+	triText(ctx, xoff+cw*27+cw, yoff, scalf, sA, -sB, "A", "left");
+	triText(ctx, xoff+cw*27-cw*2, yoff, scalf, sA/2, -2*sB/3, "c"+sqch, "right");
+	triText(ctx, xoff+cw*27, yoff+ch*4, scalf, sA/2, 0, "ac", "center");
+	triText(ctx, xoff+cw*27+cw*2, yoff, scalf, sA, -sB/2, "bc", "left");
+
+var tripstr = "Triple is : " + sA.toString()+sqch+" + "+sB.toString()+sqch + " = "+sC.toString()+sqch;
+var invtripstr = "Inverse is : 1/" + (sB*sC).toString()+sqch+" + 1/"+(sA*sC).toString()+sqch + " = 1/"+(sA*sB).toString()+sqch;
+	
+	reportString(tripstr)
+    reportString2(invtripstr);
+}
+
+
+// set new values A, B and C
+function setNewData(opt) {
+	if (opt == 0) tripCt = 0;
+    else if (opt == 1) {
+		tripCt += 3;
+		if (tripCt>=pTrip.length) tripCt = 0;
+	}
+	else {
+		tripCt -= 3;
+		if (tripCt<0) tripCt = pTrip.length - 3;
+	}
+	sA = pTrip[tripCt];
+	sB = pTrip[tripCt+1];
+	sC = pTrip[tripCt+2];
+	showData();
+}
+
+function simNext() {
+	simToggle = 1 - simToggle;
+	showData();
+}
+
+function doExplain() {
+var sqch = "\u00b2"   
+var fstr = "Area of triangle is base*height/2: so c*d/2 on left figure below, but also a*b/2 on right figure below - hence cd=ab or d = ab/c";
+var sstr = "The angles of triangles ABC, BCD and CDA are the same, so these triangles are similar. Thus CD/BC = AC/AB, hence d/a=b/c or d=ab/c";
+var tstr = "Similarly, BD/BC = BC/BA, or BD/a = a/c, so BD = a"+sqch+"/c.";
+var f2str = "Similarly, using triangles CDA and ABC, DA/CA = AC/AB ie DA = b"+sqch+"/c"
+var f3str = "This can also be shown by Pythagoras or DA = c-a"+sqch+"/c = (c"+sqch+"-a"+sqch+")/c = b"+sqch+"/c."
+   alert(fstr + "\n\n" + sstr+ "\n" + tstr+ "\n\n" + f2str+"\n"+f3str);
+}
+
+function doExplain2() {
+var sqch = "\u00b2";   
+var nch = "\u207f";
+var fstr = "If simply divide a"+sqch+"+b"+sqch+"=c"+sqch+" by (ab)"+sqch+" you get 1/b"+sqch+"+1/a"+sqch+"=c"+sqch+"/(ab)"+sqch+"=1/d"+sqch;
+var sstr = "If divide this by c"+sqch+" you get 1/(bc)"+sqch+"+1/(ac)"+sqch+"=1/(ab)"+sqch+".";
+var tstr = "Could instead divide a"+sqch+"+b"+sqch+"=c"+sqch+" by (abc)"+sqch+" to get 1/(bc)"+sqch+"+1/(ac)"+sqch+"=1/(ab)"+sqch+".";
+var f4str = "Conveniently the bottom line shows a"+sqch+"+b"+sqch+"=c"+sqch;
+   alert(fstr + "\n\n" + sstr+ "\n\n" + tstr + "\n\n" + f4str);
+}
+
+// for toggling between light / dark backgrounds
+function doTogColours() {
+	togColours();
+	showData();
+}
+
+// start of page, set up colours, set new values for A and B and show.
+function load() {
+	window.defaultStatus="RJM's Demo of Inverse Pythagoras";
+	initPageColours();
+	tripCt = -3;
+	setNewData(0);
+
+	simToggle = 1;
+	simTime = 500;
+	simMode = 1;
+	setTimer();
+}
+
+
+// End -->
+</script>
+
+<!-- STEP TWO: Add the relevant event handlers to the BODY tag  --> 
+
+</head><body onload="load()" data-new-gr-c-s-check-loaded="14.1165.0" data-gr-ext-installed="">
+	<div id="wrapper">
+
+		<div class="intro">
+				<h1>Pythagoras<sup>-1</sup></h1>
+				<p>My <a href="http://www.personal.reading.ac.uk/~shsmchlr/jsmaths/OnPythagoras.html" onclick="location.href=this.href+colstr(); return false;">OnPythagoras page</a> 
+				demonstrates geometrically a<sup>2</sup> + b<sup>2</sup> = c<sup>2</sup> for a right angled triangle whose sides have lengths a,b and c.
+				Integer values of a,b and c form a Pythagorean triple. This page discusses Inverse triples.</p> 
+				<p>Such a triangle for a given triple is shown with the line perpendicular to the hypotenuse at point D through the right angle corner at C.
+				Its length d equals ab/c, as is shown by calculating the triangle's area and by similar triangles.</p>
+				<p>Lines BD and DA have lengths a<sup>2</sup>/c and b<sup>2</sup>/c.</p>
+				<p>Hence, by multiplying sides by c, all relevant lengths are integers, as shown on the right. This neatly shows
+				a<sup>2</sup> + b<sup>2</sup> = c<sup>2</sup>.</p>
+				<p>One inverse formula is 1/a<sup>2</sup> + 1/b<sup>2</sup> = 1/d<sup>2</sup>.</p>
+				<p>If multiply all lengths by c, ie divide by c<sup>2</sup>, you get 1/(ac)<sup>2</sup> + 1/(bc)<sup>2</sup> = 1/(ab)<sup>2</sup>.</p> 
+				<p>This has inverse squares of integers.</p>
+
+				<p>Use the 'explain' buttons to find out more.</p>
+
+		</div>
+		<div class="robot">
+			<form name="mathssys">
+				<canvas id="myCanvasSYS" name="myCanvasSYS" width="800" height="400"></canvas>
+			</form>
+				<p>Like WS Gilbert's Major General said, there are many useful facts about the square on the hypotenuse!</p>
+			<div class="left">
+			<p>
+			<input type="button" class="button" id="newDataF" value="First Triple " onclick="setNewData(0);">
+			<input type="button" class="button" id="newDataN" value="Next Triple " onclick="setNewData(1);">
+			<input type="button" class="button" id="newDataP" value="Prev Triple " onclick="setNewData(2);"></p>
+			<p>
+			<input type="button" class="button" id="explainIt" value="Explanation" onclick="doExplain();">
+			<input type="button" class="button" id="explainIt" value="On Inverse" onclick="doExplain2();">
+			</p>
+			</div>
+			<div class="right">
+				<p id="mess">Triple is : 3² + 4² = 5²</p>
+				<p id="mess2">Inverse is : 1/20² + 1/15² = 1/12²</p>
+			</div>
+		</div>
+
+		<div class=""></div>
+	
+	</div>
+
+
+
+
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
+      div.grammarly-desktop-integration {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select:none;
+        user-select:none;
+      }
+
+      div.grammarly-desktop-integration:before {
+        content: attr(data-content);
+      }
+    </style><div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>

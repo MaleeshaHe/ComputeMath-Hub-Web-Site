@@ -1,0 +1,103 @@
+// RJMs library of routines for 3D matrices
+// Richard Mitchell Nov 2016
+
+// Contains transformation 3D matrices and vector routines
+
+function toVector(c1,c0) {
+	// return vector from c0 to c1
+	return [c1[0]-c0[0], c1[1]-c0[1], c1[2]-c0[2]];
+}
+function vecCross(v1, v2) {
+	// compute cross product of v1 and v2
+	return [v1[1]*v2[2]-v1[2]*v2[1], v1[2]*v2[0]-v1[0]*v2[2], v1[0]*v2[1]-v1[1]*v2[0]]
+}
+function vecDot(v1, v2) {
+	// compurte dot product of v1 adnd v2
+	return v1[0]*v2[0] + v1[1]*v2[1] + v1[2]*v2[2]
+}
+
+function vecNormalise (v) {
+	var modVec = Math.sqrt(vecDot(v,v))
+	if (modVec<=0) modVec = 1
+	return [v[0]/modVec, v[1]/modVec, v[2]/modVec];
+}	
+
+function positionVec (xyz) {
+	return new aMatrix(4,1, [xyz[0], xyz[1], xyz[2], 1])
+}
+
+function scaleMatrix (xyz) {
+	return new aMatrix(4,4,[xyz[0],0,0,0,  0,xyz[1],0,0,  0,0,xyz[2],0,  0,0,0,1])
+}
+
+function translateMatrix (xyz) {
+	return new aMatrix(4,4,[1,0,0,xyz[0],  0,1,0,xyz[1],  0,0,1,xyz[2],  0,0,0,1])
+}
+
+function shearMatrixX (xyz) {
+	return new aMatrix(4,4,[1,xyz[1],xyz[2],0,  0,1,0,0,  0,0,1,0,  0,0,0,1])
+}
+
+function shearMatrixY (xyz) {
+	return new aMatrix(4,4,[1,0,0,0,  xyz[0],1,xyz[2],0,  0,0,1,0,  0,0,0,1])
+}
+
+function shearMatrixZ (xyz) {
+	return new aMatrix(4,4,[1,0,0,0,  0,1,0,0,  xyz[0],xyz[1],1,0,  0,0,0,1])
+}
+
+function cossin(ang) {
+	// if ang is single value then generate cos(ang) and sin(ang)
+	// if ang is x, y then r = sqrt(x^2+y^2) and cos is y/r  sin is x/r
+	var ans = [0,0]
+	if (ang.length>1 ) {
+		var r = Math.sqrt(ang[0]*ang[0] + ang[1]*ang[1])
+		if (Math.abs(r)<0.001) ans = [1,0]
+		else ans = [ang[0]/r, ang[1]/r]
+	}		
+	else {
+		var angrad = ang[0] * Math.PI/180
+		ans = [Math.cos(angrad), Math.sin(angrad)]
+	}
+	return ans
+}
+
+
+function rotateMatrixX (ang) {
+	var cs = cossin(ang)
+	return new aMatrix(4,4,[1,0,0,0, 0,cs[0],-cs[1],0, 0,cs[1],cs[0],0,  0,0,0,1])
+}
+
+function rotateMatrixY (ang) {
+	var cs = cossin(ang)
+	return new aMatrix(4,4,[cs[0],0,-cs[1],0, 0,1,0,0, cs[1],0,cs[0],0,  0,0,0,1])
+}
+
+function rotateMatrixZ (ang) {
+	var cs = cossin(ang)
+	return new aMatrix(4,4,[cs[0],-cs[1],0,0, cs[1],cs[0],0,0, 0,0,1,0,  0,0,0,1])
+}
+
+function leftToRight () {
+//	return new aMatrix(4,4,[-1,0,0,0, 0,0,-1,0, 0,1,0,0,  0,0,0,1])
+	return new aMatrix(4,4,[1,0,0,0, 0,1,0,0, 0,0,-1,0,  0,0,0,1])
+}
+
+
+function toEye(xyz) {
+	var m1 = translateMatrix([-xyz[0], -xyz[1], -xyz[2]])
+					// translate by xe,ye,ze  so origin at eye
+	var m2 = rotateMatrixX([0, -1])
+					// and then rotate by 90 around x
+	var m3  = rotateMatrixY([-xyz[1], xyz[0]])
+					// rotate abouy y axis by tan-1(ye/xe) s t 0,0,ze  is on zeye axis
+	var m4 = rotateMatrixX([Math.sqrt(xyz[0]*xyz[0] + xyz[1]*xyz[1]), xyz[2]])
+					// rotate about xeye axis so origin of orig systen on zeye axis
+	var m5 = leftToRight()
+					// now inverse z axis
+	var mres = m5.matrixMult(m4)
+	mres = mres.matrixMult(m3)
+	mres = mres.matrixMult(m2)
+	return mres.matrixMult(m1)
+
+}

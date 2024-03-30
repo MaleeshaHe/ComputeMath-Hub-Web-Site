@@ -1,0 +1,333 @@
+<!-- saved from url=(0072)http://www.personal.reading.ac.uk/~shsmchlr/jsmaths/OnFourierSeries.html -->
+<html
+	style="--canvbgcol: #e9eae8; --canvhcol: #a00000; --canvtcol: #101010; --h1col: #bf0000; --h2col: #50535a; --ppcol: #0f0f0f; --ibgcol: #fffdf0; --ipcol: #0f0f0f; --butcol: #202020; --butbgcol: #d0d0d0; --linknorm: #000036; --linkvisited: #36003b; --linkactive: #360000;">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+	<link rel="stylesheet" type="text/css" href="./OnFourierSeries_files/style.css">
+	<script type="text/javascript" src="./OnFourierSeries_files/forcolours.js.download"></script>
+
+	<script type="text/javascript" src="./OnFourierSeries_files/BoxLib.js.download"></script>
+	<script type="text/javascript" src="./OnFourierSeries_files/GraphLib.js.download"></script>
+	<script type="text/javascript" src="./OnFourierSeries_files/PolyCNoLib.js.download"></script>
+
+
+
+
+	<script language="JavaScript">
+
+
+		<!-- Begin
+		
+		var simtime = 400
+		var nvalwas = 1
+		var mvalwas = -2
+		var nSweep = -1
+		var active = false
+		//var canvasback = "rgb(233, 234, 232)"
+		var InGraph, OutGraph
+		var tData = [], InData = [], OutData = []
+		
+		function whichSys() {
+		var ans = 0
+			if ( document.getElementById("fCheck0").checked )  ans = 0
+			else if ( document.getElementById("fCheck1").checked )  ans = 1
+			else if ( document.getElementById("fCheck2").checked )  ans = 2
+			else if ( document.getElementById("fCheck3").checked )  ans = 3
+			else if ( document.getElementById("fCheck4").checked )  ans = 4
+		
+			return ans
+		}	
+		
+		function getNValue() {
+		var ans = parseInt (document.getElementById("nValIn").value)
+			return ans
+		}	
+		
+		function getaNbN(sys, n, isan) {
+		var ans = 0
+		var npi = (n>0) ? n*Math.PI : 1
+		
+			switch (sys) {
+				case 0 :
+						if (isan == false) ans = 2*(1-Math.cos(npi))/npi
+						break
+				case 1 :
+						if (isan) ans = (n>0) ? 4*Math.sin(npi/2)/npi : 0
+						break
+				case 2 : if (isan == false) ans = 2*(1-Math.cos(npi/2))/npi
+								 else if (n> 0) ans = 2*Math.sin(npi/2)/npi
+						 else ans = -1
+						 break
+				case 3 :
+						if (isan == false) ans = -Math.cos(npi)/n
+						break
+				case 4 :
+						if (isan) ans = (n>0) ? 2*(Math.cos(npi) - 1) /(npi*npi) : 1
+						break
+			}
+			return ans	
+		}
+		
+		function reportString (wmess, sys) {
+		var messstr = ["a0mess", "anmess", "bnmess"]
+		var npi = "n"+"\u03C0"
+		var mess3
+			switch (sys) {
+				case 0 :
+						mess3 = ["a0 = 0", "an = 0","bn = 2*(1-cos("+npi+"))/"+npi]
+						break
+				case 1 :
+						mess3 = ["a0 = 0", "an = 4*sin("+npi+"/2)/"+npi, "bn = 0"]
+						break
+				case 2 : mess3 = ["a0 = -1", "an = 2*sin("+npi+"/2)/"+npi, "bn = 2*(1-cos("+npi+"/2))/"+npi]		
+						 break
+				case 3 : mess3 = ["a0 = 0", "an = 0", "bn = -cos("+npi+")/n"]
+						break
+				case 4 : mess3 = ["a0 = 1", "an = 2*(cos("+npi+")-1)/("+npi+")^2", "bn = 0"]
+						break
+			}
+			document.getElementById(messstr[wmess]).innerHTML=mess3[wmess]
+		}
+		
+		function FS(sys, t) {
+		var	nval = (nSweep<0) ? getNValue() : nSweep
+		var ans = 0.5*getaNbN(sys, 0, 1)
+			for (var nct = 1; nct<=nval; nct++)
+				ans += getaNbN(sys, nct, 1)*Math.cos(nct*t) + getaNbN(sys, nct, 0)*Math.sin(nct*t)
+			return ans	
+		}
+		
+		function getRelFuncVals(t) {
+		var pi = Math.PI
+		var sys = whichSys()
+		var vals = [0, 0, -2*pi, 2*pi]
+		var ttri = 0
+			switch (sys) {
+				case 0 :
+						vals = [((t<pi) || (t>=2*pi && t<3*pi)) ? 1 : -1,  FS(sys, t), 0, 4*pi]
+						break
+				case 1 :
+						vals = [(Math.abs(t)<pi/2 || Math.abs(t)>=1.5*pi) ? 1 : -1,  FS(sys, t), -2*pi, 2*pi]
+						break
+				case 2 : if (t<2*pi) ttri = t; else ttri = t-2*pi;
+						 vals = [ (ttri>pi/2) ? -1 : 1, FS(sys, t), 0, 4*pi]
+						 break
+				case 3 : if (t<pi) ttri = t
+								 else if (t<3*pi) ttri = t-2*pi
+						 else ttri = t - 4*pi
+						 vals = [ttri/2, FS(sys, t), 0, 4*pi]
+						break
+				case 4 : if (t>=2*pi) ttri = t - 2*pi; else ttri = t
+						 vals = [ttri<=pi ? ttri/pi : 2 - ttri/pi, FS(sys,t), 0, 4*pi]
+						 break
+			}
+			return vals
+		}
+		
+		function getFuncVal(t, opt) {
+			var allVals = getRelFuncVals(t)
+			return	allVals[opt]
+		}
+		
+		function getFuncNames() {
+		var sys = whichSys()
+		var vals = ["", "", ""]
+			switch (sys) {
+				case 0 :
+						vals = ["Squarewave start at 0", "", ""]
+						break
+				case 1 :		
+						vals = ["Squarewave centred on 0", "", ""]
+						break
+				case 2 :		
+						vals = ["Uneven Squarewave", "", ""]
+						break
+				case 3 :		
+						vals = ["Sawtooth start 0", "", ""]
+						break
+				case 4 :
+						vals = ["Triangle Wave", "", ""]
+						break
+			}
+			return vals
+		}
+		
+		function drawFunct(doBoth) {
+		var nPoints = 360
+			tData = new Array(nPoints)
+			inData = new Array(nPoints)
+			outData = new Array(nPoints)
+		var	tmin = getFuncVal(0, 2)
+		var	tmax = getFuncVal(0, 3)
+		var fmax = 0, fmin = 0
+			for (var ct=0; ct<nPoints; ct++) {
+				tData[ct] = tmin + ct*(tmax-tmin)/nPoints;
+				inData[ct] = getFuncVal(tData[ct], 0)
+				if (inData[ct]>fmax) fmax = inData[ct]
+				if (inData[ct]<fmin) fmin = inData[ct]
+				outData[ct] = getFuncVal(tData[ct], 1)
+				if (outData[ct]>fmax) fmax = outData[ct]
+				if (outData[ct]<fmin) fmin = outData[ct]
+			}
+		var nstrs = getFuncNames()
+		
+			if (fmin==0) fmin = -fmax/10
+			else fmin = fmin*1.2
+			fmax = fmax*1.2
+			InGraph.scaleOverride = [0, 0, fmin, fmax]
+			InGraph.plottworesponse(tData, inData, outData, true, 0, 0, "", nstrs[0], "x")
+			
+		}
+		
+		function testFunc() {
+			nvalwas = checkIfChanged (nvalwas, "nValIn")
+			if (nSweep>=0) {
+				drawFunct()
+				if (nSweep < 25) nSweep++; else nSweep=-1
+			}	
+		}
+		
+		function doSweep() {
+			nSweep = 0
+		}	
+		
+		function checkIfChanged (valwas, elemIdStr) {
+		var newvalwas = valwas
+		var	valis = (elemIdStr.charAt(0) == "n") ? getNValue() : getMValue()
+			if (isNaN(valis)==false)
+				if (valis != valwas) {
+					newvalwas = valis
+					active = false
+					drawFunct(true)
+				}	
+			return newvalwas	
+		}
+		
+		function setTimer() {
+			// set up the timer for checking n changed
+			setInterval(function(){testFunc()},simtime);
+		}
+		
+		function setupgraphs() {
+		var canvas = document.getElementById("myCanvasInSys");
+		var ctx=canvas.getContext("2d");
+		
+			InGraph = new myjsGraph(document.getElementById("myCanvasInSys"), 15, 25, 75, 60, true, true, getrootcol("--canvbgcol"), "12pt Calibri")
+			InGraph.drawAxes = true
+			
+				ctx.fillStyle = getrootcol("--canvbgcol");	//canvasback;
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+		}
+		
+		function load() {
+			window.defaultStatus="RJM's Demo of Fourier Series";
+			initPageColours();
+			setupgraphs();
+			setchecked(0);
+			setTimer()
+		}
+		
+		function setchecked(val) {
+			if (val >= 0) {
+				document.getElementById("fCheck0").checked=(val==0);
+				document.getElementById("fCheck1").checked=(val==1);
+				document.getElementById("fCheck2").checked=(val==2);
+				document.getElementById("fCheck3").checked=(val==3);
+				document.getElementById("fCheck4").checked=(val==4);
+			}
+			active = false
+			nSweep = -1
+			drawFunct(true);
+			reportString(0, val)
+			reportString(1, val)
+			reportString(2, val)
+		}
+		
+		function doTogColours() {
+			togColours();
+			setchecked(-1);
+		}
+		
+		// End -->
+	</script>
+
+	<!-- STEP TWO: Add the relevant event handlers to the BODY tag  -->
+
+</head>
+
+<body onload="load()" data-new-gr-c-s-check-loaded="14.1165.0" data-gr-ext-installed="">
+	<div id="wrapper">
+
+		<div class="intro">
+			<h1>Fourier Series </h1>
+
+			<p>Any repetitive signal can be constructed by adding suitable sinusoids : its Fourier Series. </p>
+			<p>This web page allows you to select a signal and see how, as more sinusoids
+				are added, the true function is approached.</p>
+			<p>Choose a function and it is plotted with its Fourier Series for up to n.
+				The an and bn coefficients for the function are shown.</p>
+			<p>Press Sweep n and n will be increased gradually from 0..25.</p>
+
+
+		</div>
+		<div class="robot">
+			<form name="mathssys">
+				<canvas id="myCanvasInSys" name="myCanvasInSys" width="500" height="250"></canvas>
+			</form>
+			<div class="left">
+				<p><input type="checkbox" id="fCheck0" onclick="setchecked(0);"> Square Wave start at 0</p>
+				<p><input type="checkbox" id="fCheck1" onclick="setchecked(1);"> SqWave centred at 0</p>
+				<p><input type="checkbox" id="fCheck2" onclick="setchecked(2);"> Uneven Square Wave</p>
+				<p><input type="checkbox" id="fCheck3" onclick="setchecked(3);"> SawTooth</p>
+				<p><input type="checkbox" id="fCheck4" onclick="setchecked(4);"> Triangle Wave</p>
+
+			</div>
+			<div class="right">
+				<p>n (0..25) <input type="number" id="nValIn" value="1" maxlength="2" min="0" max="25"></p>
+				<p><input type="button" class="button" id="sweepCheck" value="Sweep n" onclick="doSweep();"></p>
+				<p id="a0mess">a0 = 0</p>
+				<p id="anmess">an = 0</p>
+				<p id="bnmess">bn = 2*(1-cos(nπ))/nπ</p>
+			</div>
+		</div>
+
+
+
+		<div class=""></div>
+
+	</div>
+
+
+
+
+
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open">
+		<style>
+			div.grammarly-desktop-integration {
+				position: absolute;
+				width: 1px;
+				height: 1px;
+				padding: 0;
+				margin: -1px;
+				overflow: hidden;
+				clip: rect(0, 0, 0, 0);
+				white-space: nowrap;
+				border: 0;
+				-moz-user-select: none;
+				-webkit-user-select: none;
+				-ms-user-select: none;
+				user-select: none;
+			}
+
+			div.grammarly-desktop-integration:before {
+				content: attr(data-content);
+			}
+		</style>
+		<div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration"
+			data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}">
+		</div>
+	</template></grammarly-desktop-integration>
+
+</html>
