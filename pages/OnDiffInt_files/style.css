@@ -3,18 +3,7 @@
 }
 
 @media screen and (min-width : 1024px) {
-    .intro{
-        float: left;
-        width: 35%;
-	max-width: 550px
-    }
-    .intro h1 { margin-top: 25px }
- 
-    .robot{
-        float: right;
-        width: 65%;
-	margin-top: 25px;
-    }
+  div.right, div.left { width: 100%; float: none; }
 }
 
 @media screen and (min-width : 768px) {
@@ -75,6 +64,7 @@ p {
     color: var(--ppcol);
     font-size: 16px;
     line-height: 20px;
+    text-align: center;
 }
 
 .left {
@@ -87,7 +77,7 @@ p {
 
 
 .intro {
-    padding: 0 50px 25px 50px;
+  padding: 0 50px 25px 50px;
 	background-color: white;
 	color: var(--ipcol);
 }
@@ -96,7 +86,9 @@ p {
 	font-family: Arial;
 	font-weight: bold;
 	text-transform: uppercase;
-	color: var(--h1col);
+	color: #31b978;
+  text-align: center;
+  margin-top: 30px;
 }
 
 .intro h2 {
@@ -110,11 +102,19 @@ p {
 	font-size: 18px;
 }
 
+.intro p {
+    font-family: Arial;
+    color: var(--ppcol);
+    font-size: 18px;
+    line-height: 12px;
+    text-align: center;
+}
+
 .robot {
-    padding: 0 50px 25px 50px;
+  padding: 0 10px 25px 450px;
 	background-color: white;
 	color: var(--ipcol);
-
+  
 }
 
 .robot h2 {
