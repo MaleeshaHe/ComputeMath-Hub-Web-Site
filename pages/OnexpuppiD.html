@@ -1,0 +1,238 @@
+
+<!-- saved from url=(0067)http://www.personal.reading.ac.uk/~shsmchlr/jsmaths/OnexpuppiD.html -->
+<html style="--canvbgcol: #e9eae8; --canvhcol: #a00000; --canvtcol: #101010; --h1col: #bf0000; --h2col: #50535a; --ppcol: #0f0f0f; --ibgcol: #fffdf0; --ipcol: #0f0f0f; --butcol: #202020; --butbgcol: #d0d0d0; --linknorm: #000036; --linkvisited: #36003b; --linkactive: #360000;"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<link rel="stylesheet" type="text/css" href="./OnexpuppiD_files/style.css">
+<script type="text/javascript" src="./OnexpuppiD_files/forcolours.js.download"></script>
+
+<script type="text/javascript" src="./OnexpuppiD_files/BoxLib.js.download"></script>
+
+
+<script language="JavaScript">
+
+
+<!-- Begin
+
+var canvasback = "rgb(233, 234, 232)"
+var simtime = 10
+var angTrav = 2*Math.PI
+var timerVar = 1
+var sqch = "\u00b2" 
+
+function showMultiEqn (ctx, xpos, ypos, mstr) {
+	for (ct=0; ct<mstr.length; ct+=2) {
+		if (mstr[ct+1].length > 0) xpos = multiShowEqn (ctx, xpos, ypos, "", mstr[ct], mstr[ct+1])
+		else xpos = multiShowText (ctx, xpos, ypos, mstr[ct])
+	}
+	return xpos
+}
+
+function pistr() {
+	return "\u03A0".toLowerCase();
+}
+function wstr() {
+	return "\u03A9".toLowerCase();
+}
+function iwstr() {
+	return "i"+wstr();
+}
+function logwstr() {
+	return "log("+wstr()+")";
+}
+
+function OnepwTsq() {
+//	return "1 + ("+wstr()+"T)^2"
+	return "1 + ("+wstr()+"T)"+sqch
+}	
+function sqrtch() {
+	return "\u221A";
+}
+
+function showTF(ctx) {
+	var e1 = [ "System = ", "", "K", "1 + " + iwstr() + "T"]
+	var e2 = [ "Gain = ", "", "K", sqrtch()+"("+OnepwTsq()+")"]
+	var e3 = [ "Phase = ", "", "-arctan("+wstr()+"T)", ""]
+	var e4 = [ "At "+wstr()+" = 1/T or "+wstr()+"T = 1, ", ""]
+	var e5 = [ "Gain = ", "", "K", sqrtch()+"2"]
+	var e6 = [ "Phase = -arctan(1) = ", "", pistr(), "4"]
+	
+	var xpos1, xpos2, xt;
+	xpos1 = showMultiEqn(ctx, 5, 20, e1);
+	xpos2 = showMultiEqn(ctx, xpos1+60, 20, e2);
+	xt = showMultiEqn(ctx, xpos2+40, 20, e3);
+	
+	xt = showMultiEqn(ctx, 5, 60, e4)
+	xt = showMultiEqn(ctx, xpos1+60, 60, e5)
+	xt = showMultiEqn(ctx, xpos2+40, 60, e6);
+}
+
+function showGainAsym(ctx) {
+	var e1 = [ "Low F, Gain = ", "", "K", ""]
+	var e2 = [ "Plot log(K) vs " + logwstr(), ""];
+	var e3 = [ " Horizontal line", ""]
+	var e4 = [ "High F, Gain = ", "", "K", wstr()+"T", " = ", "", "K/T * "+ wstr() + "^-1", ""]
+	var e5 = [ "Plot log(K/T) - "+logwstr()+" vs " + logwstr(), ""] 
+	var e6 = [" Line slope -1 ", ""]
+
+	var xpos = 5
+	xpos = showMultiEqn(ctx, xpos, 45, e4);
+	var xpos2 = showMultiEqn(ctx, xpos + 20, 45, e5);
+	var xt = showMultiEqn(ctx, xpos2 + 20, 45, e6);
+	
+	xt = showMultiEqn(ctx, 5, 15, e1);
+	xpos = showMultiEqn(ctx, xpos + 20, 15, e2);
+	xpos = showMultiEqn(ctx, xpos2 + 20, 15, e3);
+
+}
+
+function showPhaseAsym(ctx) {
+
+	var e1 = [ "d(Phase)", "d"+wstr(), " = ", "", "-T", OnepwTsq()]
+	var e2 = [" So ", "", "d(Phase)", "d log("+wstr()+")", " = ", "", "-"+wstr()+"T", OnepwTsq()]
+	var e3 = [" At "+wstr()+"T = 1, this is - ", "", "1", "2"]
+	
+	var e4 = ["This must equal ", "", "-"+pistr()+"/2 - 0", "log (r"+sqch+")", " = ","", "-"+pistr(), "4log(r)"]
+	var e5 = ["Equating these gives ", "", "1", "", " = ", "", pistr(), "2log(r)" ]
+	
+	var e6 = ["Rearranging we get : log(r) = ", "", pistr(), "2"]
+	var e7 = ["Raising to power of e we get r"+sqch+" = exp("+pistr()+")", ""]
+var xpos, xpos1
+	xpos = showMultiEqn(ctx, 5, 25, e1);
+	xpos = showMultiEqn(ctx, xpos + 30, 25, e2);
+	xpos = showMultiEqn(ctx, xpos + 30, 25, e3);
+	
+	xpos1 = showMultiEqn(ctx, 5, 70, e4);
+	xpos = showMultiEqn(ctx, xpos1 + 30, 70, e5);
+
+	xpos = showMultiEqn(ctx, 5, 115, e6);
+	xpos = showMultiEqn(ctx, xpos1 + 30, 115, e7);
+	
+	ctx.beginPath();
+	ctx.moveTo(530, 35); 
+	ctx.lineTo(580, 85);
+	ctx.lineTo(530, 85);
+	ctx.lineTo(530, 35);
+	ctx.stroke();
+	ctx.fillText("0", 515, 35)
+	ctx.fillText("-"+pistr()+"/2", 500, 80);
+	ctx.fillText("1/r", 520, 95)
+	ctx.fillText("r", 580, 95)
+	
+	
+}
+
+function setcanvas(canvas, ctx) {
+var cw = canvas.width / 100;
+var ch = canvas.height / 100;
+     ctx.fillStyle = getrootcol("--canvbgcol");	//canvasback;
+	 ctx.fillRect(0, 0, canvas.width, canvas.height);
+	ctx.font = '12pt Calibri';
+	ctx.fillStyle=getrootcol("--canvhcol");	//"black"
+	ctx.strokeStyle=getrootcol("--canvhcol");	//"black"
+
+    ctx.lineWidth = 2;
+}
+
+function setupgraphs() {
+var canvas = document.getElementById("myCanvasOnTF");
+var ctx=canvas.getContext("2d");
+	setcanvas(canvas, ctx)
+	showTF(ctx);
+
+    canvas = document.getElementById("myCanvasOnGain");
+    ctx=canvas.getContext("2d");
+	setcanvas(canvas, ctx)
+	showGainAsym(ctx)
+
+    canvas = document.getElementById("myCanvasOnPhase");
+    ctx=canvas.getContext("2d");
+	setcanvas(canvas, ctx)
+	showPhaseAsym(ctx)
+
+}
+
+
+function load() {
+	window.defaultStatus="RJM's Demo of Circular Function Sin";
+	initPageColours();
+	setupgraphs();
+
+}
+
+function doTogColours() {
+	togColours();
+	setupgraphs();
+}
+
+// End -->
+</script>
+
+<!-- STEP TWO: Add the relevant event handlers to the BODY tag  --> 
+
+</head><body onload="load()" data-new-gr-c-s-check-loaded="14.1165.0" data-gr-ext-installed="">
+	<div id="wrapper">
+
+		<div class="intro">
+				<h1>Freq Resp and exp<sup>π</sup> - Part D</h1>
+				<p>Three interesting numbers in Maths are π, the ratio of a circle's circumference to its diameter,
+				Euler's number e, approx 2.71818, and i, √-1. It is well known that e<sup>iπ</sup> = -1.
+				Here we discuss a use of e<sup>π</sup> in frequency response, which  uses i itself!</p>
+				<p>In frequency response, we input a sinusoid into a system (here first order linear), and consider
+				its output as we change the frequency f of the input. The output is a sinusoid of the same
+				frequency, but its amplitude changes, as does the delay or phase shift between input and output.
+				Strictly we examine changes in gain (ratio of output and input amplitudes) and phase, with angular frequency (2πf).</p>
+				<p>In <a href="http://www.personal.reading.ac.uk/~shsmchlr/jsmaths/OnexpuppiA.html" onclick="location.href=this.href+colstr(); return false;">Part A</a> 
+					we explained the basic concepts.</p>
+				<p>In <a href="http://www.personal.reading.ac.uk/~shsmchlr/jsmaths/OnexpuppiB.html" onclick="location.href=this.href+colstr(); return false;">Part B</a> 
+					we plotted gain and phase vs angular frequency (ω = 2 π * frequency).</p>
+				<p>In <a href="http://www.personal.reading.ac.uk/~shsmchlr/jsmaths/OnexpuppiC.html" onclick="location.href=this.href+colstr(); return false;">Part C</a> 
+				we added asymptotic approximations to the graphs - and get e<sup>π</sup>.</p>
+				<p>In Part D are the relevant maths.</p>
+				<p>See also <a href="https://ieeexplore.ieee.org/document/6334774">Original Paper</a> at Control 2012.</p>
+					</div>
+		</div>
+		<div class="robot">
+			<form name="mathssys">
+				<p>The system is modelled by a complex number involving i = √-1 and ω. 
+				T is its time constant.</p>
+				<p>The gain is the modulus of this, the phase is the argument, as shown below.</p>
+				<canvas id="myCanvasOnTF" name="myCanvasOnTF" width="600" height="80"></canvas>
+				<p>We consider these when ω is much less or much greater than 1/T (the corner frequency).</p>
+				<p>The low frequency gain asymptote is when ωT &lt;&lt; 1, so √(1 + (ωT)<sup>2</sup>) ~ 1.</p>
+				<p>The high frequency asymptote, is when ωT &gt;&gt; 1, so √(1 + (ωT)<sup>2</sup>) ~ ωT.</p>
+				<canvas id="myCanvasOnGain" name="myCanvasOnGain" width="600" height="70"></canvas>
+				<p>The first and last phase asymptotes are where the phase is 0 and -π/2 rads.</p>
+				<p>To find the frequency range of the other, we need the gradient of phase noting it is plotted vs log(ωT).</p>
+				<p>Let the asymptote be from 1/r to 1*r, ie over a range of r<sup>2</sup>, which we show is e<sup>π</sup>.</p>
+				<canvas id="myCanvasOnPhase" name="myCanvasOnPhase" width="600" height="140"></canvas>
+
+			</form>
+		</div>
+
+		<div class=""></div>
+	
+	
+
+
+
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
+      div.grammarly-desktop-integration {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select:none;
+        user-select:none;
+      }
+
+      div.grammarly-desktop-integration:before {
+        content: attr(data-content);
+      }
+    </style><div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>
