@@ -1,0 +1,317 @@
+<!-- saved from url=(0067)http://www.personal.reading.ac.uk/~shsmchlr/jsmaths/OnexpuppiA.html -->
+<html
+	style="--canvbgcol: #e9eae8; --canvhcol: #a00000; --canvtcol: #101010; --h1col: #bf0000; --h2col: #50535a; --ppcol: #0f0f0f; --ibgcol: #fffdf0; --ipcol: #0f0f0f; --butcol: #202020; --butbgcol: #d0d0d0; --linknorm: #000036; --linkvisited: #36003b; --linkactive: #360000;">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+	<link rel="stylesheet" type="text/css" href="./OnexpuppiA_files/style.css">
+	<script type="text/javascript" src="./OnexpuppiA_files/forcolours.js.download"></script>
+
+	<script type="text/javascript" src="./OnexpuppiA_files/BoxLib.js.download"></script>
+	<script type="text/javascript" src="./OnexpuppiA_files/SliderLib.js.download"></script>
+
+
+	<script language="JavaScript">
+
+
+		<!-- Begin
+		
+		var wSlider;
+		var canvasback = "rgb(233, 234, 232)"
+		var simtime = 10
+		var angTrav = 2*Math.PI
+		var timerVar = 1
+		 
+				function getMousePos(canvas, event) {
+				 var rect = canvas.getBoundingClientRect();
+				 return {
+					 x : event.pageX - rect.left,
+				 y : event.pageY - rect.top - document.body.scrollTop
+				 };
+			}	 
+		
+				function doMousedown(event)  {
+				 var mousepos = getMousePos(document.getElementById("myCanvasInSin"), event);
+				 wSlider.sliderMouseDown(mousepos.x, mousepos.y);
+			}
+		
+			 function doMousemove(event) {
+			 var mousepos = getMousePos(document.getElementById("myCanvasInSin"), event);
+		
+				 wSlider.sliderMouseMove(mousepos.x, mousepos.y);
+					if (wSlider.checkActive() ) {
+							 drawSin(false)
+				}  
+			 }
+		
+				function doMouseup(event) {
+			var mousepos = getMousePos(document.getElementById("myCanvasInSin"), event);
+				 if (wSlider.checkActive()  ) {
+					angTrav = 2000
+					drawSin(false)
+				}			
+				 wSlider.sliderMouseUp(mousepos.x, mousepos.y);
+				}
+		
+		function scalevar (val, imax, imin, omax, omin) {
+			if ( val > imax ) {
+					val = imax;
+			}
+			else if ( val < imin ) {
+				 val = imin;
+			} 	   
+			var ans = omin + (val-imin)*(omax-omin)/(imax-imin)
+		  
+			return ans
+		}
+		
+		
+		function plotoneSin(ctx, maxyv, minyv, xlv, xrv, ytv, ybv, t, s) {
+		var penup = true
+		var ax = 0, ay = 0
+			ctx.beginPath();
+				for (var ct = 0; ct < 200; ct++) {
+				ax = scalevar (t[ct], t[199], t[0], xlv, xrv) 
+				ay = scalevar (s[ct], maxyv, minyv, ytv, ybv) 
+				if ( penup ) ctx.moveTo(ax, ay) 
+				else ctx.lineTo(ax, ay)
+				penup = false
+			}
+			ctx.stroke()
+		}
+		
+		function sinstr (sig, amp, w, ph) {
+		var ans = sig + " = "
+			if (amp != 1) ans = ans + amp.toFixed(2)
+			ans = ans + " sin("
+			if (w != 1) ans = ans + w.toFixed(2)
+			ans = ans + "t"
+			if (ph > 0) ans = ans + " + " + ph.toFixed(2)
+			if (ph < 0) ans = ans + " - " + -ph.toFixed(2)
+			ans = ans + "). "
+			return ans
+		}
+		
+		function drawSin(justIn) {
+		var w = Math.pow(10, wSlider.getSliderPos())
+		var amp = 1 / Math.sqrt(1 + w*w);
+		var ph = Math.atan(-w);
+		var wch = "\u03A9".toLowerCase()
+		var pich = "\u03C0"
+		
+		
+		var tdata = new Array(200);
+		var sindata = new Array(200);
+		var cosdata = new Array(200);
+				for (var ct = 0; ct < 200; ct++) {
+						tdata[ct] = ct * 2 * w * Math.PI / 200;
+						sindata[ct] = Math.sin(w * tdata[ct]);
+				cosdata[ct] = amp * Math.sin(w * tdata[ct] + ph)
+				}
+		
+			plotSin("myCanvasInSin", 15, 15, 75, 60, tdata, sindata, sinstr ("I", 1, w, 0))
+			plotSin("myCanvasOutSin", 15, 15, 75, 80, tdata, cosdata, sinstr ("O", amp, w, ph))
+		}
+		
+		function ytick (ctx, yval, xsc, ysc) {
+			ctx.textAlign = "right"
+			ctx.textBaseline="middle"
+			ctx.fillText (yval.toFixed(2), xsc, ysc)
+		}
+		
+		function plotSin (cname, x, y, w, h, t, s, tstr) {
+		var canvas = document.getElementById(cname);
+		var ctx=canvas.getContext("2d");
+		var cw = canvas.width / 100;
+		var ch = canvas.height / 100;
+		var penup = true;
+		var xp, yp;
+		var maxs = 1;
+		var mins = -1;
+			if (tstr.length>0) {
+				
+				ctx.fillStyle = getrootcol("--canvbgcol");	//canvasback;
+					ctx.fillRect(cw*(x-11), 0, cw*(w+12), ch*(y+h+2));
+		
+				ctx.fillStyle=getrootcol("--canvhcol");	//"black"
+				ctx.textAlign="center"
+				ctx.textBaseline="middle"
+				ctx.fillText(tstr, cw*55, ch*8)
+		
+				ctx.lineWidth = 2;
+				ctx.strokeStyle = "rgb(128,128,128)"; 
+				ctx.rect(cw*(x-1), ch*(y-1), cw*(w+2), ch*(h+2))
+				ctx.stroke()
+				ctx.beginPath();
+				ctx.moveTo(scalevar(t[0], t[199], t[0], cw*(x+w), cw*x), ch*(y + h / 2));
+				ctx.lineTo(scalevar(t[199], t[199], t[0], cw*(x+w), cw*x), ch*(y + h / 2));
+				ctx.stroke()
+				plotoneSin(ctx, maxs, mins, cw*(x+w), cw*x, ch*y, ch*(y+h), t, s) 
+				ytick(ctx, maxs, cw*x-10, scalevar (maxs, maxs, mins, ch*y, ch*(y+h)) )
+				ytick(ctx, 0, cw*x-10, scalevar (0, maxs, mins, ch*y, ch*(y+h)) )
+				ytick(ctx, mins, cw*x-10, scalevar (mins, maxs, mins, ch*y, ch*(y+h)) ) 
+		
+			}
+			else {
+				 ctx.strokeStyle="green"
+				 if (t[1] < t[2]) {
+					ctx.beginPath()
+					ctx.arc(scalevar(t[1], t[2], t[0], cw*(x+w), cw*x, ch*(y + h / 2)), scalevar(s, maxs, mins, ch*y, ch*(y+h)), 2,0,2*Math.PI);
+					ctx.stroke()
+				}
+			}
+		
+		}
+		
+		function labelSliders(ctx, cw, ch) {
+				ctx.fillStyle = getrootcol("--canvtcol");	//canvasback;
+			ctx.textAlign="start"; 
+			ctx.fillText("\u03A9".toLowerCase(), 2*cw, 83*ch);
+		
+		}
+		
+		
+		function setupgraphs() {
+		var canvas = document.getElementById("myCanvasInSin");
+		var ctx=canvas.getContext("2d");
+		var cw = canvas.width / 100;
+		var ch = canvas.height / 100;
+				ctx.fillStyle = getrootcol("--canvbgcol");	//canvasback;
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+			ctx.rect(cw*15, ch*15, cw*75, ch*60);
+			ctx.stroke();
+		
+				ctx.lineWidth = 2;
+			wSlider = new aslider(15*cw, ch*82, 75*cw, ch*3, false, ctx);
+			wSlider.whichbase = 10;
+			wSlider.setSliderScale(-1.48, 1.48);    // was -1 1
+			ctx.font = '12pt Calibri';
+			labelSliders(ctx, cw, ch);
+		
+		
+			canvas.addEventListener("mousedown", doMousedown, false);		// define mouse functions
+			canvas.addEventListener("mousemove", doMousemove, false);
+			canvas.addEventListener("mouseup", doMouseup, false);
+		
+			 canvas = document.getElementById("myCanvasOutSin");
+				ctx=canvas.getContext("2d");
+				cw = canvas.width / 100;
+				ch = canvas.height / 100;
+				ctx.fillStyle = getrootcol("--canvbgcol");	//canvasback;
+		 
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+			ctx.font = '12pt Calibri';
+		
+			drawSin(false);
+		
+		}
+		
+		
+		function load() {
+			window.defaultStatus="RJM's Demo of exp(pi)";
+			initPageColours();
+			setupgraphs();
+		}
+		
+		function doTogColours() {
+			togColours();
+			clearcanvas("myCanvasInSin");
+			clearcanvas("myCanvasOutSin");
+			drawSin(false);
+			wSlider.redraw(getrootcol("--canvtcol"), "black", getrootcol("--canvtcol"));
+			
+			var canvas = document.getElementById("myCanvasInSin");
+			var ctx=canvas.getContext("2d");
+			var cw = canvas.width / 100;
+			var ch = canvas.height / 100;
+		
+			labelSliders(ctx, cw, ch);
+		}
+		
+		
+		// End -->
+	</script>
+
+	<!-- STEP TWO: Add the relevant event handlers to the BODY tag  -->
+
+</head>
+
+<body onload="load()" data-new-gr-c-s-check-loaded="14.1165.0" data-gr-ext-installed="">
+	<div id="wrapper">
+
+		<div class="intro">
+			<h1>Freq Resp and exp<sup>π</sup> - Part A</h1>
+			<p>Three interesting numbers in Maths are π, the ratio of a circle's circumference to its diameter,
+				Euler's number e, approx 2.71818, and i, √-1. It is well known that e<sup>iπ</sup> = -1.
+				Here we discuss a use of e<sup>π</sup> in frequency response, which uses i itself!</p>
+			<p>In frequency response, we input a sinusoid into a system (here first order linear), and consider
+				its output as we change the frequency f of the input. The output is a sinusoid of the same
+				frequency, but its amplitude changes, as does the delay or phase shift between input and output.
+				Strictly we examine changes in gain (ratio of output and input amplitudes) and phase, with angular frequency
+				(2πf).</p>
+			<p>In Part A we explain the basic concepts.</p>
+			<p>In <a href="http://www.personal.reading.ac.uk/~shsmchlr/jsmaths/OnexpuppiB.html"
+					onclick="location.href=this.href+colstr(); return false;">Part B</a>
+				we plot gain and phase vs angular frequency (ω = 2 π * frequency).</p>
+			<p>In <a href="http://www.personal.reading.ac.uk/~shsmchlr/jsmaths/OnexpuppiC.html"
+					onclick="location.href=this.href+colstr(); return false;">Part C</a>
+				we look at asymptotic approximations to the graphs - and get e<sup>π</sup>.</p>
+			<p>In <a href="http://www.personal.reading.ac.uk/~shsmchlr/jsmaths/OnexpuppiD.html"
+					onclick="location.href=this.href+colstr(); return false;">Part D</a>
+				we show the maths.</p>
+			<p>
+			</p>
+			<p>See also <a href="https://ieeexplore.ieee.org/document/6334774">Original Paper</a> at Control 2012.</p>
+
+		</div>
+		<div class="robot">
+			<form name="mathssys">
+				<canvas id="myCanvasInSin" name="myCanvasInSin" width="600" height="250"></canvas>
+				<canvas id="myCanvasOutSin" name="myCanvasOutSin" width="600" height="200"></canvas>
+				<p>The system has a time constant T: if it is a filter with a resistor R and capacitor C, T = R*C;
+					if it is a motor, T is a property of the motor. The slider allows you to vary the angular frequency ω
+					of the input sinusoid. Initially ω is set to 1/T (the corner frequency), so ωT=1.
+					You can slide it so ω is between 0.03/T and 30/T.
+				</p>
+				<p> At ωT = 1, the output amplitude is ~0.71 and it is shifted by -0.79 (= -π/4 rads). If you decrease ω
+					the output amplitude increases and the phase shift decreases, but if you increase ω the opposite happens.</p>
+			</form>
+		</div>
+
+
+
+		<div class=""></div>
+
+	</div>
+
+
+
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open">
+		<style>
+			div.grammarly-desktop-integration {
+				position: absolute;
+				width: 1px;
+				height: 1px;
+				padding: 0;
+				margin: -1px;
+				overflow: hidden;
+				clip: rect(0, 0, 0, 0);
+				white-space: nowrap;
+				border: 0;
+				-moz-user-select: none;
+				-webkit-user-select: none;
+				-ms-user-select: none;
+				user-select: none;
+			}
+
+			div.grammarly-desktop-integration:before {
+				content: attr(data-content);
+			}
+		</style>
+		<div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration"
+			data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}">
+		</div>
+	</template></grammarly-desktop-integration>
+
+</html>
